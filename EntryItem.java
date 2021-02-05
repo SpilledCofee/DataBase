@@ -34,7 +34,14 @@ public class EntryItem {
         }
         this.supplier_id = supplier_id;
     }
+    public String getProduct_id(){return product_id;}
+    public int getQuantity(){return quantity;}
+    public double getSale_price() {return sale_price;}
 
+    public double getWholesale_cost() {
+        return wholesale_cost;
+    }
+    public String getSupplier_id() {return supplier_id;}
 }//FIN EntryItem
 
 
