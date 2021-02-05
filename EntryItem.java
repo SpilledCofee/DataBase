@@ -12,11 +12,29 @@ public class EntryItem {
 
     public EntryItem( String product_id, int quantity, double wholesale_cost, double sale_price, String supplier_id) {
         this.product_id = product_id;
-        this.quantity = quantity;
-        this.wholesale_cost = wholesale_cost;
-        this.sale_price = sale_price;
+
+        if (quantity <= 0){
+            this.quantity = 0;
+        }
+        else {
+            this.quantity = quantity;
+        }
+
+        if (wholesale_cost <= 0){
+            this.quantity = 0;
+        }
+        else {
+            this.wholesale_cost = wholesale_cost;
+        }
+        if (sale_price <= 0){
+            this.sale_price = 0;
+        }
+        else {
+            this.sale_price= sale_price;
+        }
         this.supplier_id = supplier_id;
     }
-}
+
+}//FIN EntryItem
 
 
