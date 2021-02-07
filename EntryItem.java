@@ -34,14 +34,28 @@ public class EntryItem {
         }
         this.supplier_id = supplier_id;
     }
+
     public String getProduct_id(){return product_id;}
+
+    public void setProductId(String newProductId){product_id = newProductId; }
+
     public int getQuantity(){return quantity;}
+
+    public void setQuantity(int newQuantity){quantity = newQuantity;}
+
     public double getSale_price() {return sale_price;}
+
+    public void setSalePrice(double newSalePrice){sale_price = newSalePrice; }
 
     public double getWholesale_cost() {
         return wholesale_cost;
     }
+
+    public void setWholesaleCost(double newWholesaleCost){wholesale_cost = newWholesaleCost; }
+
     public String getSupplier_id() {return supplier_id;}
+
+    public void setSupplierId(String newSupplierId){supplier_id = newSupplierId; }
 }//FIN EntryItem
 
 
