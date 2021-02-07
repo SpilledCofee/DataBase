@@ -24,7 +24,7 @@ public class DataBase {
 
 
     // Main method to call other methods
-    public static void  main(String [] args) throws IOException{
+    public static void  main(String [] args) throws IOException {
 
 
         Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
@@ -59,7 +59,7 @@ public class DataBase {
 
 
     // This method will read the CSV file and input in array
-    public void readFile(Scanner console, ArrayList<List> record) {
+    public void readFile(Scanner console, ArrayList<List> record) throws IOException {
 
         try(BufferedReader br = new BufferedReader((new FileReader("CSV_FILE")))){
             String line;
@@ -71,12 +71,14 @@ public class DataBase {
 
     // Method will create a new entry
     public static void createRecord(){
-
+        
         // user-defined variables
-        String product_id, quantity, wholesale_cost, sale_price, supplier_id;
+        String product_id = null, supplier_id = null;
+        int quantity = 0;
+        double wholesale_cost = 0, sale_price = 0;
 
         // intialize scanner for user input
-        Scanner user_input = new Scanner(System.in);  // create scanner
+        Scanner user_input = new Scanner(System.in);  // initialize scanner
 
         // seperator for user readibility
         String s = "----------------------------------------"; // separator
@@ -84,30 +86,68 @@ public class DataBase {
         // loop for user inputs and validation, exits when user confirms entries
         boolean user_confirmed = false;
         while (!user_confirmed) {
-            // module header
             
+            // module header
             System.out.println(s);
-            System.out.println("Inventory Record Creation");
+            System.out.println("Create Inventory Record");
             System.out.println(s);
         
             // get user inputs for all variables
-            System.out.print("Enter Product ID: ");
-            product_id = user_input.nextLine();
-            System.out.print("Enter Quantity: ");
-            quantity = user_input.nextLine();
-            System.out.print("Enter Wholesale Cost: ");
-            wholesale_cost = user_input.nextLine();
-            System.out.print("Enter Sale Price: ");
-            sale_price = user_input.nextLine();
-            System.out.print("Enter Wholesale Cost: ");
-            supplier_id = user_input.nextLine();
 
-            // check validity with user
+            // validate product id
+            System.out.print("Enter Product ID: ");
+            product_id = user_input.next();
+            while ((product_id.length()) != 12) {
+                System.out.println("Product ID must be 12 characters long!");
+                System.out.print("Enter Product ID: ");
+                user_input.next();
+            }
+            
+            // validate quantity
+            System.out.print("Enter Quantity: ");
+            while (!user_input.hasNextInt()) {
+                System.out.println("Quantity must be a whole number!");
+                System.out.print("Enter Quantity: ");
+                user_input.next();
+            }
+            quantity = user_input.nextInt();
+
+            // validate wholesale cost
+            System.out.print("Enter Wholesale Cost: ");
+            while (!user_input.hasNextDouble()) {
+                System.out.println("Wholesale cost must be whole number or decimal!");
+                System.out.print("Enter Wholesale Cost: ");
+                user_input.next();
+            }
+            wholesale_cost = user_input.nextDouble();
+
+            // validate sale price
+            System.out.print("Enter Sale Price: ");
+            while (!user_input.hasNextDouble()) {
+                System.out.println("Sale price must be whole number or decimal!");
+                System.out.print("Enter Sale Price: ");
+                user_input.next();
+            }
+            sale_price = user_input.nextDouble();
+
+            // validate supplier id
+            System.out.print("Enter Supplier ID: ");
+            supplier_id = user_input.next();
+            while ((supplier_id.length()) != 12) {
+                System.out.println("Product ID must be 12 characters long!");
+                System.out.print("Enter Supplier ID: ");
+                user_input.next();
+            }
+
+            // create EntryItem object with user inputs
+            EntryItem newItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
+
+            // confirm entries with user
             System.out.println(s);
             System.out.println("You entered the following values:");
             System.out.println(s);
-            System.out.printf("%15s %10s %15s %12s %12s\n", "PRODUCT ID", "QUANTITY", "WHOLESALE COST", "SALE PRICE", "SUPPLIER ID");
-            System.out.printf("%15s %10s %15s %12s %12s\n", product_id, quantity, wholesale_cost, sale_price, supplier_id);
+            System.out.printf("%15s %10s %15s %12s %15s\n", "PRODUCT ID", "QUANTITY", "WHOLESALE COST", "SALE PRICE", "SUPPLIER ID");
+            System.out.printf("%15s %10s %15s %12s %15s\n", product_id, quantity, wholesale_cost, sale_price, supplier_id);
             System.out.println(s);
             System.out.println("Is this correct?");
             System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
