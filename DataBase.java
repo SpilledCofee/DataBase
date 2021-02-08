@@ -28,7 +28,7 @@ public class DataBase {
 
 
         Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
-        List<List<String>> records = new ArrayList<>();
+        List<EntryItem> records = new ArrayList<>();
 
 
 
@@ -50,7 +50,7 @@ public class DataBase {
             lookUpRecord();
         }
         if(input.contains("c")){
-            updateRecord();
+            updateRecord(console, records);
         }
         if(input.contains("d")){
             deleteRecord();
@@ -197,14 +197,67 @@ public class DataBase {
     }
 
     //Method will update entry
-    public static void updateRecord(){
+    public static void updateRecord(Scanner scanner, List<EntryItem> records){
+        System.out.println("Enter product Id of the product to update: ");
+        String productId = scanner.next();
 
+        EntryItem itemToUpdate = null;
+        for (int i=0; i<records.size(); i++ ){
+            if (productId.equals(records.get(i).getProduct_id())) {
+                itemToUpdate = records.get(i);
+            }
+        }
+
+        if (itemToUpdate == null){
+            System.out.println(" Invalid product id. ");
+            return;
+        }
+
+        System.out.println("Current item values: product id: " + itemToUpdate.getProduct_id() + " quantity: " + itemToUpdate.getQuantity()
+                + " wholesale cost: " + itemToUpdate.getWholesale_cost() + " sale price: " + itemToUpdate.getSale_price() + " supplier id: " +
+                itemToUpdate.getSupplier_id());
+
+        System.out.println("Enter the attribute to update: ");
+        System.out.println(" a: product id \n b: quantity \n c: wholesale cost \n d: sale price \n e: supplier id ");
+        String attribute = scanner.next();
+
+        if (attribute.equals("a")){
+            System.out.println("Enter the new product id: ");
+            String newProductId = scanner.next();
+            itemToUpdate.setProductId(newProductId);
+        }
+        else if(attribute.equals("b")) {
+            System.out.println("Enter the new quantity: ");
+            int newQuantity = Integer.parseInt(scanner.next());
+            itemToUpdate.setQuantity(newQuantity);
+        }
+        else if(attribute.equals("c")) {
+            System.out.println("Enter the new wholesale cost: ");
+            double newWholesaleCost = Double.parseDouble(scanner.next());
+            itemToUpdate.setWholesaleCost(newWholesaleCost);
+        }
+        else if(attribute.equals("d")) {
+            System.out.println("Enter the new sale price: ");
+            double newSalePrice = Double.parseDouble(scanner.next());
+            itemToUpdate.setSalePrice(newSalePrice);
+        }
+        else if (attribute.equals("e")){
+            System.out.println("Enter the new supplier id: ");
+            String newSupplierId = scanner.next();
+            itemToUpdate.setSupplierId(newSupplierId);
+        }
+        else{
+            System.out.println("Invalid attribute");
+            return;
+        }
+
+        System.out.println("Updated item values: product id: " + itemToUpdate.getProduct_id() + " quantity: " + itemToUpdate.getQuantity()
+                + " wholesale cost: " + itemToUpdate.getWholesale_cost() + " sale price: " + itemToUpdate.getSale_price() + " supplier id: " +
+                itemToUpdate.getSupplier_id());
     }
 
     //Method will delete entry record
     public static void deleteRecord(){
 
     }
-
-
 }
