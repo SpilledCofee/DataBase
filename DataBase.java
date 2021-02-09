@@ -138,7 +138,36 @@ public class DataBase {
     }
 
     //Method will delete entry record
-    public static void deleteRecord(){
+    public static void deleteRecord(Scanner scanner, List<EntryItem> records){
 
+        //asks user to enter product id
+        System.out.println("Enter product Id of the product to delete: ");
+        String productId = scanner.next();
+
+        //searches entryitem for product to delete
+        EntryItem itemToDeleItem = null;
+        for (int i=0; i<records.size(); i++ ){
+            if (productId.equals(records.get(i).getProduct_id())) {
+                itemToDeleItem = records.get(i);
+            }
+        }
+        //if item doesn't exists gives error
+        if (itemToDeleItem == null){
+            System.out.println(" Invalid product id. ");
+            return;
+        }
+
+        //shows all fields of entry to be deleted
+        System.out.println("Current item values: product id: " + itemToDeleItem.getProduct_id() + " quantity: " + itemToDeleItem.getQuantity()
+                + " wholesale cost: " + itemToDeleItem.getWholesale_cost() + " sale price: " + itemToDeleItem.getSale_price() + " supplier id: " +
+                itemToDeleItem.getSupplier_id());
+
+        //asks user if they want to delete the item
+        System.out.println("Are you sure you want to delete this record?: y for yes, n for no ");
+        String attribute = scanner.next();
+
+        if (attribute.equals("y")){
+
+            records.remove(itemToDeleItem);
     }
 }
