@@ -11,61 +11,97 @@
 
 import java.io.*;
 import java.util.*;
-
+import java.util.ArrayList;
 
 public class DataBase {
+    private static Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
+    private ArrayList<EntryItem> records;
+    private static String FILE_NAME = "inventory_team1.csv";
 
-    public DataBase{
-
+    public DataBase(){
+        records = new ArrayList<>(400000);
+        try {
+            loadFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
+    public void loadFile() throws FileNotFoundException {
+        try {
+            Scanner in = new Scanner(new FileInputStream(FILE_NAME));
+            String titiles = in.nextLine();
+            //System.out.println(titiles);
+            while(in.hasNextLine()) {
+                String line = in.nextLine();
+                int end = line.indexOf(",", 0);
+                String product_id = line.substring(0, end);
+                int start = end + 1;
+                end = line.indexOf(",", start);
+                String tempQuantity = line.substring(start, end);
+                int quantity = Integer.parseInt(tempQuantity);
+                start = end + 1;
+                end = line.indexOf(",", start);
+                String tempWholesale_cost = line.substring(start, end);
+                double wholesale_cost = Double.parseDouble(tempWholesale_cost);
+                start = end + 1;
+                end = line.indexOf(",", start);
+                String tempSale_price = line.substring(start, end);
+                double sale_price = Double.parseDouble(tempSale_price);
+                String supplier_id = line.substring(end + 1);
+
+                EntryItem entryItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
+                records.add(entryItem);
+            }
+            in.close();
+
+        }catch (FileNotFoundException e) { }
+        //TESTING PURPOSES
+        //System.out.println(records.size());
+        //System.out.println(records.get(75).toString());
+    }
+
+
+
 
 
     // Main method to call other methods
     public static void  main(String [] args) throws IOException{
+        boolean quit = false;
+        DataBase dataBase = new DataBase();
+        while (!quit) {
+            // Printing out prompts to the user
+            System.out.print("a.    Create a new record\n" +
+                    "b.    Look up/read a record\n" +
+                    "c.    Update a record\n" +
+                    "d.    Delete an existing record\n" +
+                    "f.    Quit\n" +
+                    "Please enter an letter prompt to proceed. ");
 
 
-        Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
-        List<EntryItem> records = new ArrayList<>();
-
-
-
-        // Printing out prompts to the user
-        System.out.print("a.    Create a new record\n" +
-                "b.    Look up/read a record\n" +
-                "c.    Update a record\n" +
-                "d.    Delete an existing record\n" +
-                "Please enter an letter prompt to proceed. ");
-
-
-        //This will receive the user input and process the correct char to
-        //the correct if statement to proceed to the methods
-        String input = console.next();
-        if(input.contains("a")){
-            createRecord();
-        }
-        if(input.contains("b")){
-            lookUpRecord();
-        }
-        if(input.contains("c")){
-            updateRecord(console, records);
-        }
-        if(input.contains("d")){
-            deleteRecord();
-        }
-    }
-
-
-    // This method will read the CSV file and input in array
-    public void readFile(Scanner console, ArrayList<List> record) {
-
-        try(BufferedReader br = new BufferedReader((new FileReader("CSV_FILE")))){
-            String line;
-            while((line = br.readLine() != null)){
-                String[] values =
+            //This will receive the user input and process the correct char to
+            //the correct if statement to proceed to the methods
+            String input = console.next();
+            if (input.contains("a")) {
+                createRecord();
+            }
+            if (input.contains("b")) {
+                lookUpRecord();
+            }
+            if (input.contains("c")) {
+                updateRecord(console, records);
+            }
+            if (input.contains("d")) {
+                deleteRecord();
+            }
+            if(input.contains("f")){
+                quit = true;
             }
         }
+        
 
     }
+
 
     // Method will create a new entry
     public static void createRecord(){
