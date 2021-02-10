@@ -54,19 +54,6 @@ public class DataBase {
         }
     }
 
-
-    // This method will read the CSV file and input in array
-    public void readFile(Scanner console, ArrayList<List> record) {
-
-        try(BufferedReader br = new BufferedReader((new FileReader("CSV_FILE")))){
-            String line;
-            while((line = br.readLine() != null)){
-                String[] values =
-            }
-        }
-
-    }
-
     // Method will create a new entry
     public static void createRecord(){
 
