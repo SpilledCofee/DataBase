@@ -8,170 +8,77 @@
 'deleteRecord' will remove the current data entry from the data file
 */
 
+
 import java.io.*;
 import java.util.*;
-import java.util.ArrayList;
+
 
 public class DataBase {
-    private Scanner console;   // This will receive data input from the keyboard of the user
-    private ArrayList<EntryItem> records;
-    private static String FILE_NAME = "inventory_team1.csv";
 
-    public DataBase(){
-        records = new ArrayList<>(400000);
-        console = new Scanner(System.in);
-        try {
-            loadFile();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public DataBase{
+
     }
 
-    public void loadFile() throws FileNotFoundException {
-        try {
-            Scanner in = new Scanner(new FileInputStream(FILE_NAME));
-            String titiles = in.nextLine();
-            //System.out.println(titiles);
-            while(in.hasNextLine()) {
-                String line = in.nextLine();
-                int end = line.indexOf(",", 0);
-                String product_id = line.substring(0, end);
-                int start = end + 1;
-                end = line.indexOf(",", start);
-                String tempQuantity = line.substring(start, end);
-                int quantity = Integer.parseInt(tempQuantity);
-                start = end + 1;
-                end = line.indexOf(",", start);
-                String tempWholesale_cost = line.substring(start, end);
-                double wholesale_cost = Double.parseDouble(tempWholesale_cost);
-                start = end + 1;
-                end = line.indexOf(",", start);
-                String tempSale_price = line.substring(start, end);
-                double sale_price = Double.parseDouble(tempSale_price);
-                String supplier_id = line.substring(end + 1);
-
-                EntryItem entryItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
-                records.add(entryItem);
-            }
-            in.close();
-
-        }catch (FileNotFoundException e) { }
-        //TESTING PURPOSES
-        //System.out.println(records.size());
-        //System.out.println(records.get(75).toString());
-    }
 
     // Main method to call other methods
     public static void  main(String [] args) throws IOException{
-        boolean quit = false;
-        DataBase dataBase = new DataBase();
-        while (!quit) {
-            // Printing out prompts to the user
-            System.out.print("a.    Create a new record\n" +
-                    "b.    Look up/read a record\n" +
-                    "c.    Update a record\n" +
-                    "d.    Delete an existing record\n" +
-                    "f.    Quit\n" +
-                    "Please enter an letter prompt to proceed. ");
 
 
-            //This will receive the user input and process the correct char to
-            //the correct if statement to proceed to the methods
-            String input = dataBase.console.next();
-            if (input.contains("a")) {
-                dataBase.createRecord();
-            }
-            if (input.contains("b")) {
-                dataBase.lookUpRecord();
-            }
-            if (input.contains("c")) {
-                dataBase.updateRecord(dataBase.console, dataBase.records);
-            }
-            if (input.contains("d")) {
-                dataBase.deleteRecord();
-            }
-            if(input.contains("f")){
-                quit = true;
+        Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
+        List<EntryItem> records = new ArrayList<>();
+
+
+
+        // Printing out prompts to the user
+        System.out.print("a.    Create a new record\n" +
+                "b.    Look up/read a record\n" +
+                "c.    Update a record\n" +
+                "d.    Delete an existing record\n" +
+                "Please enter an letter prompt to proceed. ");
+
+
+        //This will receive the user input and process the correct char to
+        //the correct if statement to proceed to the methods
+        String input = console.next();
+        if(input.contains("a")){
+            createRecord();
+        }
+        if(input.contains("b")){
+            lookUpRecord();
+        }
+        if(input.contains("c")){
+            updateRecord(console, records);
+        }
+        if(input.contains("d")){
+            deleteRecord();
+        }
+    }
+
+
+    // This method will read the CSV file and input in array
+    public void readFile(Scanner console, ArrayList<List> record) {
+
+        try(BufferedReader br = new BufferedReader((new FileReader("CSV_FILE")))){
+            String line;
+            while((line = br.readLine() != null)){
+                String[] values =
             }
         }
 
-
     }
-
 
     // Method will create a new entry
-    public void createRecord(){
+    public static void createRecord(){
 
     }
 
+    // Method will search the data based and look the record
+    public static void lookUpRecord(){
 
-    // Method will search the database and look for a specific record
-    public void lookUpRecord(){
-
-        // Variables
-        String entered_product_id;
-
-        // Mirrors back to user their chosen function (in this case to look-up)
-        System.out.println("\n------------------------------------------");
-        System.out.println("==> You have chosen to look up a record!");
-        System.out.println("------------------------------------------\n");
-
-        // Prompts user for product id
-        Scanner lookUpScanner = new Scanner(System.in); // Look-up scanner for user's product id
-        System.out.println("-> Please Enter the Product_id from the Record you would like to view:"); // prompt user
-        entered_product_id = lookUpScanner.nextLine(); // Read user's product id
-
-        // If product id is less than or greater than 12 characters it's invalid so notify user
-        if (entered_product_id.length() < 12 || entered_product_id.length() > 12){
-            System.out.println("*** Error - Invalid product_id entry: Not 12 characters long! ***"); // Error Message
-        }
-
-        // Else if it's correct, mirror back entered product id
-        else {
-            System.out.println("\n-------------------------------------");
-            System.out.println("You Entered: " + entered_product_id);
-            System.out.println("-------------------------------------");
-        }
-
-        // Read CSV file, look to see if user's product id exists
-        // If so, print appropriate information, else notify user that it does not exist/not found
-        try {
-
-            // Variables
-            String line = "";
-
-            // Read CSV file and input it into array --- basically same as method readFile()
-            BufferedReader br = new BufferedReader(new FileReader("inventory_team1.csv"));
-            while((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-
-                // If current line contains the user's product id, then return that whole row of information
-                if(line.contains(entered_product_id)){
-                    System.out.println("Requested Info: ");
-                    System.out.println("Product ID: " + values[0] +  ", Quantity: " + values[1] + ", Wholesale Cost: " // Prints values
-                            + values[2] + ", Sale Price: " + values[3] + ", Supplier ID: " + values[4]);
-                    break;
-                }
-            }
-
-            // If current line is null, then state user's product id was not found
-            if((line = br.readLine()) == null){
-                System.out.println("\n-> PRODUCT ID NOT FOUND IN DATABASE! <-"); // Prints message
-            }
-
-        }
-        // Catch statements for the above try statements
-        catch (FileNotFoundException e){
-            System.out.println("\n*** ERROR: FILE WAS NOT FOUND! ***"); // Error message if File was not found
-        }
-        catch (IOException e) {
-            System.out.println("\n*** ERROR: Checking/Reading Lines! ***"); // Error message if checking/reading lines goes wrong
-        }
     }
-
 
     //Method will update entry
-    public void updateRecord(Scanner scanner, List<EntryItem> records){
+    public static void updateRecord(Scanner scanner, List<EntryItem> records){
         System.out.println("Enter product Id of the product to update: ");
         String productId = scanner.next();
 
@@ -231,7 +138,35 @@ public class DataBase {
     }
 
     //Method will delete entry record
-    public static void deleteRecord(){
+    public static void deleteRecord(Scanner scanner, List<EntryItem> records){
 
-    }
+        //asks user to enter product id
+        System.out.println("Enter product Id of the product to delete: ");
+        String productId = scanner.next();
+
+        //searches entryitem for product to delete
+        EntryItem itemToDeleItem = null;
+        for (int i=0; i<records.size(); i++ ){
+            if (productId.equals(records.get(i).getProduct_id())) {
+                itemToDeleItem = records.get(i);
+            }
+        }
+        //if item doesn't exists gives error
+        if (itemToDeleItem == null){
+            System.out.println(" Invalid product id. ");
+            return;
+        }
+
+        //shows all fields of entry to be deleted
+        System.out.println("Current item values: product id: " + itemToDeleItem.getProduct_id() + " quantity: " + itemToDeleItem.getQuantity()
+                + " wholesale cost: " + itemToDeleItem.getWholesale_cost() + " sale price: " + itemToDeleItem.getSale_price() + " supplier id: " +
+                itemToDeleItem.getSupplier_id());
+
+        //asks user if they want to delete the item
+        System.out.println("Are you sure you want to delete this record?: y for yes, n for no ");
+        String attribute = scanner.next();
+
+        if (attribute.equals("y")){
+            records.remove(itemToDeleItem);
+        }
 }
