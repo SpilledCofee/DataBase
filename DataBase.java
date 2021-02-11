@@ -99,13 +99,13 @@ public class DataBase {
 
 
     // Method will create a new entry
-    public static void createRecord(){
+    public void createRecord(){
 
     }
 
     
     // Method will search the database and look for a specific record
-    public static void lookUpRecord(){
+    public void lookUpRecord(){
 
         // Variables
         String entered_product_id;
@@ -170,7 +170,7 @@ public class DataBase {
 
     
     //Method will update entry
-    public static void updateRecord(Scanner scanner, List<EntryItem> records){
+    public void updateRecord(Scanner scanner, List<EntryItem> records){
         System.out.println("Enter product Id of the product to update: ");
         String productId = scanner.next();
 
