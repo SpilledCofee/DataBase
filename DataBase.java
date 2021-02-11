@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class DataBase {
-    private static Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
+    private Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
     private ArrayList<EntryItem> records;
     private static String FILE_NAME = "inventory_team1.csv";
 
@@ -60,10 +60,6 @@ public class DataBase {
         //System.out.println(records.get(75).toString());
     }
 
-
-
-
-
 // Main method to call other methods
     public static void  main(String [] args) throws IOException{
         boolean quit = false;
@@ -101,23 +97,6 @@ public class DataBase {
 
     }
 
-
-    //This will receive the user input and process the correct char to
-        //the correct if statement to proceed to the methods
-        String input = console.next();
-        if(input.contains("a")){
-            createRecord();
-        }
-        if(input.contains("b")){
-            lookUpRecord();
-        }
-        if(input.contains("c")){
-            updateRecord(console, records);
-        }
-        if(input.contains("d")){
-            deleteRecord();
-        }
-    }
 
     // Method will create a new entry
     public static void createRecord(){
