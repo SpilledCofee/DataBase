@@ -17,6 +17,7 @@ public class DataBase {
     private ArrayList<EntryItem> records;
     private static String FILE_NAME = "inventory_team1.csv";
 
+
     public DataBase(){
         records = new ArrayList<>(400000);
         console = new Scanner(System.in);
@@ -69,7 +70,7 @@ public class DataBase {
             while(records.get(i) != null){
                 String saved = records.get(i).toString();
                 out.println(saved);
-               i++;
+                i++;
             }
             out.close();
         } catch(FileNotFoundException e) {}
@@ -246,12 +247,12 @@ public class DataBase {
                 itemToUpdate.getSupplier_id());
     }
 
-//Method will delete entry record
-    public void deleteRecord(Scanner scanner, List<EntryItem> records){
+    //Method will delete entry record
+    public void deleteRecord(){
 
         //asks user to enter product id
         System.out.println("Enter product Id of the product to delete: ");
-        String productId = scanner.next();
+        String productId = console.next();
 
         //searches entryitem for product to delete
         EntryItem itemToDeleItem = null;
@@ -273,10 +274,10 @@ public class DataBase {
 
         //asks user if they want to delete the item
         System.out.println("Are you sure you want to delete this record?: y for yes, n for no ");
-        String attribute = scanner.next();
+        String attribute = console.next();
 
         if (attribute.equals("y")){
             records.remove(itemToDeleItem);
         }
-}
+    }
 }
