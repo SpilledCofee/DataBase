@@ -56,6 +56,15 @@ public class EntryItem {
     public String getSupplier_id() {return supplier_id;}
 
     public void setSupplierId(String newSupplierId){supplier_id = newSupplierId; }
+
+    @Override
+    public String toString() {
+        return "EntryItem{" +
+                "product_id='" + product_id + '\'' +
+                ", quantity=" + quantity +
+                ", wholesale_cost=" + wholesale_cost +
+                ", sale_price=" + sale_price +
+                ", supplier_id='" + supplier_id + '\'' +
+                '}';
+    }
 }//FIN EntryItem
-
-

@@ -5,199 +5,173 @@
         * With 'createRecord' it will create a new entry with the data file
         * 'lookUpRecord' will proceed to search for the correct data file
         * 'updateRecord' will update the current entry with the data file
-        * 'deleteRecord' will remove the current data entry from the data file
+'deleteRecord' will remove the current data entry from the data file
 */
-
 
 import java.io.*;
 import java.util.*;
-
+import java.util.ArrayList;
 
 public class DataBase {
+    private Scanner console;   // This will receive data input from the keyboard of the user
+    private ArrayList<EntryItem> records;
+    private static String FILE_NAME = "inventory_team1.csv";
 
-    // temporarily disabled to allow local testing
-    /*
-    public DataBase{
-
+    public DataBase(){
+        records = new ArrayList<>(400000);
+        console = new Scanner(System.in);
+        try {
+            loadFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
-    */
 
+    public void loadFile() throws FileNotFoundException {
+        try {
+            Scanner in = new Scanner(new FileInputStream(FILE_NAME));
+            String titiles = in.nextLine();
+            //System.out.println(titiles);
+            while(in.hasNextLine()) {
+                String line = in.nextLine();
+                int end = line.indexOf(",", 0);
+                String product_id = line.substring(0, end);
+                int start = end + 1;
+                end = line.indexOf(",", start);
+                String tempQuantity = line.substring(start, end);
+                int quantity = Integer.parseInt(tempQuantity);
+                start = end + 1;
+                end = line.indexOf(",", start);
+                String tempWholesale_cost = line.substring(start, end);
+                double wholesale_cost = Double.parseDouble(tempWholesale_cost);
+                start = end + 1;
+                end = line.indexOf(",", start);
+                String tempSale_price = line.substring(start, end);
+                double sale_price = Double.parseDouble(tempSale_price);
+                String supplier_id = line.substring(end + 1);
+
+                EntryItem entryItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
+                records.add(entryItem);
+            }
+            in.close();
+
+        }catch (FileNotFoundException e) { }
+        //TESTING PURPOSES
+        //System.out.println(records.size());
+        //System.out.println(records.get(75).toString());
+    }
 
     // Main method to call other methods
-    public static void  main(String [] args) throws IOException {
+    public static void  main(String [] args) throws IOException{
+        boolean quit = false;
+        DataBase dataBase = new DataBase();
+        while (!quit) {
+            // Printing out prompts to the user
+            System.out.print("a.    Create a new record\n" +
+                    "b.    Look up/read a record\n" +
+                    "c.    Update a record\n" +
+                    "d.    Delete an existing record\n" +
+                    "f.    Quit\n" +
+                    "Please enter an letter prompt to proceed. ");
 
 
-        Scanner console = new Scanner(System.in);   // This will receive data input from the keyboard of the user
-        List<EntryItem> records = new ArrayList<>();
-
-
-
-        // Printing out prompts to the user
-        System.out.print("a.    Create a new record\n" +
-                "b.    Look up/read a record\n" +
-                "c.    Update a record\n" +
-                "d.    Delete an existing record\n" +
-                "Please enter an letter prompt to proceed. ");
-
-
-        //This will receive the user input and process the correct char to
-        //the correct if statement to proceed to the methods
-        String input = console.next();
-        if(input.contains("a")){
-            createRecord();
-        }
-        if(input.contains("b")){
-            lookUpRecord();
-        }
-        if(input.contains("c")){
-            updateRecord(console, records);
-        }
-        if(input.contains("d")){
-            deleteRecord();
-        }
-    }
-
-
-    // This method will read the CSV file and input in array
-    public void readFile(Scanner console, ArrayList<List> record) throws IOException {
-
-        try(BufferedReader br = new BufferedReader((new FileReader("CSV_FILE")))){
-            String line;
-            while (((line = br.readLine()) != null)) {
-                String[] values = null; // null added to allow for testing
+            //This will receive the user input and process the correct char to
+            //the correct if statement to proceed to the methods
+            String input = dataBase.console.next();
+            if (input.contains("a")) {
+                dataBase.createRecord();
+            }
+            if (input.contains("b")) {
+                dataBase.lookUpRecord();
+            }
+            if (input.contains("c")) {
+                dataBase.updateRecord(dataBase.console, dataBase.records);
+            }
+            if (input.contains("d")) {
+                dataBase.deleteRecord();
+            }
+            if(input.contains("f")){
+                quit = true;
             }
         }
+
+
     }
+
 
     // Method will create a new entry
-    public static void createRecord(){
-        
-        // user-defined variables
-        String product_id = null, supplier_id = null;
-        int quantity = 0;
-        double wholesale_cost = 0, sale_price = 0;
+    public void createRecord(){
 
-        // intialize scanner for user input
-        Scanner user_input = new Scanner(System.in);  // initialize scanner
+    }
 
-        // seperator for user readibility
-        String s = "----------------------------------------"; // separator
-        
-        // loop for user inputs and validation, exits when user confirms entries
-        boolean user_confirmed = false;
-        while (!user_confirmed) {
-            
-            // module header
-            System.out.println(s);
-            System.out.println("Create Inventory Record");
-            System.out.println(s);
-        
-            // get user inputs for all variables
 
-            // validate product id
-            System.out.print("Enter Product ID: ");
-            product_id = user_input.next();
-            while ((product_id.length()) != 12) {
-                System.out.println("Product ID must be 12 characters long!");
-                System.out.print("Enter Product ID: ");
-                user_input.next();
-            }
-            
-            // validate quantity
-            System.out.print("Enter Quantity: ");
-            while (!user_input.hasNextInt()) {
-                System.out.println("Quantity must be a whole number!");
-                System.out.print("Enter Quantity: ");
-                user_input.next();
-            }
-            quantity = user_input.nextInt();
+    // Method will search the database and look for a specific record
+    public void lookUpRecord(){
 
-            // validate wholesale cost
-            System.out.print("Enter Wholesale Cost: ");
-            while (!user_input.hasNextDouble()) {
-                System.out.println("Wholesale cost must be whole number or decimal!");
-                System.out.print("Enter Wholesale Cost: ");
-                user_input.next();
-            }
-            wholesale_cost = user_input.nextDouble();
+        // Variables
+        String entered_product_id;
 
-            // validate sale price
-            System.out.print("Enter Sale Price: ");
-            while (!user_input.hasNextDouble()) {
-                System.out.println("Sale price must be whole number or decimal!");
-                System.out.print("Enter Sale Price: ");
-                user_input.next();
-            }
-            sale_price = user_input.nextDouble();
+        // Mirrors back to user their chosen function (in this case to look-up)
+        System.out.println("\n------------------------------------------");
+        System.out.println("==> You have chosen to look up a record!");
+        System.out.println("------------------------------------------\n");
 
-            // validate supplier id
-            System.out.print("Enter Supplier ID: ");
-            supplier_id = user_input.next();
-            while ((supplier_id.length()) != 12) {
-                System.out.println("Product ID must be 12 characters long!");
-                System.out.print("Enter Supplier ID: ");
-                user_input.next();
-            }
+        // Prompts user for product id
+        Scanner lookUpScanner = new Scanner(System.in); // Look-up scanner for user's product id
+        System.out.println("-> Please Enter the Product_id from the Record you would like to view:"); // prompt user
+        entered_product_id = lookUpScanner.nextLine(); // Read user's product id
 
-            // create EntryItem object with user inputs
-            EntryItem newItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
+        // If product id is less than or greater than 12 characters it's invalid so notify user
+        if (entered_product_id.length() < 12 || entered_product_id.length() > 12){
+            System.out.println("*** Error - Invalid product_id entry: Not 12 characters long! ***"); // Error Message
+        }
 
-            // confirm entries with user
-            System.out.println(s);
-            System.out.println("You entered the following values:");
-            System.out.println(s);
-            System.out.printf("%15s %10s %15s %12s %15s\n", "PRODUCT ID", "QUANTITY", "WHOLESALE COST", "SALE PRICE", "SUPPLIER ID");
-            System.out.printf("%15s %10s %15s %12s %15s\n", product_id, quantity, wholesale_cost, sale_price, supplier_id);
-            System.out.println(s);
-            System.out.println("Is this correct?");
-            System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
-            String inp = user_input.nextLine();
-            boolean valid = false;
-            while (!valid) {
-                if (inp.toLowerCase().equals("yes")) {
-                    valid = true;
-                    user_confirmed = true;
-                } else if (inp.toLowerCase().equals("no")) {
-                    valid = true;
-                } else {
-                    System.out.print("Invalid response. Please type 'yes' or 'no': ");
-                    inp = user_input.nextLine();
+        // Else if it's correct, mirror back entered product id
+        else {
+            System.out.println("\n-------------------------------------");
+            System.out.println("You Entered: " + entered_product_id);
+            System.out.println("-------------------------------------");
+        }
+
+        // Read CSV file, look to see if user's product id exists
+        // If so, print appropriate information, else notify user that it does not exist/not found
+        try {
+
+            // Variables
+            String line = "";
+
+            // Read CSV file and input it into array --- basically same as method readFile()
+            BufferedReader br = new BufferedReader(new FileReader("inventory_team1.csv"));
+            while((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+
+                // If current line contains the user's product id, then return that whole row of information
+                if(line.contains(entered_product_id)){
+                    System.out.println("Requested Info: ");
+                    System.out.println("Product ID: " + values[0] +  ", Quantity: " + values[1] + ", Wholesale Cost: " // Prints values
+                            + values[2] + ", Sale Price: " + values[3] + ", Supplier ID: " + values[4]);
+                    break;
                 }
             }
-        }
-        
-        // alert user and get next step
-        System.out.println(s);
-        System.out.println("Entry added to inventory!");
-        System.out.println(s);
-        System.out.println("Do you want to add another entry?");
-        System.out.print("Type 'yes' to add another entry, or 'no' to exit to main menu: ");
-        String inp = user_input.nextLine();
-        boolean valid = false;
-        while (!valid) {
-            if (inp.toLowerCase().equals("yes")) {
-                valid = true;
-                createRecord();
-            } else if (inp.toLowerCase().equals("no")) {
-                valid = true;                                       // possibly direct to main menu later
-            } else {
-                System.out.print("Invalid response. Please type 'yes' or 'no': ");
-                inp = user_input.nextLine();
+
+            // If current line is null, then state user's product id was not found
+            if((line = br.readLine()) == null){
+                System.out.println("\n-> PRODUCT ID NOT FOUND IN DATABASE! <-"); // Prints message
             }
+
         }
-        
-        // close scanner
-        user_input.close();
-
+        // Catch statements for the above try statements
+        catch (FileNotFoundException e){
+            System.out.println("\n*** ERROR: FILE WAS NOT FOUND! ***"); // Error message if File was not found
+        }
+        catch (IOException e) {
+            System.out.println("\n*** ERROR: Checking/Reading Lines! ***"); // Error message if checking/reading lines goes wrong
+        }
     }
 
-    // Method will search the data based and look the record
-    public static void lookUpRecord(){
-
-    }
 
     //Method will update entry
-    public static void updateRecord(Scanner scanner, List<EntryItem> records){
+    public void updateRecord(Scanner scanner, List<EntryItem> records){
         System.out.println("Enter product Id of the product to update: ");
         String productId = scanner.next();
 
