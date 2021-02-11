@@ -30,10 +30,8 @@ public class DataBase {
     public void loadFile() throws FileNotFoundException {
         try {
             Scanner in = new Scanner(new FileInputStream(FILE_NAME));
-            String titiles = in.nextLine(); //this takes care of the first string so we can get the data
+            String titiles = in.nextLine();
             //System.out.println(titiles);
-            
-            //This loop will break up all the data and format it as an entry item then add it to the array   
             while(in.hasNextLine()) {
                 String line = in.nextLine();
                 int end = line.indexOf(",", 0);
@@ -62,11 +60,7 @@ public class DataBase {
         //System.out.println(records.size());
         //System.out.println(records.get(75).toString());
     }
-       /* this should go through the array and save it back to the file with all of the changes made to it
-       -----> Can't be tested until other methods are done
-       -----> This method will happen once the user chooses quit
-       */
-        public void saveFile() throws FileNotFoundException {
+    public void saveFile() throws FileNotFoundException {
         try {
             PrintWriter out = new PrintWriter(FILE_NAME);
             out.println("product_id,quantity,wholesale_cost,sale_price,supplier_id");
@@ -81,7 +75,6 @@ public class DataBase {
         } catch(FileNotFoundException e) {}
 
     }
-       
 
     // Main method to call other methods
     public static void  main(String [] args) throws IOException{
@@ -113,7 +106,7 @@ public class DataBase {
                 dataBase.deleteRecord();
             }
             if(input.contains("f")){
-                //Add this when it has been tested --> dataBase.saveFile();
+                //When other methods are done we can test this --> dataBase.saveFile();
                 quit = true;
             }
         }
@@ -253,8 +246,37 @@ public class DataBase {
                 itemToUpdate.getSupplier_id());
     }
 
-    //Method will delete entry record
-    public static void deleteRecord(){
+//Method will delete entry record
+    public void deleteRecord(Scanner scanner, List<EntryItem> records){
 
-    }
+        //asks user to enter product id
+        System.out.println("Enter product Id of the product to delete: ");
+        String productId = scanner.next();
+
+        //searches entryitem for product to delete
+        EntryItem itemToDeleItem = null;
+        for (int i=0; i<records.size(); i++ ){
+            if (productId.equals(records.get(i).getProduct_id())) {
+                itemToDeleItem = records.get(i);
+            }
+        }
+        //if item doesn't exists gives error
+        if (itemToDeleItem == null){
+            System.out.println(" Invalid product id. ");
+            return;
+        }
+
+        //shows all fields of entry to be deleted
+        System.out.println("Current item values: product id: " + itemToDeleItem.getProduct_id() + " quantity: " + itemToDeleItem.getQuantity()
+                + " wholesale cost: " + itemToDeleItem.getWholesale_cost() + " sale price: " + itemToDeleItem.getSale_price() + " supplier id: " +
+                itemToDeleItem.getSupplier_id());
+
+        //asks user if they want to delete the item
+        System.out.println("Are you sure you want to delete this record?: y for yes, n for no ");
+        String attribute = scanner.next();
+
+        if (attribute.equals("y")){
+            records.remove(itemToDeleItem);
+        }
+}
 }
