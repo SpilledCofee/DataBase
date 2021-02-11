@@ -167,7 +167,6 @@ public class DataBase {
         String attribute = scanner.next();
 
         if (attribute.equals("y")){
-
             records.remove(itemToDeleItem);
-    }
+        }
 }
