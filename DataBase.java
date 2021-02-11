@@ -8,7 +8,6 @@
 'deleteRecord' will remove the current data entry from the data file
 */
 
-
 import java.io.*;
 import java.util.*;
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class DataBase {
 
 
 
-    // Main method to call other methods
+// Main method to call other methods
     public static void  main(String [] args) throws IOException{
         boolean quit = false;
         DataBase dataBase = new DataBase();
@@ -103,16 +102,94 @@ public class DataBase {
     }
 
 
+    //This will receive the user input and process the correct char to
+        //the correct if statement to proceed to the methods
+        String input = console.next();
+        if(input.contains("a")){
+            createRecord();
+        }
+        if(input.contains("b")){
+            lookUpRecord();
+        }
+        if(input.contains("c")){
+            updateRecord(console, records);
+        }
+        if(input.contains("d")){
+            deleteRecord();
+        }
+    }
+
     // Method will create a new entry
     public static void createRecord(){
 
     }
 
-    // Method will search the data based and look the record
+    
+    // Method will search the database and look for a specific record
     public static void lookUpRecord(){
 
+        // Variables
+        String entered_product_id;
+
+        // Mirrors back to user their chosen function (in this case to look-up)
+        System.out.println("\n------------------------------------------");
+        System.out.println("==> You have chosen to look up a record!");
+        System.out.println("------------------------------------------\n");
+
+        // Prompts user for product id
+        Scanner lookUpScanner = new Scanner(System.in); // Look-up scanner for user's product id
+        System.out.println("-> Please Enter the Product_id from the Record you would like to view:"); // prompt user
+        entered_product_id = lookUpScanner.nextLine(); // Read user's product id
+
+        // If product id is less than or greater than 12 characters it's invalid so notify user
+        if (entered_product_id.length() < 12 || entered_product_id.length() > 12){
+            System.out.println("*** Error - Invalid product_id entry: Not 12 characters long! ***"); // Error Message
+        }
+
+        // Else if it's correct, mirror back entered product id
+        else {
+            System.out.println("\n-------------------------------------");
+            System.out.println("You Entered: " + entered_product_id);
+            System.out.println("-------------------------------------");
+        }
+
+        // Read CSV file, look to see if user's product id exists
+        // If so, print appropriate information, else notify user that it does not exist/not found
+        try {
+
+            // Variables
+            String line = "";
+
+            // Read CSV file and input it into array --- basically same as method readFile()
+            BufferedReader br = new BufferedReader(new FileReader("inventory_team1.csv"));
+            while((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+
+                // If current line contains the user's product id, then return that whole row of information
+                if(line.contains(entered_product_id)){
+                    System.out.println("Requested Info: ");
+                    System.out.println("Product ID: " + values[0] +  ", Quantity: " + values[1] + ", Wholesale Cost: " // Prints values
+                                + values[2] + ", Sale Price: " + values[3] + ", Supplier ID: " + values[4]);
+                break;
+                }
+            }
+
+            // If current line is null, then state user's product id was not found
+            if((line = br.readLine()) == null){
+                System.out.println("\n-> PRODUCT ID NOT FOUND IN DATABASE! <-"); // Prints message
+            }
+
+        }
+        // Catch statements for the above try statements
+        catch (FileNotFoundException e){
+            System.out.println("\n*** ERROR: FILE WAS NOT FOUND! ***"); // Error message if File was not found
+        }
+        catch (IOException e) {
+            System.out.println("\n*** ERROR: Checking/Reading Lines! ***"); // Error message if checking/reading lines goes wrong
+        }
     }
 
+    
     //Method will update entry
     public static void updateRecord(Scanner scanner, List<EntryItem> records){
         System.out.println("Enter product Id of the product to update: ");
