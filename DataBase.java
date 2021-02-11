@@ -30,8 +30,10 @@ public class DataBase {
     public void loadFile() throws FileNotFoundException {
         try {
             Scanner in = new Scanner(new FileInputStream(FILE_NAME));
-            String titiles = in.nextLine();
+            String titiles = in.nextLine(); //this takes care of the first string so we can get the data
             //System.out.println(titiles);
+            
+            //This loop will break up all the data and format it as an entry item then add it to the array   
             while(in.hasNextLine()) {
                 String line = in.nextLine();
                 int end = line.indexOf(",", 0);
@@ -60,6 +62,26 @@ public class DataBase {
         //System.out.println(records.size());
         //System.out.println(records.get(75).toString());
     }
+       /* this should go through the array and save it back to the file with all of the changes made to it
+       -----> Can't be tested until other methods are done
+       -----> This method will happen once the user chooses quit
+       */
+        public void saveFile() throws FileNotFoundException {
+        try {
+            PrintWriter out = new PrintWriter(FILE_NAME);
+            out.println("product_id,quantity,wholesale_cost,sale_price,supplier_id");
+            int i = 0;
+
+            while(records.get(i) != null){
+                String saved = records.get(i).toString();
+                out.println(saved);
+               i++;
+            }
+            out.close();
+        } catch(FileNotFoundException e) {}
+
+    }
+       
 
     // Main method to call other methods
     public static void  main(String [] args) throws IOException{
@@ -91,6 +113,7 @@ public class DataBase {
                 dataBase.deleteRecord();
             }
             if(input.contains("f")){
+                //Add this when it has been tested --> dataBase.saveFile();
                 quit = true;
             }
         }
