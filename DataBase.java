@@ -104,7 +104,7 @@ public class DataBase {
                 dataBase.updateRecord(dataBase.console, dataBase.records);
             }
             if (input.contains("d")) {
-                dataBase.deleteRecord();
+                dataBase.deleteRecord(dataBase.console, dataBase.records);
             }
             if(input.contains("f")){
                 dataBase.saveFile();
