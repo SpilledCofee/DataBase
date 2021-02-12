@@ -250,45 +250,45 @@ public class DataBase {
     //Method will delete entry record
     public static void deleteRecord(Scanner scanner, List<EntryItem> records){
 
-    //asks user to enter product id
-    System.out.println("");
-    System.out.println("Enter product Id of the product to delete: ");
-    System.out.println("");
-    String productId = scanner.next();
+       //asks user to enter product id
+       System.out.println("");
+       System.out.println("Enter product Id of the product to delete: ");
+       System.out.println("");
+       String productId = scanner.next();
 
-    //searches entryitem for product to delete
-    EntryItem itemToDeleItem = null;
-    for (int i=0; i<records.size(); i++ ){
+       //searches entryitem for product to delete
+       EntryItem itemToDeleItem = null;
+       for (int i=0; i<records.size(); i++ ){
         if (productId.equals(records.get(i).getProduct_id())) {
             itemToDeleItem = records.get(i);
         }
-    }
-    //if item doesn't exists gives error
-    if (itemToDeleItem == null){
+       }
+       //if item doesn't exists gives error
+       if (itemToDeleItem == null){
         System.out.println("");
         System.out.println(" Invalid product id. Record does not exist.\n");
         return;
-    }
+       }
 
-    //shows all fields of entry to be deleted
-    System.out.println("");
-    System.out.println("Current item values: \nproduct id: " + itemToDeleItem.getProduct_id() + " \nquantity: " + itemToDeleItem.getQuantity()
+       //shows all fields of entry to be deleted
+       System.out.println("");
+       System.out.println("Current item values: \nproduct id: " + itemToDeleItem.getProduct_id() + " \nquantity: " + itemToDeleItem.getQuantity()
             + " \nwholesale cost: " + itemToDeleItem.getWholesale_cost() + " \nsale price: " + itemToDeleItem.getSale_price() + " \nsupplier id: " +
             itemToDeleItem.getSupplier_id());
 
-    //asks user if they want to delete the item
-    System.out.println("\nAre you sure you want to delete this record?: y for yes, n for no ");
-    String attribute = scanner.next();
+       //asks user if they want to delete the item
+       System.out.println("\nAre you sure you want to delete this record?: y for yes, n for no ");
+       String attribute = scanner.next();
 
-    //if user selects yes then the item is deleted using the index
-    if (attribute.equals("y")){
+       //if user selects yes then the item is deleted using the index
+       if (attribute.equals("y")){
 
         records.remove(itemToDeleItem);
         System.out.println("\nRecord has been deleted.");
         System.out.println("");
-    }
-    //if user selects anything else they are told the item was not deleted and are brought back to the menu
-    else{
+       }
+       //if user selects anything else they are told the item was not deleted and are brought back to the menu
+       else{
         System.out.println("\nRecord was NOT deleted.\n");
     }
     }
