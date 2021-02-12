@@ -95,7 +95,7 @@ public class DataBase {
             //the correct if statement to proceed to the methods
             String input = dataBase.console.next();
             if (input.contains("a")) {
-                dataBase.createRecord(dataBase.console);
+                dataBase.createRecord();
             }
             if (input.contains("b")) {
                 dataBase.lookUpRecord();
@@ -117,7 +117,7 @@ public class DataBase {
 
 
     // Method will create a new entry
-    public void createRecord(Scanner user_input){
+    public void createRecord(){
 
         // user-defined variables
         String product_id = null, supplier_id = null;
@@ -140,47 +140,47 @@ public class DataBase {
 
             // validate product id
             System.out.print("Enter Product ID: ");
-            product_id = user_input.next();
+            product_id = console.next();
             while ((product_id.length()) != 12) {
                 System.out.println("Product ID must be 12 characters long!");
                 System.out.print("Enter Product ID: ");
-                user_input.next();
+                console.next();
             }
             
             // validate quantity
             System.out.print("Enter Quantity: ");
-            while (!user_input.hasNextInt()) {
+            while (!console.hasNextInt()) {
                 System.out.println("Quantity must be a whole number!");
                 System.out.print("Enter Quantity: ");
-                user_input.next();
+                console.next();
             }
-            quantity = user_input.nextInt();
+            quantity = console.nextInt();
 
             // validate wholesale cost
             System.out.print("Enter Wholesale Cost: ");
-            while (!user_input.hasNextDouble()) {
+            while (!console.hasNextDouble()) {
                 System.out.println("Wholesale cost must be whole number or decimal!");
                 System.out.print("Enter Wholesale Cost: ");
-                user_input.next();
+                console.next();
             }
-            wholesale_cost = user_input.nextDouble();
+            wholesale_cost = console.nextDouble();
 
             // validate sale price
             System.out.print("Enter Sale Price: ");
-            while (!user_input.hasNextDouble()) {
+            while (!console.hasNextDouble()) {
                 System.out.println("Sale price must be whole number or decimal!");
                 System.out.print("Enter Sale Price: ");
-                user_input.next();
+                console.next();
             }
-            sale_price = user_input.nextDouble();
+            sale_price = console.nextDouble();
 
             // validate supplier id
             System.out.print("Enter Supplier ID: ");
-            supplier_id = user_input.next();
+            supplier_id = console.next();
             while ((supplier_id.length()) != 12) {
                 System.out.println("Product ID must be 12 characters long!");
                 System.out.print("Enter Supplier ID: ");
-                user_input.next();
+                console.next();
             }
 
             // confirm entries with user
@@ -192,7 +192,7 @@ public class DataBase {
             System.out.println(s);
             System.out.println("Is this correct?");
             System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
-            String inp = user_input.nextLine();
+            String inp = console.nextLine();
             boolean valid = false;
             while (!valid) {
                 if (inp.toLowerCase().equals("yes")) {
@@ -202,7 +202,7 @@ public class DataBase {
                     valid = true;
                 } else {
                     System.out.print("Invalid response. Please type 'yes' or 'no': ");
-                    inp = user_input.nextLine();
+                    inp = console.nextLine();
                 }
             }
         }
@@ -217,17 +217,17 @@ public class DataBase {
         System.out.println(s);
         System.out.println("Do you want to add another entry?");
         System.out.print("Type 'yes' to add another entry, or 'no' to exit to main menu: ");
-        String inp = user_input.nextLine();
+        String inp = console.nextLine();
         boolean valid = false;
         while (!valid) {
             if (inp.toLowerCase().equals("yes")) {
                 valid = true;
-                createRecord(user_input);
+                createRecord();
             } else if (inp.toLowerCase().equals("no")) {
                 valid = true;                                       // possibly direct to main menu later
             } else {
                 System.out.print("Invalid response. Please type 'yes' or 'no': ");
-                inp = user_input.nextLine();
+                inp = console.nextLine();
             }
         }
     }

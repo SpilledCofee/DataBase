@@ -59,10 +59,10 @@ public class EntryItem {
 
     @Override
 public String toString() {
-        return  { product_id +
+        return  product_id +
                 "," + quantity +
                 "," + wholesale_cost +
                 "," + sale_price +
-                "," + supplier_id;   }
+                "," + supplier_id;
     }
 }//FIN EntryItem
