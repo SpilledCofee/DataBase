@@ -67,7 +67,7 @@ public class DataBase {
             out.println("product_id,quantity,wholesale_cost,sale_price,supplier_id");
             int i = 0;
 
-            while(records.get(i) != null){
+            while( < records.size()){
                 String saved = records.get(i).toString();
                 out.println(saved);
                 i++;
@@ -107,7 +107,7 @@ public class DataBase {
                 dataBase.deleteRecord();
             }
             if(input.contains("f")){
-                //When other methods are done we can test this --> dataBase.saveFile();
+                dataBase.saveFile();
                 quit = true;
             }
         }
