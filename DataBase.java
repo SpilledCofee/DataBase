@@ -17,6 +17,7 @@ public class DataBase {
     private ArrayList<EntryItem> records;
     private static String FILE_NAME = "inventory_team1.csv";
 
+
     public DataBase(){
         records = new ArrayList<>(400000);
         console = new Scanner(System.in);
@@ -66,10 +67,10 @@ public class DataBase {
             out.println("product_id,quantity,wholesale_cost,sale_price,supplier_id");
             int i = 0;
 
-            while(records.get(i) != null){
+            while(i < records.size()){
                 String saved = records.get(i).toString();
                 out.println(saved);
-               i++;
+                i++;
             }
             out.close();
         } catch(FileNotFoundException e) {}
@@ -100,13 +101,13 @@ public class DataBase {
                 dataBase.lookUpRecord();
             }
             if (input.contains("c")) {
-                dataBase.updateRecord(dataBase.console, dataBase.records);
+                dataBase.updateRecord();
             }
             if (input.contains("d")) {
                 dataBase.deleteRecord();
             }
             if(input.contains("f")){
-                //When other methods are done we can test this --> dataBase.saveFile();
+                dataBase.saveFile();
                 quit = true;
             }
         }
@@ -298,7 +299,8 @@ public class DataBase {
 
 
     //Method will update entry
-    public void updateRecord(Scanner scanner, List<EntryItem> records){
+    public void updateRecord(){
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter product Id of the product to update: ");
         String productId = scanner.next();
 
@@ -357,11 +359,14 @@ public class DataBase {
                 itemToUpdate.getSupplier_id());
     }
 
-//Method will delete entry record
-    public void deleteRecord(Scanner scanner, List<EntryItem> records){
+    //Method will delete entry record
+    public void deleteRecord(){
 
         //asks user to enter product id
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("");
         System.out.println("Enter product Id of the product to delete: ");
+        System.out.println("");
         String productId = scanner.next();
 
         //searches entryitem for product to delete
@@ -373,21 +378,31 @@ public class DataBase {
         }
         //if item doesn't exists gives error
         if (itemToDeleItem == null){
-            System.out.println(" Invalid product id. ");
+            System.out.println("");
+            System.out.println(" Invalid product id. Record does not exist.\n");
             return;
         }
 
         //shows all fields of entry to be deleted
-        System.out.println("Current item values: product id: " + itemToDeleItem.getProduct_id() + " quantity: " + itemToDeleItem.getQuantity()
-                + " wholesale cost: " + itemToDeleItem.getWholesale_cost() + " sale price: " + itemToDeleItem.getSale_price() + " supplier id: " +
+        System.out.println("");
+        System.out.println("Current item values: \nproduct id: " + itemToDeleItem.getProduct_id() + " \nquantity: " + itemToDeleItem.getQuantity()
+                + " \nwholesale cost: " + itemToDeleItem.getWholesale_cost() + " \nsale price: " + itemToDeleItem.getSale_price() + " \nsupplier id: " +
                 itemToDeleItem.getSupplier_id());
 
         //asks user if they want to delete the item
-        System.out.println("Are you sure you want to delete this record?: y for yes, n for no ");
+        System.out.println("\nAre you sure you want to delete this record?: y for yes, n for no ");
         String attribute = scanner.next();
 
+        //if user selects yes then the item is deleted using the index
         if (attribute.equals("y")){
+
             records.remove(itemToDeleItem);
+            System.out.println("\nRecord has been deleted.");
+            System.out.println("");
         }
-}
+        //if user selects anything else they are told the item was not deleted and are brought back to the menu
+        else{
+            System.out.println("\nRecord was NOT deleted.\n");
+        }
+    }
 }
