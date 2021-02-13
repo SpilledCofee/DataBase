@@ -11,11 +11,7 @@ class DataBaseTest {
     @Test
     void saveFile() {
     }
-
-    @Test
-    void main() {
-    }
-
+    
     @Test
     void createRecord() {
     }
