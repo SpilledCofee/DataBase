@@ -58,11 +58,11 @@ public class EntryItem {
     public void setSupplierId(String newSupplierId){supplier_id = newSupplierId; }
 
     @Override
-public String toString() {
+    public String toString() {
         return  product_id +
                 "," + quantity +
                 "," + wholesale_cost +
                 "," + sale_price +
                 "," + supplier_id;   }
-    }
+
 }//FIN EntryItem

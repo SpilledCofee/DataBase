@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class DataBase {
     private Scanner console;   // This will receive data input from the keyboard of the user
-    private ArrayList<EntryItem> records;
-    private static String FILE_NAME = "inventory_team1.csv";
+    public ArrayList<EntryItem> records;
+    private static String FILE_NAME = "src/inventory_team1.csv";
 
 
     public DataBase(){
@@ -158,7 +158,7 @@ public class DataBase {
             String line = "";
 
             // Read CSV file and input it into array --- basically same as method readFile()
-            BufferedReader br = new BufferedReader(new FileReader("inventory_team1.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/inventory_team1.csv"));
             while((line = br.readLine()) != null) {
                 String[] values = line.split(",");
 
@@ -189,10 +189,11 @@ public class DataBase {
 
     //Method will update entry
     public void updateRecord(){
-        Scanner scanner = new Scanner(System.in);
+        //Prompt product Id for the product to update.
         System.out.println("Enter product Id of the product to update: ");
-        String productId = scanner.next();
+        String productId = console.next();
 
+        //Searching records for record with the product Id enter above.
         EntryItem itemToUpdate = null;
         for (int i=0; i<records.size(); i++ ){
             if (productId.equals(records.get(i).getProduct_id())) {
@@ -200,6 +201,7 @@ public class DataBase {
             }
         }
 
+        //If product Id is not found in records, return.
         if (itemToUpdate == null){
             System.out.println(" Invalid product id. ");
             return;
@@ -209,33 +211,36 @@ public class DataBase {
                 + " wholesale cost: " + itemToUpdate.getWholesale_cost() + " sale price: " + itemToUpdate.getSale_price() + " supplier id: " +
                 itemToUpdate.getSupplier_id());
 
+        //Prompt the attribute to update.
         System.out.println("Enter the attribute to update: ");
         System.out.println(" a: product id \n b: quantity \n c: wholesale cost \n d: sale price \n e: supplier id ");
-        String attribute = scanner.next();
+        String attribute = console.next();
 
+
+        //Prompt for new attribute value and update.
         if (attribute.equals("a")){
             System.out.println("Enter the new product id: ");
-            String newProductId = scanner.next();
+            String newProductId = console.next();
             itemToUpdate.setProductId(newProductId);
         }
         else if(attribute.equals("b")) {
             System.out.println("Enter the new quantity: ");
-            int newQuantity = Integer.parseInt(scanner.next());
+            int newQuantity = Integer.parseInt(console.next());
             itemToUpdate.setQuantity(newQuantity);
         }
         else if(attribute.equals("c")) {
             System.out.println("Enter the new wholesale cost: ");
-            double newWholesaleCost = Double.parseDouble(scanner.next());
+            double newWholesaleCost = Double.parseDouble(console.next());
             itemToUpdate.setWholesaleCost(newWholesaleCost);
         }
         else if(attribute.equals("d")) {
             System.out.println("Enter the new sale price: ");
-            double newSalePrice = Double.parseDouble(scanner.next());
+            double newSalePrice = Double.parseDouble(console.next());
             itemToUpdate.setSalePrice(newSalePrice);
         }
         else if (attribute.equals("e")){
             System.out.println("Enter the new supplier id: ");
-            String newSupplierId = scanner.next();
+            String newSupplierId = console.next();
             itemToUpdate.setSupplierId(newSupplierId);
         }
         else{
