@@ -177,8 +177,8 @@ public class DataBase {
             // validate supplier id
             System.out.print("Enter Supplier ID: ");
             supplier_id = console.next();
-            while ((supplier_id.length()) != 12) {
-                System.out.println("Product ID must be 12 characters long!");
+            while ((supplier_id.length()) != 8) {
+                System.out.println("Product ID must be 8 characters long!");
                 System.out.print("Enter Supplier ID: ");
                 console.next();
             }
