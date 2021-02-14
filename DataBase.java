@@ -27,12 +27,15 @@ public class DataBase {
             e.printStackTrace();
         }
     }
-
+/* This method will read the CSV file and break up the data contained in each line. 
+Then it will create an entryItem with the data contained in each line and push that entryItem into the array - JS
+*/
     public void loadFile() throws FileNotFoundException {
         try {
             Scanner in = new Scanner(new FileInputStream(FILE_NAME));
-            String titiles = in.nextLine();
-            //System.out.println(titiles);
+               //This will get past the first line that is just the titles of the collums and not data
+            String titiles = in.nextLine(); 
+            //This loop will extrapulate the data fron each line and create the entryItem with the line's data
             while(in.hasNextLine()) {
                 String line = in.nextLine();
                 int end = line.indexOf(",", 0);
@@ -61,9 +64,11 @@ public class DataBase {
         //System.out.println(records.size());
         //System.out.println(records.get(75).toString());
     }
+       //This will take all the elemnts in the array and save them back onto the CSV file
     public void saveFile() throws FileNotFoundException {
         try {
             PrintWriter out = new PrintWriter(FILE_NAME);
+               //This puts back the lables that the loadFile removed
             out.println("product_id,quantity,wholesale_cost,sale_price,supplier_id");
             int i = 0;
 
