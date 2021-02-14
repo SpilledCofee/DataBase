@@ -144,7 +144,7 @@ public class DataBase {
             while ((product_id.length()) != 12) {
                 System.out.println("Product ID must be 12 characters long!");
                 System.out.print("Enter Product ID: ");
-                console.next();
+                product_id = console.next();
             }
             
             // validate quantity
@@ -180,7 +180,7 @@ public class DataBase {
             while ((supplier_id.length()) != 8) {
                 System.out.println("Supplier ID must be 8 characters long!");
                 System.out.print("Enter Supplier ID: ");
-                console.next();
+                supplier_id = console.next();
             }
 
             // confirm entries with user
