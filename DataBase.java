@@ -119,6 +119,117 @@ public class DataBase {
     // Method will create a new entry
     public void createRecord(){
 
+        // user-defined variables
+        String product_id = null, supplier_id = null;
+        int quantity = 0;
+        double wholesale_cost = 0, sale_price = 0;
+
+        // seperator for user readibility
+        String s = "----------------------------------------"; // separator
+        
+        // loop for user inputs and validation, exits when user confirms entries
+        boolean user_confirmed = false;
+        while (!user_confirmed) {
+            
+            // module header
+            System.out.println(s);
+            System.out.println("Create Inventory Record");
+            System.out.println(s);
+        
+            // get user inputs for all variables
+
+            // validate product id
+            System.out.print("Enter Product ID: ");
+            product_id = console.next();
+            while ((product_id.length()) != 12) {
+                System.out.println("Product ID must be 12 characters long!");
+                System.out.print("Enter Product ID: ");
+                product_id = console.next();
+            }
+            
+            // validate quantity
+            System.out.print("Enter Quantity: ");
+            while (!console.hasNextInt()) {
+                System.out.println("Quantity must be a whole number!");
+                System.out.print("Enter Quantity: ");
+                console.next();
+            }
+            quantity = console.nextInt();
+
+            // validate wholesale cost
+            System.out.print("Enter Wholesale Cost: ");
+            while (!console.hasNextDouble()) {
+                System.out.println("Wholesale cost must be whole number or decimal!");
+                System.out.print("Enter Wholesale Cost: ");
+                console.next();
+            }
+            wholesale_cost = console.nextDouble();
+
+            // validate sale price
+            System.out.print("Enter Sale Price: ");
+            while (!console.hasNextDouble()) {
+                System.out.println("Sale price must be whole number or decimal!");
+                System.out.print("Enter Sale Price: ");
+                console.next();
+            }
+            sale_price = console.nextDouble();
+
+            // validate supplier id
+            System.out.print("Enter Supplier ID: ");
+            supplier_id = console.next();
+            while ((supplier_id.length()) != 8) {
+                System.out.println("Supplier ID must be 8 characters long!");
+                System.out.print("Enter Supplier ID: ");
+                supplier_id = console.next();
+            }
+
+            // confirm entries with user
+            System.out.println(s);
+            System.out.println("You entered the following values:");
+            System.out.println(s);
+            System.out.printf("%15s %10s %15s %12s %15s\n", "PRODUCT ID", "QUANTITY", "WHOLESALE COST", "SALE PRICE", "SUPPLIER ID");
+            System.out.printf("%15s %10s %15s %12s %15s\n", product_id, quantity, wholesale_cost, sale_price, supplier_id);
+            System.out.println(s);
+            System.out.println("Is this correct?");
+            System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
+            String inp = console.nextLine();
+            boolean valid = false;
+            while (!valid) {
+                if (inp.toLowerCase().equals("yes")) {
+                    valid = true;
+                    user_confirmed = true;
+                } else if (inp.toLowerCase().equals("no")) {
+                    valid = true;
+                } else {
+                    System.out.print("Invalid response. Please type 'yes' or 'no': ");
+                    inp = console.nextLine();
+                }
+            }
+        }
+
+        // create EntryItem object with user inputs
+        EntryItem newItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
+        records.add(newItem);
+        
+        // alert user and get next step
+        System.out.println(s);
+        System.out.println("Entry added to inventory!");
+        System.out.println(s);
+        System.out.println("Do you want to add another entry?");
+        System.out.print("Type 'yes' to add another entry, or 'no' to exit to main menu: ");
+        String inp = console.nextLine();
+        boolean valid = false;
+        while (!valid) {
+            if (inp.toLowerCase().equals("yes")) {
+                valid = true;
+                createRecord();
+            } else if (inp.toLowerCase().equals("no")) {
+                valid = true;                                       // possibly direct to main menu later
+            } else {
+                System.out.print("Invalid response. Please type 'yes' or 'no': ");
+                inp = console.nextLine();
+            }
+        }
     }
 
 
