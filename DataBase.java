@@ -16,7 +16,8 @@ public class DataBase {
     private Scanner console;   // This will receive data input from the keyboard of the user
     private ArrayList<EntryItem> records;
     private static String FILE_NAME = "inventory_team1.csv";
-
+    // seperator for user readibility
+    private String s = "----------------------------------------"; // separator
 
     public DataBase(){
         records = new ArrayList<>(400000);
@@ -27,14 +28,14 @@ public class DataBase {
             e.printStackTrace();
         }
     }
-/* This method will read the CSV file and break up the data contained in each line. 
-Then it will create an entryItem with the data contained in each line and push that entryItem into the array - JS
-*/
+    /* This method will read the CSV file and break up the data contained in each line.
+    Then it will create an entryItem with the data contained in each line and push that entryItem into the array - JS
+    */
     public void loadFile() throws FileNotFoundException {
         try {
             Scanner in = new Scanner(new FileInputStream(FILE_NAME));
-               //This will get past the first line that is just the titles of the collums and not data
-            String titiles = in.nextLine(); 
+            //This will get past the first line that is just the titles of the collums and not data
+            String titiles = in.nextLine();
             //This loop will extrapulate the data fron each line and create the entryItem with the line's data
             while(in.hasNextLine()) {
                 String line = in.nextLine();
@@ -64,11 +65,11 @@ Then it will create an entryItem with the data contained in each line and push t
         //System.out.println(records.size());
         //System.out.println(records.get(75).toString());
     }
-       //This will take all the elemnts in the array and save them back onto the CSV file
+    //This will take all the elemnts in the array and save them back onto the CSV file
     public void saveFile() throws FileNotFoundException {
         try {
             PrintWriter out = new PrintWriter(FILE_NAME);
-               //This puts back the lables that the loadFile removed
+            //This puts back the lables that the loadFile removed
             out.println("product_id,quantity,wholesale_cost,sale_price,supplier_id");
             int i = 0;
 
@@ -123,24 +124,21 @@ Then it will create an entryItem with the data contained in each line and push t
 
     // Method will create a new entry
     public void createRecord(){
+        // module header
+        System.out.println(s);
+        System.out.println("Create Record");
+        System.out.println(s);
 
         // user-defined variables
         String product_id = null, supplier_id = null;
         int quantity = 0;
         double wholesale_cost = 0, sale_price = 0;
 
-        // seperator for user readibility
-        String s = "----------------------------------------"; // separator
-        
+
         // loop for user inputs and validation, exits when user confirms entries
         boolean user_confirmed = false;
         while (!user_confirmed) {
-            
-            // module header
-            System.out.println(s);
-            System.out.println("Create Inventory Record");
-            System.out.println(s);
-        
+
             // get user inputs for all variables
 
             // validate product id
@@ -151,7 +149,7 @@ Then it will create an entryItem with the data contained in each line and push t
                 System.out.print("Enter Product ID: ");
                 product_id = console.next();
             }
-            
+
             // validate quantity
             System.out.print("Enter Quantity: ");
             while (!console.hasNextInt()) {
@@ -189,33 +187,35 @@ Then it will create an entryItem with the data contained in each line and push t
             }
 
             // confirm entries with user
-            System.out.println(s);
             System.out.println("You entered the following values:");
             System.out.println(s);
-            System.out.printf("%15s %10s %15s %12s %15s\n", "PRODUCT ID", "QUANTITY", "WHOLESALE COST", "SALE PRICE", "SUPPLIER ID");
-            System.out.printf("%15s %10s %15s %12s %15s\n", product_id, quantity, wholesale_cost, sale_price, supplier_id);
+            System.out.println("Product ID:        " + product_id
+                + "\nQuantity:          " + quantity
+                + "\nWhole Sale Cost:   " + wholesale_cost
+                + "\nSale Price:        " + sale_price
+                + "\nSupplier ID:       " + supplier_id);
             System.out.println(s);
             System.out.println("Is this correct?");
             System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
-            String inp = console.nextLine();
             boolean valid = false;
             while (!valid) {
+                String inp = console.nextLine();
                 if (inp.toLowerCase().equals("yes")) {
                     valid = true;
                     user_confirmed = true;
+                    // create EntryItem object with user inputs
+                    EntryItem newItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
+                    records.add(newItem);
+
                 } else if (inp.toLowerCase().equals("no")) {
                     valid = true;
                 } else {
-                    System.out.print("Invalid response. Please type 'yes' or 'no': ");
-                    inp = console.nextLine();
+                    System.out.print("\nInvalid response. Please type 'yes' or 'no': ");
                 }
             }
         }
 
-        // create EntryItem object with user inputs
-        EntryItem newItem = new EntryItem(product_id, quantity, wholesale_cost, sale_price, supplier_id);
-        records.add(newItem);
-        
+
         // alert user and get next step
         System.out.println(s);
         System.out.println("Entry added to inventory!");
@@ -240,35 +240,34 @@ Then it will create an entryItem with the data contained in each line and push t
 
     // Method will search the database and look for a specific record
     public void lookUpRecord(){
-        
+
         // user product id scanner
         Scanner sc = new Scanner(System.in);
 
         // Mirrors back to the user their chosen menu option (in this case to look-up a record)
-        System.out.println("\n------------------------------------------");
-        System.out.println("==> You have chosen to look up a record!");
-        System.out.println("------------------------------------------\n");
+        System.out.println(s);
+        System.out.println("     Look Up Record");
+        System.out.println(s);
 
         // Prompts user for product id
-        System.out.println("-> Please Enter the Product ID from the Record you would like to View: ");
+        System.out.println("Enter the Product ID of the Record you would like to view: ");
         String entered_product_id = sc.next(); // Reads user's input
 
         // If product id is less than or greater than 12 characters it's invalid so notify user
         if (entered_product_id.length() < 12 || entered_product_id.length() > 12){
-            System.out.println("*** Error - Invalid product_id entry: Not 12 characters long! ***"); // Error Message
+            System.out.println("Invalid entry: Must be 12 characters long."); // Error Message
 
             // Keep on asking user for a valid 12 character long product id, repeats until user provides a valid input
             while(entered_product_id.length() != 12) {
-                System.out.println("\n=> Please Re-Enter a Valid (12 character long) Product ID: "); // Prompts user for a valid (12 character long) product id
+                System.out.println("\n Please enter a valid Product ID (12 character long): "); // Prompts user for a valid (12 character long) product id
                 entered_product_id = sc.next(); // Reads user's product id
             }
         }
 
         // Else if product id is correct, mirror back entered product id
         else {
-            System.out.println("\n-------------------------------------");
             System.out.println("You Entered: " + entered_product_id);
-            System.out.println("-------------------------------------");
+            System.out.println(s);
         }
 
         // Search the array; if entered product id is found/exists, print appropriate row of information pertaining to that entered product id
@@ -277,22 +276,20 @@ Then it will create an entryItem with the data contained in each line and push t
         for (int i=0; i<records.size(); i++ ){
             if (entered_product_id.equalsIgnoreCase(records.get(i).getProduct_id())) { // if product id is found, retrieve info
                 itemSearchingFor = records.get(i); // itemSearchingFor is set to item
-
-                System.out.println("Requested Info: ");
-                System.out.println("============================================================================================================");
-                System.out.println("Product ID: " + itemSearchingFor.getProduct_id() +  ", Quantity: " + itemSearchingFor.getQuantity() + ", Wholesale Cost: "
-                        + itemSearchingFor.getWholesale_cost() + ", Sale Price: " + itemSearchingFor.getSale_price()
-                        + ", Supplier ID: " + itemSearchingFor.getSupplier_id()); // Prints appropriate values
-                System.out.println("============================================================================================================\n");
+                System.out.println("Product ID:        " + itemSearchingFor.getProduct_id()
+                        + "\nQuantity:          " + itemSearchingFor.getQuantity()
+                        + "\nWhole Sale Cost:   " + itemSearchingFor.getWholesale_cost()
+                        + "\nSale Price:        " + itemSearchingFor.getSale_price()
+                        + "\nSupplier ID:       " + itemSearchingFor.getSupplier_id());
+                System.out.println(s);
                 break;
             }
         }
 
         // If product id was not found, notify user that it was not found/does not exist
         if (itemSearchingFor == null){
-            System.out.println("\n=======================================================================");
-            System.out.println("-> PRODUCT ID NOT FOUND IN DATABASE! <-");
-            System.out.println("=======================================================================\n");
+            System.out.println("Sorry, the record you are looking for was not found.");
+            System.out.println(s);
             return;
         }
     }
@@ -300,8 +297,12 @@ Then it will create an entryItem with the data contained in each line and push t
 
     //Method will update entry
     public void updateRecord(){
+        System.out.println(s);
+        System.out.println("          Update Record");
+        System.out.println(s);
+
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter product Id of the product to update: ");
+        System.out.println("Enter Product ID of the record you want to update: ");
         String productId = scanner.next();
 
         EntryItem itemToUpdate = null;
@@ -312,40 +313,44 @@ Then it will create an entryItem with the data contained in each line and push t
         }
 
         if (itemToUpdate == null){
-            System.out.println(" Invalid product id. ");
+            System.out.println(" Invalid Product ID. ");
             return;
         }
 
-        System.out.println("Current item values: product id: " + itemToUpdate.getProduct_id() + " quantity: " + itemToUpdate.getQuantity()
-                + " wholesale cost: " + itemToUpdate.getWholesale_cost() + " sale price: " + itemToUpdate.getSale_price() + " supplier id: " +
-                itemToUpdate.getSupplier_id());
+        System.out.println("Current item values: product id: ");
+        System.out.println("Product ID:        " + itemToUpdate.getProduct_id()
+                + "\nQuantity:          " + itemToUpdate.getQuantity()
+                + "\nWhole Sale Cost:   " + itemToUpdate.getWholesale_cost()
+                + "\nSale Price:        " + itemToUpdate.getSale_price()
+                + "\nSupplier ID:       " + itemToUpdate.getSupplier_id());
+        System.out.println(s);
 
         System.out.println("Enter the attribute to update: ");
-        System.out.println(" a: product id \n b: quantity \n c: wholesale cost \n d: sale price \n e: supplier id ");
+        System.out.println(" a.   Product ID \n b.   Quantity \n c.   Wholesale Cost \n d.   Sale Price \n e.   Supplier ID ");
         String attribute = scanner.next();
 
         if (attribute.equals("a")){
-            System.out.println("Enter the new product id: ");
+            System.out.println("Enter the new Product ID: ");
             String newProductId = scanner.next();
             itemToUpdate.setProductId(newProductId);
         }
         else if(attribute.equals("b")) {
-            System.out.println("Enter the new quantity: ");
+            System.out.println("Enter the new Quantity: ");
             int newQuantity = Integer.parseInt(scanner.next());
             itemToUpdate.setQuantity(newQuantity);
         }
         else if(attribute.equals("c")) {
-            System.out.println("Enter the new wholesale cost: ");
+            System.out.println("Enter the new Wholesale Cost: ");
             double newWholesaleCost = Double.parseDouble(scanner.next());
             itemToUpdate.setWholesaleCost(newWholesaleCost);
         }
         else if(attribute.equals("d")) {
-            System.out.println("Enter the new sale price: ");
+            System.out.println("Enter the new Sale Price: ");
             double newSalePrice = Double.parseDouble(scanner.next());
             itemToUpdate.setSalePrice(newSalePrice);
         }
         else if (attribute.equals("e")){
-            System.out.println("Enter the new supplier id: ");
+            System.out.println("Enter the new Supplier ID: ");
             String newSupplierId = scanner.next();
             itemToUpdate.setSupplierId(newSupplierId);
         }
@@ -354,18 +359,26 @@ Then it will create an entryItem with the data contained in each line and push t
             return;
         }
 
-        System.out.println("Updated item values: product id: " + itemToUpdate.getProduct_id() + " quantity: " + itemToUpdate.getQuantity()
-                + " wholesale cost: " + itemToUpdate.getWholesale_cost() + " sale price: " + itemToUpdate.getSale_price() + " supplier id: " +
-                itemToUpdate.getSupplier_id());
+        System.out.println("Updated record values");
+        System.out.println(s);
+        System.out.println("Product ID:        " + itemToUpdate.getProduct_id()
+                + "\nQuantity:          " + itemToUpdate.getQuantity()
+                + "\nWhole Sale Cost:   " + itemToUpdate.getWholesale_cost()
+                + "\nSale Price:        " + itemToUpdate.getSale_price()
+                + "\nSupplier ID:       " + itemToUpdate.getSupplier_id());
+        System.out.println(s);
     }
 
     //Method will delete entry record
     public void deleteRecord(){
+        System.out.println(s);
+        System.out.println("     Delete Record");
+        System.out.println(s);
 
         //asks user to enter product id
         Scanner scanner = new Scanner(System.in);
         System.out.println("");
-        System.out.println("Enter product Id of the product to delete: ");
+        System.out.println("Enter Product ID of the record you would like to delete: ");
         System.out.println("");
         String productId = scanner.next();
 
@@ -379,22 +392,27 @@ Then it will create an entryItem with the data contained in each line and push t
         //if item doesn't exists gives error
         if (itemToDeleItem == null){
             System.out.println("");
-            System.out.println(" Invalid product id. Record does not exist.\n");
+            System.out.println(" Invalid Product ID. Record does not exist.\n");
             return;
         }
 
         //shows all fields of entry to be deleted
         System.out.println("");
-        System.out.println("Current item values: \nproduct id: " + itemToDeleItem.getProduct_id() + " \nquantity: " + itemToDeleItem.getQuantity()
-                + " \nwholesale cost: " + itemToDeleItem.getWholesale_cost() + " \nsale price: " + itemToDeleItem.getSale_price() + " \nsupplier id: " +
-                itemToDeleItem.getSupplier_id());
+        System.out.println("Current item values");
+        System.out.println(s);
+        System.out.println("Product ID:        " + itemToDeleItem.getProduct_id()
+                + "\nQuantity:          " + itemToDeleItem.getQuantity()
+                + "\nWhole Sale Cost:   " + itemToDeleItem.getWholesale_cost()
+                + "\nSale Price:        " + itemToDeleItem.getSale_price()
+                + "\nSupplier ID:       " + itemToDeleItem.getSupplier_id());
+        System.out.println(s);
 
         //asks user if they want to delete the item
-        System.out.println("\nAre you sure you want to delete this record?: y for yes, n for no ");
+        System.out.println("\nAre you sure you want to delete this record?: 'yes' or 'no'");
         String attribute = scanner.next();
 
         //if user selects yes then the item is deleted using the index
-        if (attribute.equals("y")){
+        if (attribute.equalsIgnoreCase("yes")){
 
             records.remove(itemToDeleItem);
             System.out.println("\nRecord has been deleted.");
