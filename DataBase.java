@@ -301,9 +301,8 @@ Then it will create an entryItem with the data contained in each line and push t
     //Method will update entry
     public void updateRecord(){
         //Prompt product Id for the product to update.
-        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter product Id of the product to update: ");
-        String productId = scanner.next();
+        String productId = console.next();
 
         //Searching records for record with the product Id entered above.
         EntryItem itemToUpdate = null;
@@ -326,32 +325,32 @@ Then it will create an entryItem with the data contained in each line and push t
         //Prompt the attribute to update.
         System.out.println("Enter the attribute to update: ");
         System.out.println(" a: product id \n b: quantity \n c: wholesale cost \n d: sale price \n e: supplier id ");
-        String attribute = scanner.next();
+        String attribute = console.next();
 
         //Prompt for new attribute value and update.
         if (attribute.equals("a")){
             System.out.println("Enter the new product id: ");
-            String newProductId = scanner.next();
+            String newProductId = console.next();
             itemToUpdate.setProductId(newProductId);
         }
         else if(attribute.equals("b")) {
             System.out.println("Enter the new quantity: ");
-            int newQuantity = Integer.parseInt(scanner.next());
+            int newQuantity = Integer.parseInt(console.next());
             itemToUpdate.setQuantity(newQuantity);
         }
         else if(attribute.equals("c")) {
             System.out.println("Enter the new wholesale cost: ");
-            double newWholesaleCost = Double.parseDouble(scanner.next());
+            double newWholesaleCost = Double.parseDouble(console.next());
             itemToUpdate.setWholesaleCost(newWholesaleCost);
         }
         else if(attribute.equals("d")) {
             System.out.println("Enter the new sale price: ");
-            double newSalePrice = Double.parseDouble(scanner.next());
+            double newSalePrice = Double.parseDouble(console.next());
             itemToUpdate.setSalePrice(newSalePrice);
         }
         else if (attribute.equals("e")){
             System.out.println("Enter the new supplier id: ");
-            String newSupplierId = scanner.next();
+            String newSupplierId = console.next();
             itemToUpdate.setSupplierId(newSupplierId);
         }
         else{
