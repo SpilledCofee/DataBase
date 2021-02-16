@@ -300,10 +300,12 @@ Then it will create an entryItem with the data contained in each line and push t
 
     //Method will update entry
     public void updateRecord(){
+        //Prompt product Id for the product to update.
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter product Id of the product to update: ");
         String productId = scanner.next();
 
+        //Searching records for record with the product Id entered above.
         EntryItem itemToUpdate = null;
         for (int i=0; i<records.size(); i++ ){
             if (productId.equals(records.get(i).getProduct_id())) {
@@ -311,6 +313,7 @@ Then it will create an entryItem with the data contained in each line and push t
             }
         }
 
+        //If product Id is not found in records, return.
         if (itemToUpdate == null){
             System.out.println(" Invalid product id. ");
             return;
@@ -320,10 +323,12 @@ Then it will create an entryItem with the data contained in each line and push t
                 + " wholesale cost: " + itemToUpdate.getWholesale_cost() + " sale price: " + itemToUpdate.getSale_price() + " supplier id: " +
                 itemToUpdate.getSupplier_id());
 
+        //Prompt the attribute to update.
         System.out.println("Enter the attribute to update: ");
         System.out.println(" a: product id \n b: quantity \n c: wholesale cost \n d: sale price \n e: supplier id ");
         String attribute = scanner.next();
 
+        //Prompt for new attribute value and update.
         if (attribute.equals("a")){
             System.out.println("Enter the new product id: ");
             String newProductId = scanner.next();
