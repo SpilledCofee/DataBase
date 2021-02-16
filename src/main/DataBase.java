@@ -193,7 +193,7 @@ public class DataBase {
         System.out.println("Enter product Id of the product to update: ");
         String productId = console.next();
 
-        //Searching records for record with the product Id enter above.
+        //Searching records for record with the product Id entered above.
         EntryItem itemToUpdate = null;
         for (int i=0; i<records.size(); i++ ){
             if (productId.equals(records.get(i).getProduct_id())) {
