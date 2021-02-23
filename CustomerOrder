@@ -9,41 +9,20 @@
  * **View the inventory of the product**
  *   -- This will allow the user to look product inventory
  *
- * **Placing the order of the product
- *   -- This will have the employee place an order for the customer.
- *   -- Review the order
- *   -- Adding confirmation to the user if the data is correct
+ * **Adding the order of the product
+ *   -- This will add in a new entry into the database.
  *
- * **Cancelling the order of the product
- *   -- Will view the previous order made by the customer
- *   -- Have the order be cancelled by also adding in confirmation
+ * **Updating the order
+ *   -- Will update the entry within the database.
  *
- * **Viewing the orders made within the database as similar to (LookUP from previous sprint)
+ * **Deleting the order of the product
+ *   -- Will be able to delete an entry in the database.
+ *
+ *
+ * **Viewing the orders made within the database
  *   -- Will search the database by finding the product ID and user_email
  *   -- View the current order
  *
- * **Print the receipt to the employee or customer
- *   -- Print customer order
- *   ** Format depends on who ever works on it **
- *
- *   example:
- *   ----------------------------------------------------
- *   QTY | DESCRIPTION            | UNIT PRICE | AMOUNT |
- *   ----------------------------------------------------
- *    1  | Hawaiian Blend         | $2.50      |    25
- *    2  | Arabic Blend           | $0.50      |    53
- *    3  | Jamaican Blend         | $1.75      |    23
- *
- *
- *
- *                                Subtotal:       $129.25
- *                                Sales Tax 0.5%  $6.46
- *                                Total:          $135.71
- *
- *
- *  ------------------------------------------------------
- *  THANK YOU
- *  ------------------------------------------------------
  */
 
 import java.io.FileInputStream;
@@ -134,25 +113,20 @@ public class CustomerOrder {
 
     }
 
-
-    //This method will make accessible to the employee to look at the inventory.
-    private void viewInventory(){
-
-    }
-
-    //This method will have the employee be able to place the customer
-    //order and be review the order, and be asked for confirmation from the user
-    private void placeOrder(){
+    //This method will have the employee add in customer data into the database
+    private void addOrder(){
 
     }
 
-    //This method will view the order the user looked up and will be given
-    //the option whether they would like to cancel the order.
-    private void cancelOrder(){
+    //This method will update the current entry within the database
+    private void updateOrder(){
 
     }
 
+    //This method will delete the current entry within the database
+    private void deleteOrder(){
 
+    }
 
     //This method will view the order specifically with the
     // date,customer_email,customer_location, productID, quality
@@ -160,12 +134,7 @@ public class CustomerOrder {
 
     }
 
-    //This method will receive data from previous method to print out the customer order.
-    //**Optional Function** This method will also send the customer the confirmation of the order with
-    //the receipt as well.
-    private void printRecipt(){
 
-    }
 
 
 }
