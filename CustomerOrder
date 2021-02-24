@@ -79,8 +79,8 @@ public class CustomerOrder {
                 int product_quantity = Integer.parseInt(tempQuantity);
 
 
-                OrderItems orderItems = new OrderItems(date,cust_email,cust_location,product_id,product_quantity);
-                orderInfo.add(orderItems);
+                OrderItem orderItem = new OrderItem(date,cust_email,cust_location,product_id,product_quantity);
+                orderInfo.add(orderItem);
             }
             in.close();
 
