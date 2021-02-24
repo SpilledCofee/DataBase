@@ -60,23 +60,12 @@ public class CustomerOrder {
 
             //This loop will extrapolate the data from each line and create the entryItem with the line's data
             while(in.hasNextLine()) {
-                String line = in.nextLine();
-                int end = line.indexOf(",", 0);
-                String date = line.substring(0, end);
-                int start = end + 1;
-                end = line.indexOf(",", start);
-                String cust_email = line.substring(start, end);
-                start = end + 1;
-                end = line.indexOf(",", start);
-                String tempLocation = line.substring(start, end);
-                int cust_location = Integer.parseInt(tempLocation);
-                start = end + 1;
-                end = line.indexOf(",", start);
-                String product_id = line.substring(start,end);
-                start = end + 1;
-                end = line.indexOf(",", start);
-                String tempQuantity = line.substring(start, end);
-                int product_quantity = Integer.parseInt(tempQuantity);
+                String[] parsedLine = in.nextLine().split(",");
+                String date = parsedLine[0];
+                String cust_email = parsedLine[1];
+                String cust_location = parsedLine[2];
+                String product_id = parsedLine[3];
+                int product_quantity = Integer.parseInt(parsedLine[4]);
 
 
                 OrderItem orderItem = new OrderItem(date,cust_email,cust_location,product_id,product_quantity);
