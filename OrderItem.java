@@ -38,8 +38,8 @@ public class OrderItem {
     public String getCustomerEmail() { return cust_email; }
     public void setCustomerEmail(String newCustomerEmail) { cust_email = newCustomerEmail; }
 
-    public String getCustomerLocation() { return cust_location; }
-    public void setCustomerLocation(String newCustomerLocation) { cust_location = newCustomerLocation; }
+    public int getCustomerLocation() { return cust_location; }
+    public void setCustomerLocation(int newCustomerLocation) { cust_location = newCustomerLocation; }
 
     public String getProductId() { return product_id; }
     public void setProductId(String newProductId) { product_id = newProductId; }
