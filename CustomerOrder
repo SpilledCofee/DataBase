@@ -37,7 +37,7 @@ public class CustomerOrder {
 
 
     private Scanner console;
-    private ArrayList<OrderItems> orderInfo;
+    private ArrayList<OrderItem> orderInfo;
     private static String FILE_NAME = "customer_orders_team1.csv";
 
 
