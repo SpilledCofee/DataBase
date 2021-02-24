@@ -64,7 +64,7 @@ public class CustomerOrderDataBase {
                 String[] parsedLine = in.nextLine().split(",");
                 String date = parsedLine[0];
                 String cust_email = parsedLine[1];
-                int cust_location = Integer.parseInt(parsedLine[2]);
+                String cust_location =parsedLine[2];
                 String product_id = parsedLine[3];
                 int product_quantity = Integer.parseInt(parsedLine[4]);
                 
@@ -72,7 +72,6 @@ public class CustomerOrderDataBase {
                 orderInfo.add(orderItem);
             }
                 in.close();
-
 
         } catch (FileNotFoundException e) {
         }
