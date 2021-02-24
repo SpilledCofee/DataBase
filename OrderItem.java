@@ -7,7 +7,7 @@ public class OrderItem {
     // object properties
     private String date;
     private String cust_email;
-    private String cust_location;
+    private int cust_location;
     private String product_id;
     private int quantity;   
 
@@ -15,7 +15,12 @@ public class OrderItem {
     public OrderItem (String date, String cust_email, String cust_location, String product_id, int quantity) {
         this.date = date;
         this.cust_email = cust_email;
-        this.cust_location = cust_location;
+        if(cust_location < 10000){
+            this.cust_location = 10000 //a default zip so we can spot ones that were bad
+        }
+        else{
+            this.cust_location = cust_location;
+        }
         this.product_id = product_id;
 
         if (quantity <= 0){
