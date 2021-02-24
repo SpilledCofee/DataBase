@@ -2,7 +2,7 @@
  * The finance, marketing, and sales departments want to understand customers better but need the historical data to do so.
  * They want to have a database/pseudo-DB that stores all of the customer order
  * information along with the time and date of their orders.
- * [This database will grow each simulated “day”.]
+ * This database will grow each simulated day.
  *
  * This will program will function as a database that the employee is able to:
  *
