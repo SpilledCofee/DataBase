@@ -3,15 +3,15 @@
 // Create order item test objects from order CSV fields (no time)
 //
 
-public class TestOrderItem {
+public class OrderItem {
     private String date;
     private String cust_email;
     private String cust_location;
     private String product_id;
     private int quantity;   
 
-    // TestOrderItem constructor
-    public TestOrderItem (String date, String cust_email, String cust_location, String product_id, int quantity) {
+    // OrderItem constructor
+    public OrderItem (String date, String cust_email, String cust_location, String product_id, int quantity) {
         this.date = date;
         this.cust_email = cust_email;
         this.cust_location = cust_location;
