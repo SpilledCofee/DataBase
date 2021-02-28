@@ -121,6 +121,29 @@ public class CustomerOrderDataBase {
     //This method will update the current entry within the database
     private void updateOrder() {
 
+        //Prompt email address for the order to update.
+        System.out.println("Enter the email address for the order you want to update: ");
+        String customerEmail = console.next();
+
+        list<string> orderInfo = new ArrayList(customerEmail);
+        //Searching Information for the OrderInfo with the email entered above.
+        EntryItem orderToUpdate = null;
+        for (int i=0; i<orderInfo.size(); i++ ){
+            if (orderId.equals(orderInfo.get(i).getOrder_id())) {
+                orderToUpdate = orderInfo.get(i);
+            }
+        }
+
+        //If email is not found in orderInfo, return.
+        if (customerEmail == null) {
+            System.out.println(" Invalid email. ");
+            return;
+
+        }
+
+
+
+
     }
 
     //This method will delete the current entry within the database
