@@ -115,26 +115,7 @@ public class CustomerOrderDataBase {
          */
     }
 
-    //This method will have the employee add in customer data into the database
-    private void addOrder() {
 
-    }
-
-    //This method will update the current entry within the database
-    private void updateOrder() {
-
-    }
-
-    //This method will delete the current entry within the database
-    private void deleteOrder() {
-
-    }
-
-    //This method will view the order specifically with the
-    // date,customer_email,customer_location, productID, quality
-    private void viewOrder() {
-
-    }
 
     public void displayMenue(){
         boolean quit = false;
@@ -175,6 +156,210 @@ public class CustomerOrderDataBase {
                 System.out.println("Please type the corresponding letter next to the option you want.");
             }
         }
+    }//FIN
+
+
+    //This method will have the employee add in customer data into the database
+    private void addOrder() {
+
     }
+
+    //This method will update the current entry within the database
+    private void updateOrder() {
+
+    }
+
+    //This method will delete the current entry within the database
+    private void deleteOrder() {
+
+    }
+
+    //This method will view the order specifically with the
+    // date, customer_email, customer_location, productID
+    private void viewOrder() {
+
+        System.out.println();
+        System.out.println("     View Orders");
+        System.out.println();
+
+
+        //asks user to select which variable they would like to search by
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("What would you like to search by: ");
+        System.out.println(" a.   Product ID \n b.   Customer Email \n c.   Customer Location \n d.   Order Date \n");
+        String attribute = console.next();
+
+
+        //if a is selected, enter the product id to search for
+        if (attribute.equals("a")){
+            System.out.println("Enter the product id you would like to search for: ");
+            String searchProductId = console.next();
+            OrderItem pIdSearchingFor = null;
+            int count1 = 0;
+            for (int i=0; i<orderInfo.size(); i++ ){
+                if (searchProductId.equalsIgnoreCase(orderInfo.get(i).getProductId())) { // if product id is found print data
+                	pIdSearchingFor = orderInfo.get(i); 
+                    
+                    
+                    System.out.println();
+
+                    System.out.println("Product ID: " + pIdSearchingFor.getProductId()+ "     "
+                            + "Quantity: " + pIdSearchingFor.getQuantity()+ "     "
+                            + "Customer Email: " + pIdSearchingFor.getCustomerEmail()+ "     "
+                            + "Customer Zip Code: " + pIdSearchingFor.getCustomerLocation()+ "     "
+                            + "Order Date: " + pIdSearchingFor.getOrderDate());
+                    
+                    System.out.println();
+        
+        }
     
-}//FIN
+                else{
+                    count1++;   //if product id is not found, add to count and compare to array size. If greater than or equal display product id not found
+                    if(count1 >= orderInfo.size()){
+                        System.out.println();
+                        System.out.println("Product ID Not Found.");
+                        System.out.println();
+        }
+}
+            }
+            //prompt to continue viewing orders or exit program
+            System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
+            String cont = console.next();
+            if(cont.equalsIgnoreCase("yes")){
+                viewOrder();
+            }
+            else{
+                ///direct to main menu eventually
+            }
+        }
+        //if b is selected enter the customer email
+        else if(attribute.equals("b")) {
+            System.out.println("Enter the Customer Email you would like to search for: ");
+            String searchCustomerEmail = console.next();
+            OrderItem custSearchingFor = null;
+            int count2 = 0;
+            for (int j=0; j<orderInfo.size(); j++ ){
+                if (searchCustomerEmail.equalsIgnoreCase(orderInfo.get(j).getCustomerEmail())) { // if customer email is found print data
+                    custSearchingFor = orderInfo.get(j); 
+
+        
+                    System.out.println();
+
+                    System.out.println("Product ID: " + custSearchingFor.getProductId()+ "     "
+                            + "Quantity: " + custSearchingFor.getQuantity()+ "     "
+                            + "Customer Email: " + custSearchingFor.getCustomerEmail()+ "     "
+                            + "Customer Zip Code: " + custSearchingFor.getCustomerLocation()+ "     "
+                            + "Order Date: " + custSearchingFor.getOrderDate());
+                    
+                    System.out.println();
+                 
+            }       
+                else{
+                    count2++;   //if email is not found, add to count and compare to array size. If greater than or equal display email not found
+                    if(count2 >= orderInfo.size()){
+                        System.out.println();
+                        System.out.println("Email Not Found.");
+                        System.out.println();
+                }
+                        
+            }
+        }
+            //prompt to continue viewing orders or exit program
+            System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
+            String cont = console.next();
+            if(cont.equalsIgnoreCase("yes")){
+                viewOrder();
+            }
+            else{
+                ///direct to main menu
+            }
+        }
+         //if c is selected enter the customer zip code
+        else if(attribute.equals("c")) {
+            System.out.println("Enter the Customer ZIP code you would like to search for: ");
+            String searchCustomerLoc = console.next();
+            OrderItem locSearchingFor = null;
+            int count3 = 0;
+            for (int j=0; j<orderInfo.size(); j++ ){
+                if (searchCustomerLoc.equalsIgnoreCase(orderInfo.get(j).getCustomerLocation())) { // if zip code is found display data
+                	locSearchingFor = orderInfo.get(j); 
+
+                    
+                    System.out.println();
+
+                    System.out.println("Product ID: " + locSearchingFor.getProductId() + "     "
+                            + "Quantity: " + locSearchingFor.getQuantity() + "     "
+                            + "Customer Email: " + locSearchingFor.getCustomerEmail() + "     "
+                            + "Customer Zip Code: " + locSearchingFor.getCustomerLocation() + "     "
+                            + "Order Date: " + locSearchingFor.getOrderDate());
+
+                    System.out.println();
+                }
+                
+            
+                else{
+                    count3++;   //if zip code is not found, add to count and compare to array size. If greater than or equal display zip code not found
+                    if(count3 >= orderInfo.size()){
+                        System.out.println();
+                        System.out.println("Zip Code Not Found.");
+                        System.out.println();
+                }
+        }
+            }
+            //prompt to continue viewing orders or exit program
+            System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
+            String cont = console.next();
+            if(cont.equalsIgnoreCase("yes")){
+                viewOrder();
+            }
+            else{
+                ///direct to main menu
+            }
+    }
+
+        //if d is selected enter the customer order date
+        else if (attribute.equals("d")){
+            System.out.println("Enter the date of the order you would like to search for in the format(Year-month-day e.g. 2020-01-13): ");
+            String searchOrderDate = console.next();
+            OrderItem dateSearchingFor = null;
+            int count4 = 0;
+            for (int k=0; k<orderInfo.size(); k++ ){
+                if (searchOrderDate.equalsIgnoreCase(orderInfo.get(k).getOrderDate())) { // if date is found display data
+                	dateSearchingFor = orderInfo.get(k); 
+
+                    
+                    System.out.println();
+
+                    System.out.println("Product ID:     " + dateSearchingFor.getProductId()+ "     "
+                            + "Quantity:        " + dateSearchingFor.getQuantity() + "     "
+                            + "Customer Email:   " + dateSearchingFor.getCustomerEmail() + "     "
+                            + "Customer Zip Code:       " + dateSearchingFor.getCustomerLocation() + "     "
+                            + "Order Date:       " + dateSearchingFor.getOrderDate());
+                    
+                    System.out.println();}
+                
+                
+                else{
+                    count4++;   //if date is not found, add to count and compare to array size. If greater than or equal display date not found
+                    if(count4 >= orderInfo.size()){
+                        System.out.println();
+                        System.out.println("Order Date Not Found.");
+                        System.out.println();
+                    }
+                
+        }
+            }
+            //prompt to continue viewing orders or exit program
+            System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
+            String cont = console.next();
+            if(cont.equalsIgnoreCase("yes")){
+                viewOrder();
+            }
+            else{
+                ///direct to main menu
+            }
+}
+}
+}
+
