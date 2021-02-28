@@ -305,7 +305,7 @@ public class CustomerOrderDataBase {
         System.out.print("Type 'yes' to add another entry, or 'no' to exit to main menu: ");
         String inp = console.nextLine();
         boolean valid = false;
-        while (console.hasNextLine()) {
+        while (valid == false) {
             if (inp.toLowerCase().equals("yes")) {
                 valid = true;
                 addOrder();
@@ -515,4 +515,3 @@ public class CustomerOrderDataBase {
 }
 }
 }
-
