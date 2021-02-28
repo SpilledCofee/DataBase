@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 public class CustomerOrderDataBase {
@@ -187,11 +190,12 @@ public class CustomerOrderDataBase {
             while (!date_Valid) {
                 try {
                     LocalDate.parse(date, dateFormatter);
+                    System.out.println("Validated Date");
                     date_Valid = true;
                 } catch (DateTimeParseException e) {
                     date_Valid =  false;
                     System.out.println("Invalid Date");
-                    System.out.print("Enter valid date:");
+                    System.out.print("Enter valid date(YYYY-MM-DD):");
                     date = console.next();
                 }
             }
@@ -235,6 +239,7 @@ public class CustomerOrderDataBase {
                     if (!flag) break;
                 }
                 if (flag && cust_email.length() >= 5) {
+                    System.out.println("Validated Email");
                     break;
                 } else {
                     System.out.println("Invalid Email");
