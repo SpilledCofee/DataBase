@@ -160,7 +160,7 @@ public class CustomerOrderDataBase {
 
 
     //This method will have the employee add in customer data into the database
-private void addOrder() {
+    private void addOrder() {
         // Variables
         String date = null, cust_email = null, cust_location = null, product_id = null;
         int quantity = 0;
