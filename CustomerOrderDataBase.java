@@ -125,21 +125,32 @@ public class CustomerOrderDataBase {
         System.out.println("Enter the email address for the order you want to update: ");
         String customerEmail = console.next();
 
-        list<string> orderInfo = new ArrayList(customerEmail);
+        ArrayList<OrderItem> potentialOrderUpdate = new ArrayList<OrderItem>();
         //Searching Information for the OrderInfo with the email entered above.
-        EntryItem orderToUpdate = null;
+
         for (int i=0; i<orderInfo.size(); i++ ){
-            if (orderId.equals(orderInfo.get(i).getOrder_id())) {
-                orderToUpdate = orderInfo.get(i);
+            if (customerEmail.equals(orderInfo.get(i).getCustomerEmail())) {
+                potentialOrderUpdate.add(orderInfo.get(i));
             }
         }
 
         //If email is not found in orderInfo, return.
-        if (customerEmail == null) {
-            System.out.println(" Invalid email. ");
+        if (potentialOrderUpdate.isEmpty()) {
+            System.out.println("No orders found for email: " + customerEmail);
             return;
 
         }
+
+        for(int i=0; i<potentialOrderUpdate.size(); i++){
+            System.out.println((i+1) + ". Product ID: " + potentialOrderUpdate.get(i).getProductId()+ "     "
+                    + "Quantity: " + potentialOrderUpdate.get(i).getQuantity()+ "     "
+                    + "Customer Email: " + potentialOrderUpdate.get(i).getCustomerEmail()+ "     "
+                    + "Customer Zip Code: " + potentialOrderUpdate.get(i).getCustomerLocation()+ "     "
+                    + "Order Date: " + potentialOrderUpdate.get(i).getOrderDate());
+        }
+
+        System.out.println("Enter record number you would like to update: ");
+        int recordNumber = Integer.parseInt(console.next());
 
 
 
