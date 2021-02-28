@@ -279,7 +279,7 @@ public class CustomerOrderDataBase {
             System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
             String inp = console.nextLine();
             boolean validated = false;
-            while (console.hasNextLine()) {
+            while (validated == false) {
                 if (inp.toLowerCase().equals("yes")) {
                     validated = true;
                     user_confirmed = true;
