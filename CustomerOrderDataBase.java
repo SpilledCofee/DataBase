@@ -245,7 +245,7 @@ public class CustomerOrderDataBase {
             System.out.print("Enter ZIP Code: ");
             cust_location = console.next();
             while((cust_location.length()) != 5){
-                System.out.println("ZIP Code must be 8 characters long");
+                System.out.println("ZIP Code must be 5 characters long");
                 System.out.print("Enter ZIP Code: ");
                 cust_location = console.next();
             }
