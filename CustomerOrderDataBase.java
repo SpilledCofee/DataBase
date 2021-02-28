@@ -64,7 +64,7 @@ public class CustomerOrderDataBase {
                 String[] parsedLine = in.nextLine().split(",");
                 String date = parsedLine[0];
                 String cust_email = parsedLine[1];
-                String cust_location = parsedLine[2]
+                String cust_location = parsedLine[2];
                 String product_id = parsedLine[3];
                 int product_quantity = Integer.parseInt(parsedLine[4]);
 
