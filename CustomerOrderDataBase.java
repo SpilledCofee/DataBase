@@ -104,6 +104,7 @@ public class CustomerOrderDataBase {
         //Initializing the constructor
         CustomerOrderDataBase custOrder = new CustomerOrderDataBase();
 
+            custOrder.viewOrder();
         /*
         If the load isn't working try running the saveFile method.
         The save file will create a new file that has the proper name and location in your computer to run.
@@ -184,7 +185,7 @@ public class CustomerOrderDataBase {
                 viewOrder();
             }
             else{
-                ///direct to main menu eventually
+            
             }
         }
         //if b is selected enter the customer email
@@ -226,7 +227,7 @@ public class CustomerOrderDataBase {
                 viewOrder();
             }
             else{
-                ///direct to main menu
+            
             }
         }
          //if c is selected enter the customer zip code
@@ -268,7 +269,7 @@ public class CustomerOrderDataBase {
                 viewOrder();
             }
             else{
-                ///direct to main menu
+            
             }
     }
         //if d is selected enter the customer order date
@@ -310,7 +311,7 @@ public class CustomerOrderDataBase {
                 viewOrder();
             }
             else{
-                ///direct to main menu
+                
             }
 }
 }
