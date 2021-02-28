@@ -272,8 +272,8 @@ public class CustomerOrderDataBase {
             System.out.println(s);
             System.out.println("You entered the following values:");
             System.out.println(s);
-            System.out.printf("%11s %15s %12s %18s %15s\n", "|DATE:|", "|CUSTOMER EMAIL:|", "|CUSTOMER LOCATION:|", "|PRODUCT ID:|", "|QUANTITY:|");
-            System.out.printf("%11s %15s %12s %18s %15s\n", date, cust_email, cust_location, product_id, quantity);
+            System.out.printf("%-11s %-20s %-20s  %-18s %-11s\n", "|DATE:|", "|CUSTOMER EMAIL:|", "|CUSTOMER LOCATION:|", "|PRODUCT ID:|", "|QUANTITY:|");
+            System.out.printf("%-11s %-20s %-20s  %-18s %11s\n", date, cust_email, cust_location, product_id, quantity);
             System.out.println(s);
             System.out.println("Is this correct?");
             System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
