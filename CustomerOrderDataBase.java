@@ -57,26 +57,27 @@ public class CustomerOrderDataBase {
             Scanner in = new Scanner(new FileInputStream(FILE_NAME));
             //This will get past the first line that is just the titles of the collums and not data
             String titles = in.nextLine();
-            System.out.println(titles);
+            //Test System.out.println(titles);
 
             //This loop will extrapolate the data from each line and create the entryItem with the line's data
             while (in.hasNextLine()) {
                 String[] parsedLine = in.nextLine().split(",");
                 String date = parsedLine[0];
                 String cust_email = parsedLine[1];
-                String cust_location =parsedLine[2];
+                String cust_location = parsedLine[2];
                 String product_id = parsedLine[3];
                 int product_quantity = Integer.parseInt(parsedLine[4]);
-                
+
                 OrderItem orderItem = new OrderItem(date, cust_email, cust_location, product_id, product_quantity);
                 orderInfo.add(orderItem);
+                //TEST System.out.println(orderItem.toString());
             }
                 in.close();
 
+
         } catch (FileNotFoundException e) {
         }
-        //TESTING!!! if it says 0 look at comment in main
-        System.out.print(orderInfo.size());
+        //TEST System.out.print(orderInfo.size());
 
     }
 
@@ -104,15 +105,57 @@ public class CustomerOrderDataBase {
         //Initializing the constructor
         CustomerOrderDataBase custOrder = new CustomerOrderDataBase();
 
-            custOrder.viewOrder();
-        /*
-        If the load isn't working try running the saveFile method.
-        The save file will create a new file that has the proper name and location in your computer to run.
+        custOrder.displayMenue();
+        /*If the load isn't working try running the saveFile method.
+        The save file will create a new file has the proper name and location in your computer to run.
         Then just copy and past the data into the new file that it creates.
-
         custOrder.saveFile();
          */
     }
+
+
+
+    public void displayMenue(){
+        boolean quit = false;
+        System.out.println("Welcome to the Customer Order Data Base!");
+        System.out.println("----------------------------------------");
+        System.out.println();
+        System.out.println("Please type in the corresponding letter to proceed.");
+        System.out.println();
+        while (!quit) {
+            // Printing out prompts to the user
+            System.out.print("a.    Create a new order\n" +
+                    "b.    View an order\n" +
+                    "c.    Update an order\n" +
+                    "d.    Delete an order\n" +
+                    "f.    Quit\n");
+
+
+            //This will receive the user input and process the correct char to
+            //the correct if statement to proceed to the methods
+            String input = console.next();
+            if (input.contains("a")) {
+                addOrder();
+            }
+            else if (input.contains("b")) {
+                viewOrder();
+            }
+            else if (input.contains("c")) {
+                updateOrder();
+            }
+            else if (input.contains("d")) {
+                deleteOrder();
+            }
+            else if(input.contains("f")){ ;
+                quit = true;
+            }
+            else{
+                System.out.println("Invalid selection");
+                System.out.println("Please type the corresponding letter next to the option you want.");
+            }
+        }
+    }//FIN
+
 
     //This method will have the employee add in customer data into the database
     private void addOrder() {
@@ -165,7 +208,6 @@ public class CustomerOrderDataBase {
                             + "Customer Zip Code: " + pIdSearchingFor.getCustomerLocation()+ "     "
                             + "Order Date: " + pIdSearchingFor.getOrderDate());
                     
-                    System.out.println();
         
         }
     
@@ -179,14 +221,13 @@ public class CustomerOrderDataBase {
 }
             }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-            
-            }
+
         }
         //if b is selected enter the customer email
         else if(attribute.equals("b")) {
@@ -207,7 +248,6 @@ public class CustomerOrderDataBase {
                             + "Customer Zip Code: " + custSearchingFor.getCustomerLocation()+ "     "
                             + "Order Date: " + custSearchingFor.getOrderDate());
                     
-                    System.out.println();
                  
             }       
                 else{
@@ -221,14 +261,13 @@ public class CustomerOrderDataBase {
             }
         }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-            
-            }
+
         }
          //if c is selected enter the customer zip code
         else if(attribute.equals("c")) {
@@ -249,7 +288,6 @@ public class CustomerOrderDataBase {
                             + "Customer Zip Code: " + locSearchingFor.getCustomerLocation() + "     "
                             + "Order Date: " + locSearchingFor.getOrderDate());
 
-                    System.out.println();
                 }
                 
             
@@ -263,15 +301,15 @@ public class CustomerOrderDataBase {
         }
             }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-            
-            }
+
     }
+
         //if d is selected enter the customer order date
         else if (attribute.equals("d")){
             System.out.println("Enter the date of the order you would like to search for in the format(Year-month-day e.g. 2020-01-13): ");
@@ -289,9 +327,8 @@ public class CustomerOrderDataBase {
                             + "Quantity:        " + dateSearchingFor.getQuantity() + "     "
                             + "Customer Email:   " + dateSearchingFor.getCustomerEmail() + "     "
                             + "Customer Zip Code:       " + dateSearchingFor.getCustomerLocation() + "     "
-                            + "Order Date:       " + dateSearchingFor.getOrderDate());
+                            + "Order Date:       " + dateSearchingFor.getOrderDate());}
                     
-                    System.out.println();}
                 
                 
                 else{
@@ -305,14 +342,13 @@ public class CustomerOrderDataBase {
         }
             }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-                
-            }
+
 }
 }
 }
