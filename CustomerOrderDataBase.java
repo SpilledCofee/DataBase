@@ -187,13 +187,13 @@ public class CustomerOrderDataBase {
             while (!date_Valid) {
                 try {
                     LocalDate.parse(date, dateFormatter);
+                    date_Valid = true;
                 } catch (DateTimeParseException e) {
                     date_Valid =  false;
                     System.out.println("Invalid Date");
-
+                    System.out.print("Enter valid date:");
+                    date = console.next();
                 }
-                date_Valid = true;
-
             }
 
             // Getting user email
