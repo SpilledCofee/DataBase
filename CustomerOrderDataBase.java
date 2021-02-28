@@ -166,27 +166,29 @@ public class CustomerOrderDataBase {
 
     //This method will update the current entry within the database
     private void updateOrder() {
+        System.out.println("----------------------------------------");
+        System.out.println("          Update Order");
+        System.out.println("----------------------------------------");
 
         //Prompt email address for the order to update.
         System.out.println("Enter the email address for the order you want to update: ");
         String customerEmail = console.next();
 
+        //Searching OrderInfo for orders belonging to the email address.
         ArrayList<OrderItem> potentialOrderUpdate = new ArrayList<OrderItem>();
-        //Searching Information for the OrderInfo with the email entered above.
-
         for (int i=0; i<orderInfo.size(); i++ ){
             if (customerEmail.equals(orderInfo.get(i).getCustomerEmail())) {
                 potentialOrderUpdate.add(orderInfo.get(i));
             }
         }
 
-        //If email is not found in orderInfo, return.
+        //If no records for the given email address are found in orderInfo, return.
         if (potentialOrderUpdate.isEmpty()) {
             System.out.println("No orders found for email: " + customerEmail);
             return;
-
         }
 
+        //Display all of the options and ask the user to select one to update.
         for(int i=0; i<potentialOrderUpdate.size(); i++){
             System.out.println((i+1) + ". Product ID: " + potentialOrderUpdate.get(i).getProductId()+ "     "
                     + "Quantity: " + potentialOrderUpdate.get(i).getQuantity()+ "     "
@@ -195,12 +197,67 @@ public class CustomerOrderDataBase {
                     + "Order Date: " + potentialOrderUpdate.get(i).getOrderDate());
         }
 
-        System.out.println("Enter record number you would like to update: ");
-        int recordNumber = Integer.parseInt(console.next());
+        //Prompt the order to update.
+        System.out.println("Enter order number you would like to update: ");
+        int recordIndex = Integer.parseInt(console.next())-1;
 
+        //Display chosen order.
+        System.out.println();
+        System.out.println("You are updating order:");
+        System.out.println("----------------------------------------");
+        System.out.println( "Product ID: " + potentialOrderUpdate.get(recordIndex).getProductId()+ "     "
+                + "Quantity: " + potentialOrderUpdate.get(recordIndex).getQuantity()+ "     "
+                + "Customer Email: " + potentialOrderUpdate.get(recordIndex).getCustomerEmail()+ "     "
+                + "Customer Zip Code: " + potentialOrderUpdate.get(recordIndex).getCustomerLocation()+ "     "
+                + "Order Date: " + potentialOrderUpdate.get(recordIndex).getOrderDate());
+        System.out.println("----------------------------------------");
 
+        //Prompt the user for the attribute to update.
+        System.out.println("Enter the attribute to update: ");
+        System.out.println(" a.   Product ID \n b.   Quantity \n c.   Customer Email \n d.   Customer Zip Code \n e.   Order Date ");
+        String attribute = console.next();
 
+        //Prompt for new attribute value and update.
+        if (attribute.equals("a")){
+            System.out.println("Enter the new Product ID: ");
+            String newProductId = console.next();
+            potentialOrderUpdate.get(recordIndex).setProductId(newProductId);
+        }
+        else if(attribute.equals("b")) {
+            System.out.println("Enter the new Quantity: ");
+            int newQuantity = Integer.parseInt(console.next());
+            potentialOrderUpdate.get(recordIndex).setQuantity(newQuantity);
+        }
+        else if(attribute.equals("c")) {
+            System.out.println("Enter the new Customer Email: ");
+            String newCustomerEmail = console.next();
+            potentialOrderUpdate.get(recordIndex).setCustomerEmail(newCustomerEmail);
+        }
+        else if(attribute.equals("d")) {
+            System.out.println("Enter the new Customer Zip Code: ");
+            String newCustomerLocation = console.next();
+            potentialOrderUpdate.get(recordIndex).setCustomerLocation(newCustomerLocation);
+        }
+        else if (attribute.equals("e")){
+            System.out.println("Enter the new Order Date: ");
+            String newOrderDate = console.next();
+            potentialOrderUpdate.get(recordIndex).setOrderDate(newOrderDate);
+        }
+        else{
+            System.out.println("Invalid attribute");
+            return;
+        }
 
+        //Display updated order.
+        System.out.println();
+        System.out.println("Updated order values");
+        System.out.println("----------------------------------------");
+        System.out.println( "Product ID: " + potentialOrderUpdate.get(recordIndex).getProductId()+ "     "
+                + "Quantity: " + potentialOrderUpdate.get(recordIndex).getQuantity()+ "     "
+                + "Customer Email: " + potentialOrderUpdate.get(recordIndex).getCustomerEmail()+ "     "
+                + "Customer Zip Code: " + potentialOrderUpdate.get(recordIndex).getCustomerLocation()+ "     "
+                + "Order Date: " + potentialOrderUpdate.get(recordIndex).getOrderDate());
+        System.out.println("----------------------------------------");
     }
 
     //This method will delete the current entry within the database
