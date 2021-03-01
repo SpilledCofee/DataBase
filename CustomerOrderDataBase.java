@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 public class CustomerOrderDataBase {
@@ -161,9 +164,164 @@ public class CustomerOrderDataBase {
 
     //This method will have the employee add in customer data into the database
     private void addOrder() {
+        // Variables
+        String date = null, cust_email = null, cust_location = null, product_id = null;
+        int quantity = 0;
 
+        // Date-Time Format "YYYY-MM-DD"
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        boolean date_Valid = false;
+
+        // Separator for user readability
+        String s = "----------------------------------------"; // separator
+
+        boolean user_confirmed = false;
+        while (!user_confirmed) {
+
+            // module header
+            System.out.println(s);
+            System.out.println("Adding Order: ");
+            System.out.println(s);
+
+            // Getting the user date for entry
+            System.out.print("Enter Date(YYYY-MM-DD): ");
+            date = console.next();
+            //This while loop will check if the date is valid
+            while (!date_Valid) {
+                try {
+                    LocalDate.parse(date, dateFormatter);
+                    System.out.println("Validated Date");
+                    date_Valid = true;
+                } catch (DateTimeParseException e) {
+                    date_Valid =  false;
+                    System.out.println("Invalid Date");
+                    System.out.print("Enter valid date(YYYY-MM-DD):");
+                    date = console.next();
+                }
+            }
+
+            // Getting user email
+            System.out.print("Enter customer email: ");
+            cust_email = console.next();
+            boolean flag = false;
+            int countr = 0, countd = 0;
+            while(!flag) {
+                //This loop will check if the email is valid
+                for (int i = 0; i < cust_email.length(); i++) {
+                    if (cust_email.charAt(i) == '@') {
+                        countr++;
+                        if (countr > 1) {
+                            flag = false;
+                            break;
+                        }
+                        if (i >= 1) flag = true;
+                        else {
+                            flag = false;
+                            break;
+                        }
+
+                    }
+                    if (cust_email.charAt(i) == '.') {
+                        countd++;
+                        if (countd > 1) {
+                            flag = false;
+                            break;
+                        }
+                        if (i >= 3) flag = true;
+                        else {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (cust_email.indexOf(".") - cust_email.indexOf("@") >= 2) {
+                        flag = true;
+                    }
+                    if (!flag) break;
+                }
+                if (flag && cust_email.length() >= 5) {
+                    System.out.println("Validated Email");
+                    break;
+                } else {
+                    System.out.println("Invalid Email");
+                }
+            }
+
+            //Validate the customer ZIP code
+            System.out.print("Enter ZIP Code: ");
+            cust_location = console.next();
+            while((cust_location.length()) != 5){
+                System.out.println("ZIP Code must be 5 characters long");
+                System.out.print("Enter ZIP Code: ");
+                cust_location = console.next();
+            }
+
+            // Validate product id
+            System.out.print("Enter Product ID: ");
+            product_id = console.next();
+            while ((product_id.length()) != 12) {
+                System.out.println("Product ID must be 12 characters long!");
+                System.out.print("Enter Product ID: ");
+                product_id = console.next();
+            }
+
+            // Validate quantity
+            System.out.print("Enter Quantity: ");
+            while (!console.hasNextInt()) {
+                System.out.println("Quantity must be a whole number!");
+                System.out.print("Enter Quantity: ");
+                console.next();
+            }
+            quantity = console.nextInt();
+
+            //Confirming Entries
+            System.out.println(s);
+            System.out.println("You entered the following values:");
+            System.out.println(s);
+            System.out.printf("%-11s %-20s %-20s  %-18s %-11s\n", "|DATE:|", "|CUSTOMER EMAIL:|", "|CUSTOMER LOCATION:|", "|PRODUCT ID:|", "|QUANTITY:|");
+            System.out.printf("%-11s %-20s %-20s  %-18s %11s\n", date, cust_email, cust_location, product_id, quantity);
+            System.out.println(s);
+            System.out.println("Is this correct?");
+            System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
+            String inp = console.next();
+            boolean validated = false;
+            while (validated == false) {
+                if (inp.toLowerCase().equals("yes")) {
+                    validated = true;
+                    user_confirmed = true;
+                }
+                else if (inp.toLowerCase().equals("no")) {
+                    validated = true;
+
+                }
+                else {
+                    System.out.print("Invalid response. Please type 'yes' or 'no': ");
+                    inp = console.next();
+                }
+            }
+        }
+        OrderItem newItem = new OrderItem(date, cust_email, cust_location, product_id, quantity);
+        orderInfo.add(newItem);
+
+        // alert user and get next step
+        System.out.println(s);
+        System.out.println("Entry added to Data Base!");
+        System.out.println(s);
+        System.out.println("Do you want to add another entry?");
+        System.out.print("Type 'yes' to add another entry, or 'no' to exit to main menu: ");
+        String inp = console.next();
+        boolean valid = false;
+        while (valid == false) {
+            if (inp.toLowerCase().equals("yes")) {
+                valid = true;
+                addOrder();
+            } else if (inp.toLowerCase().equals("no")) {
+                valid = true;                                       // possibly direct to main menu later
+            } else {
+                System.out.print("Invalid response. Please type 'yes' or 'no': ");
+                inp = console.next();
+            }
+        }
     }
-
     //This method will update the current entry within the database
     private void updateOrder() {
         System.out.println("----------------------------------------");
@@ -453,4 +611,3 @@ public class CustomerOrderDataBase {
 }
 }
 }
-
