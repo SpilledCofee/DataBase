@@ -107,6 +107,8 @@ public class CustomerOrderDataBase {
 
         //Initializing the constructor
         CustomerOrderDataBase custOrder = new CustomerOrderDataBase();
+        custOrder.displayMenue(); // Calls the Display Menu Method
+        custOrder.saveFile(); // Saves changes to the file at the end- when program ends
 
         /*If the load isn't working try running the saveFile method.
         The save file will create a new file has the proper name and location in your computer to run.
