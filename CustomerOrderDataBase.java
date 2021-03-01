@@ -430,9 +430,20 @@ public class CustomerOrderDataBase {
         System.out.println("        DELETE ORDER");
         System.out.println("----------------------------------------------");
 
-        // Prompts user for product id
+        // Prompts user for E-mail on order
         System.out.println("Enter the E-mail associated with the Order you would like to Delete: ");
         String entered_email = sc.next(); // Reads user's input
+
+        // If user's email does not contain "@" and ".com" then it's invalid,
+        // notify user and ask for a valid e-mail address
+        if (!entered_email.contains("@") && (!entered_email.contains(".com"))) {
+            System.out.println("\nSorry you entered an invalid E-mail!");
+
+            while(!entered_email.contains("@") || (!entered_email.contains(".com"))){
+                System.out.println("Please enter a correct E-mail address: ");
+                entered_email = sc.next(); // Reads user's input
+            }
+        }
 
         System.out.println("\nE-mail Entered: " + entered_email); // Mirrors back entered E-mail
         System.out.println("----------------------------------------------");
@@ -444,7 +455,7 @@ public class CustomerOrderDataBase {
         System.out.println("* This is a list of all the orders associated with the E-Mail" +" (" + entered_email+ ")\n");
 
         // Search the array; if entered E-mail is found/exists, print appropriate list of all orders pertaining to that entered E-mail
-        // Its purpose is to return the list of orders pertaining to the entered E-mail
+        // Its purpose is to return the list of orders pertaining to the user's entered E-mail
         // iterate through "orderInfo" array
         for (int i = 0; i < orderInfo.size(); i++) {
             if (entered_email.equalsIgnoreCase(orderInfo.get(i).getCustomerEmail())) { // if E-mail is found, retrieve info
@@ -462,15 +473,61 @@ public class CustomerOrderDataBase {
             }
         }
 
+        // If no orders were found/returned based on the user's entered email,
+        // then notify user and redirect to Main Menu Selection Screen
+        if (itemSearchingFor == null) {
+            System.out.println("        ! NOTHING FOUND/EMPTY !");
+            System.out.println("\n* Please enter 'x' to be redirected to the Main Menu Selection Screen");
+            System.out.println("--------------------------------------------");
+            String exitAttribute = sc.next();
+            if(exitAttribute.equalsIgnoreCase("x")) {
+                displayMenue();
+            }
+            else{
+                while(!exitAttribute.equalsIgnoreCase("x")) {
+                    System.out.println("Sorry please enter 'x' to be redirected! ");
+                    exitAttribute = sc.next();
+                    if(exitAttribute.equalsIgnoreCase("x")) {
+                        displayMenue();
+                    }
+                }
+            }
+        }
+
             // Method will now prompt user for more specific data from the order wanting to delete
             System.out.println("\nNow enter the date of the order you would like to delete"); // Prompts date from order
             System.out.println("Note: *** Date must be in this format: (yyyy-mm-dd) Ex: (2020-01-14) ***"); // Note to user regarding date format
             System.out.println("Please enter date now:");
             String entered_date = dateScanner.next(); // Reads in user's entered date
+
+            // If entered date is less than or greater than 10 characters it's invalid so notify user,
+            // also if it doesn't contain "-" (dashes) it's invalid
+            if (!entered_date.contains("-") && entered_date.length() != 10){
+                System.out.println("Invalid Date!"); // Error Message
+
+                // Keep on asking user for a valid date, repeats until user provides a valid input
+                while(!entered_date.contains("-") || entered_date.length() != 10) {
+                    System.out.println("\n Please enter a valid Date (yyyy-mm-dd) Ex:(2020-01-14): "); // Prompts user for a valid date
+                    entered_date = sc.next(); // Reads user's date
+                }
+            }
+
             System.out.println("Date Entered: " + entered_date); // Mirrors back entered date
 
             System.out.println("\nNow please enter the product id associated with the order you would like to delete: ");// Prompts product ID from order
             String entered_productId = productIdScanner.next(); // Reads in user's entered product ID
+
+            // If product id is less than or greater than 12 characters it's invalid so notify user
+            if (entered_productId.length() < 12 || entered_productId.length() > 12){
+                System.out.println("Invalid entry: Must be 12 characters long."); // Error Message
+
+                // Keep on asking user for a valid 12 character long product id, repeats until user provides a valid input
+                while(entered_productId.length() != 12) {
+                    System.out.println("\n Please enter a valid Product ID (12 character long): "); // Prompts user for a valid (12 character long) product id
+                    entered_productId = sc.next(); // Reads user's product id
+                }
+            }
+
             System.out.println("Product ID Entered: " + entered_productId); // Mirrors back entered product ID
 
             // newly iterate through "orderInfo" array, again
@@ -493,9 +550,8 @@ public class CustomerOrderDataBase {
                 }
             }
 
-
-            // If no information was found/exists, then notify user
-            if (itemSearchingFor == null || combinationSearchingFor == null) {
+            // If no information was found/exists based on order information entered from user, then notify user
+            if (combinationSearchingFor == null) {
                 System.out.println("\n" + "----------------------------------------------");
                 System.out.println("Sorry, the order you are looking for was not found!");
                 System.out.println("----------------------------------------------" + "\n");
