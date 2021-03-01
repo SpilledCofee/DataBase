@@ -282,7 +282,7 @@ public class CustomerOrderDataBase {
             System.out.println(s);
             System.out.println("Is this correct?");
             System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
-            String inp = console.nextLine();
+            String inp = console.next();
             boolean validated = false;
             while (validated == false) {
                 if (inp.toLowerCase().equals("yes")) {
