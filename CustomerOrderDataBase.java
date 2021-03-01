@@ -418,10 +418,125 @@ public class CustomerOrderDataBase {
         System.out.println("----------------------------------------");
     }
 
-    //This method will delete the current entry within the database
+    //This method will delete a specific order, specified by the user
     private void deleteOrder() {
+        // Scanners for individual variables
+        Scanner sc = new Scanner(System.in);
+        Scanner productIdScanner = new Scanner(System.in);
+        Scanner dateScanner = new Scanner(System.in);
 
-    }
+        // Mirrors back to the user their chosen menu option (in this case to delete a specific order)
+        System.out.println("\n" + "----------------------------------------------");
+        System.out.println("        DELETE ORDER");
+        System.out.println("----------------------------------------------");
+
+        // Prompts user for product id
+        System.out.println("Enter the E-mail associated with the Order you would like to Delete: ");
+        String entered_email = sc.next(); // Reads user's input
+
+        System.out.println("\nE-mail Entered: " + entered_email); // Mirrors back entered E-mail
+        System.out.println("----------------------------------------------");
+
+        // Create variables that will later hold requested specified information
+        OrderItem itemSearchingFor = null;
+        OrderItem combinationSearchingFor = null;
+
+        System.out.println("* This is a list of all the orders associated with the E-Mail" +" (" + entered_email+ ")\n");
+
+        // Search the array; if entered E-mail is found/exists, print appropriate list of all orders pertaining to that entered E-mail
+        // Its purpose is to return the list of orders pertaining to the entered E-mail
+        // iterate through "orderInfo" array
+        for (int i = 0; i < orderInfo.size(); i++) {
+            if (entered_email.equalsIgnoreCase(orderInfo.get(i).getCustomerEmail())) { // if E-mail is found, retrieve info
+                itemSearchingFor = orderInfo.get(i); // itemSearchingFor is set to values
+
+                // Prints appropriate values
+                System.out.println("Date: " + itemSearchingFor.getOrderDate()
+                        + ", Customer E-mail: " + itemSearchingFor.getCustomerEmail()
+                        + ", Customer Location: " + itemSearchingFor.getCustomerLocation()
+                        + ", Product ID: " + itemSearchingFor.getProductId()
+                        + ", Product Quantity: " + itemSearchingFor.getQuantity());
+
+                System.out.println("----------------------------------------------");
+
+            }
+        }
+
+            // Method will now prompt user for more specific data from the order wanting to delete
+            System.out.println("\nNow enter the date of the order you would like to delete"); // Prompts date from order
+            System.out.println("Note: *** Date must be in this format: (yyyy-mm-dd) Ex: (2020-01-14) ***"); // Note to user regarding date format
+            System.out.println("Please enter date now:");
+            String entered_date = dateScanner.next(); // Reads in user's entered date
+            System.out.println("Date Entered: " + entered_date); // Mirrors back entered date
+
+            System.out.println("\nNow please enter the product id associated with the order you would like to delete: ");// Prompts product ID from order
+            String entered_productId = productIdScanner.next(); // Reads in user's entered product ID
+            System.out.println("Product ID Entered: " + entered_productId); // Mirrors back entered product ID
+
+            // newly iterate through "orderInfo" array, again
+            for (int j = 0; j < orderInfo.size(); j++) {
+                if (entered_productId.equalsIgnoreCase(orderInfo.get(j).getProductId()) // if appropriate product ID, E-mail, and date matches an order, retrieve info
+                        && entered_email.equalsIgnoreCase(orderInfo.get(j).getCustomerEmail())
+                        && entered_date.equalsIgnoreCase(orderInfo.get(j).getOrderDate())) {
+                    combinationSearchingFor = orderInfo.get(j); // combinationSearchingFor is set to the value
+
+                    // Prints appropriate values
+                    System.out.println("\nRequested Order to Delete: "+ "\n" + "----------------------------------------------");
+                    System.out.println("Date: " + combinationSearchingFor.getOrderDate()
+                            + ", Customer E-mail: " + combinationSearchingFor.getCustomerEmail()
+                            + ", Customer Location: " + combinationSearchingFor.getCustomerLocation()
+                            + ", Product ID: " + combinationSearchingFor.getProductId()
+                            + ", Product Quantity: " + combinationSearchingFor.getQuantity());
+
+                        System.out.println("----------------------------------------------");
+                        // break;
+                }
+            }
+
+
+            // If no information was found/exists, then notify user
+            if (itemSearchingFor == null || combinationSearchingFor == null) {
+                System.out.println("\n" + "----------------------------------------------");
+                System.out.println("Sorry, the order you are looking for was not found!");
+                System.out.println("----------------------------------------------" + "\n");
+            }
+
+            // If correct information was found, then ask user if they would like to delete the order
+            if(combinationSearchingFor != null) {
+                System.out.println("\nAre you sure you want to delete this record?: 'yes' or 'no'");
+                String deleteAttribute = sc.next(); // Read in user's answer
+
+                //if user enters yes then the item is deleted
+                if (deleteAttribute.equalsIgnoreCase("yes")) {
+                    orderInfo.remove(combinationSearchingFor); // Removes order from array
+                    System.out.println("\nRecord has been SUCCESSFULLY deleted."); // Message to let user know of deletion
+                    System.out.println("");
+                }
+                //if user enters 'no' or anything else, then order will not be deleted
+                else {
+                    System.out.println("\nRecord was NOT deleted.\n");
+                }
+            }
+
+            // Asks user if they would like to delete another order
+            System.out.println("Would you like to search for another order to delete? ('yes'/'no')");
+            String searchAttribute = sc.next();
+
+            // if 'yes' then restarts deleteOrder() method again
+            if (searchAttribute.equalsIgnoreCase("yes")) {
+                System.out.println("\n");
+                deleteOrder();
+            }
+            // Else if 'no',then exits the deleteOrder() method
+            else if (searchAttribute.equalsIgnoreCase("no")) {
+                System.out.println("\n");
+                return;
+            }
+            // Else if other answer, shows an invalid response message and exits to main menu
+            else if (searchAttribute != "no" || searchAttribute != "yes") {
+                    System.out.println("Invalid Response! Now Exiting to Menu!\n");
+            }
+    } // END OF DELETE METHOD
 
     //This method will view the order specifically with the
     // date, customer_email, customer_location, productID
