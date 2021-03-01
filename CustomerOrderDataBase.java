@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.format.DateTimeParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 public class CustomerOrderDataBase {
@@ -105,11 +108,13 @@ public class CustomerOrderDataBase {
         //Initializing the constructor
         CustomerOrderDataBase custOrder = new CustomerOrderDataBase();
 
-        custOrder.displayMenue();
+
         /*If the load isn't working try running the saveFile method.
         The save file will create a new file has the proper name and location in your computer to run.
         Then just copy and past the data into the new file that it creates.
         custOrder.saveFile();
+
+
          */
     }
 
@@ -159,18 +164,379 @@ public class CustomerOrderDataBase {
 
     //This method will have the employee add in customer data into the database
     private void addOrder() {
+        // Variables
+        String date = null, cust_email = null, cust_location = null, product_id = null;
+        int quantity = 0;
 
+        // Date-Time Format "YYYY-MM-DD"
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        boolean date_Valid = false;
+
+        // Separator for user readability
+        String s = "----------------------------------------"; // separator
+
+        boolean user_confirmed = false;
+        while (!user_confirmed) {
+
+            // module header
+            System.out.println(s);
+            System.out.println("Adding Order: ");
+            System.out.println(s);
+
+            // Getting the user date for entry
+            System.out.print("Enter Date(YYYY-MM-DD): ");
+            date = console.next();
+            //This while loop will check if the date is valid
+            while (!date_Valid) {
+                try {
+                    LocalDate.parse(date, dateFormatter);
+                    System.out.println("Validated Date");
+                    date_Valid = true;
+                } catch (DateTimeParseException e) {
+                    date_Valid =  false;
+                    System.out.println("Invalid Date");
+                    System.out.print("Enter valid date(YYYY-MM-DD):");
+                    date = console.next();
+                }
+            }
+
+            // Getting user email
+            System.out.print("Enter customer email: ");
+            cust_email = console.next();
+            boolean flag = false;
+            int countr = 0, countd = 0;
+            while(!flag) {
+                //This loop will check if the email is valid
+                for (int i = 0; i < cust_email.length(); i++) {
+                    if (cust_email.charAt(i) == '@') {
+                        countr++;
+                        if (countr > 1) {
+                            flag = false;
+                            break;
+                        }
+                        if (i >= 1) flag = true;
+                        else {
+                            flag = false;
+                            break;
+                        }
+
+                    }
+                    if (cust_email.charAt(i) == '.') {
+                        countd++;
+                        if (countd > 1) {
+                            flag = false;
+                            break;
+                        }
+                        if (i >= 3) flag = true;
+                        else {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (cust_email.indexOf(".") - cust_email.indexOf("@") >= 2) {
+                        flag = true;
+                    }
+                    if (!flag) break;
+                }
+                if (flag && cust_email.length() >= 5) {
+                    System.out.println("Validated Email");
+                    break;
+                } else {
+                    System.out.println("Invalid Email");
+                }
+            }
+
+            //Validate the customer ZIP code
+            System.out.print("Enter ZIP Code: ");
+            cust_location = console.next();
+            while((cust_location.length()) != 5){
+                System.out.println("ZIP Code must be 5 characters long");
+                System.out.print("Enter ZIP Code: ");
+                cust_location = console.next();
+            }
+
+            // Validate product id
+            System.out.print("Enter Product ID: ");
+            product_id = console.next();
+            while ((product_id.length()) != 12) {
+                System.out.println("Product ID must be 12 characters long!");
+                System.out.print("Enter Product ID: ");
+                product_id = console.next();
+            }
+
+            // Validate quantity
+            System.out.print("Enter Quantity: ");
+            while (!console.hasNextInt()) {
+                System.out.println("Quantity must be a whole number!");
+                System.out.print("Enter Quantity: ");
+                console.next();
+            }
+            quantity = console.nextInt();
+
+            //Confirming Entries
+            System.out.println(s);
+            System.out.println("You entered the following values:");
+            System.out.println(s);
+            System.out.printf("%-11s %-20s %-20s  %-18s %-11s\n", "|DATE:|", "|CUSTOMER EMAIL:|", "|CUSTOMER LOCATION:|", "|PRODUCT ID:|", "|QUANTITY:|");
+            System.out.printf("%-11s %-20s %-20s  %-18s %11s\n", date, cust_email, cust_location, product_id, quantity);
+            System.out.println(s);
+            System.out.println("Is this correct?");
+            System.out.print("Type 'yes' to add this record, type 'no' to start over: ");
+            String inp = console.next();
+            boolean validated = false;
+            while (validated == false) {
+                if (inp.toLowerCase().equals("yes")) {
+                    validated = true;
+                    user_confirmed = true;
+                }
+                else if (inp.toLowerCase().equals("no")) {
+                    validated = true;
+
+                }
+                else {
+                    System.out.print("Invalid response. Please type 'yes' or 'no': ");
+                    inp = console.next();
+                }
+            }
+        }
+        OrderItem newItem = new OrderItem(date, cust_email, cust_location, product_id, quantity);
+        orderInfo.add(newItem);
+
+        // alert user and get next step
+        System.out.println(s);
+        System.out.println("Entry added to Data Base!");
+        System.out.println(s);
+        System.out.println("Do you want to add another entry?");
+        System.out.print("Type 'yes' to add another entry, or 'no' to exit to main menu: ");
+        String inp = console.next();
+        boolean valid = false;
+        while (valid == false) {
+            if (inp.toLowerCase().equals("yes")) {
+                valid = true;
+                addOrder();
+            } else if (inp.toLowerCase().equals("no")) {
+                valid = true;                                       // possibly direct to main menu later
+            } else {
+                System.out.print("Invalid response. Please type 'yes' or 'no': ");
+                inp = console.next();
+            }
+        }
     }
-
     //This method will update the current entry within the database
     private void updateOrder() {
+        System.out.println("----------------------------------------");
+        System.out.println("          Update Order");
+        System.out.println("----------------------------------------");
 
+        //Prompt email address for the order to update.
+        System.out.println("Enter the email address for the order you want to update: ");
+        String customerEmail = console.next();
+
+        //Searching OrderInfo for orders belonging to the email address.
+        ArrayList<OrderItem> potentialOrderUpdate = new ArrayList<OrderItem>();
+        for (int i=0; i<orderInfo.size(); i++ ){
+            if (customerEmail.equals(orderInfo.get(i).getCustomerEmail())) {
+                potentialOrderUpdate.add(orderInfo.get(i));
+            }
+        }
+
+        //If no records for the given email address are found in orderInfo, return.
+        if (potentialOrderUpdate.isEmpty()) {
+            System.out.println("No orders found for email: " + customerEmail);
+            return;
+        }
+
+        //Display all of the options and ask the user to select one to update.
+        for(int i=0; i<potentialOrderUpdate.size(); i++){
+            System.out.println((i+1) + ". Product ID: " + potentialOrderUpdate.get(i).getProductId()+ "     "
+                    + "Quantity: " + potentialOrderUpdate.get(i).getQuantity()+ "     "
+                    + "Customer Email: " + potentialOrderUpdate.get(i).getCustomerEmail()+ "     "
+                    + "Customer Zip Code: " + potentialOrderUpdate.get(i).getCustomerLocation()+ "     "
+                    + "Order Date: " + potentialOrderUpdate.get(i).getOrderDate());
+        }
+
+        //Prompt the order to update.
+        System.out.println("Enter order number you would like to update: ");
+        int recordIndex = Integer.parseInt(console.next())-1;
+
+        //Display chosen order.
+        System.out.println();
+        System.out.println("You are updating order:");
+        System.out.println("----------------------------------------");
+        System.out.println( "Product ID: " + potentialOrderUpdate.get(recordIndex).getProductId()+ "     "
+                + "Quantity: " + potentialOrderUpdate.get(recordIndex).getQuantity()+ "     "
+                + "Customer Email: " + potentialOrderUpdate.get(recordIndex).getCustomerEmail()+ "     "
+                + "Customer Zip Code: " + potentialOrderUpdate.get(recordIndex).getCustomerLocation()+ "     "
+                + "Order Date: " + potentialOrderUpdate.get(recordIndex).getOrderDate());
+        System.out.println("----------------------------------------");
+
+        //Prompt the user for the attribute to update.
+        System.out.println("Enter the attribute to update: ");
+        System.out.println(" a.   Product ID \n b.   Quantity \n c.   Customer Email \n d.   Customer Zip Code \n e.   Order Date ");
+        String attribute = console.next();
+
+        //Prompt for new attribute value and update.
+        if (attribute.equals("a")){
+            System.out.println("Enter the new Product ID: ");
+            String newProductId = console.next();
+            potentialOrderUpdate.get(recordIndex).setProductId(newProductId);
+        }
+        else if(attribute.equals("b")) {
+            System.out.println("Enter the new Quantity: ");
+            int newQuantity = Integer.parseInt(console.next());
+            potentialOrderUpdate.get(recordIndex).setQuantity(newQuantity);
+        }
+        else if(attribute.equals("c")) {
+            System.out.println("Enter the new Customer Email: ");
+            String newCustomerEmail = console.next();
+            potentialOrderUpdate.get(recordIndex).setCustomerEmail(newCustomerEmail);
+        }
+        else if(attribute.equals("d")) {
+            System.out.println("Enter the new Customer Zip Code: ");
+            String newCustomerLocation = console.next();
+            potentialOrderUpdate.get(recordIndex).setCustomerLocation(newCustomerLocation);
+        }
+        else if (attribute.equals("e")){
+            System.out.println("Enter the new Order Date: ");
+            String newOrderDate = console.next();
+            potentialOrderUpdate.get(recordIndex).setOrderDate(newOrderDate);
+        }
+        else{
+            System.out.println("Invalid attribute");
+            return;
+        }
+
+        //Display updated order.
+        System.out.println();
+        System.out.println("Updated order values");
+        System.out.println("----------------------------------------");
+        System.out.println( "Product ID: " + potentialOrderUpdate.get(recordIndex).getProductId()+ "     "
+                + "Quantity: " + potentialOrderUpdate.get(recordIndex).getQuantity()+ "     "
+                + "Customer Email: " + potentialOrderUpdate.get(recordIndex).getCustomerEmail()+ "     "
+                + "Customer Zip Code: " + potentialOrderUpdate.get(recordIndex).getCustomerLocation()+ "     "
+                + "Order Date: " + potentialOrderUpdate.get(recordIndex).getOrderDate());
+        System.out.println("----------------------------------------");
     }
 
-    //This method will delete the current entry within the database
+    //This method will delete a specific order, specified by the user
     private void deleteOrder() {
+        // Scanners for individual variables
+        Scanner sc = new Scanner(System.in);
+        Scanner productIdScanner = new Scanner(System.in);
+        Scanner dateScanner = new Scanner(System.in);
 
-    }
+        // Mirrors back to the user their chosen menu option (in this case to delete a specific order)
+        System.out.println("\n" + "----------------------------------------------");
+        System.out.println("        DELETE ORDER");
+        System.out.println("----------------------------------------------");
+
+        // Prompts user for product id
+        System.out.println("Enter the E-mail associated with the Order you would like to Delete: ");
+        String entered_email = sc.next(); // Reads user's input
+
+        System.out.println("\nE-mail Entered: " + entered_email); // Mirrors back entered E-mail
+        System.out.println("----------------------------------------------");
+
+        // Create variables that will later hold requested specified information
+        OrderItem itemSearchingFor = null;
+        OrderItem combinationSearchingFor = null;
+
+        System.out.println("* This is a list of all the orders associated with the E-Mail" +" (" + entered_email+ ")\n");
+
+        // Search the array; if entered E-mail is found/exists, print appropriate list of all orders pertaining to that entered E-mail
+        // Its purpose is to return the list of orders pertaining to the entered E-mail
+        // iterate through "orderInfo" array
+        for (int i = 0; i < orderInfo.size(); i++) {
+            if (entered_email.equalsIgnoreCase(orderInfo.get(i).getCustomerEmail())) { // if E-mail is found, retrieve info
+                itemSearchingFor = orderInfo.get(i); // itemSearchingFor is set to values
+
+                // Prints appropriate values
+                System.out.println("Date: " + itemSearchingFor.getOrderDate()
+                        + ", Customer E-mail: " + itemSearchingFor.getCustomerEmail()
+                        + ", Customer Location: " + itemSearchingFor.getCustomerLocation()
+                        + ", Product ID: " + itemSearchingFor.getProductId()
+                        + ", Product Quantity: " + itemSearchingFor.getQuantity());
+
+                System.out.println("----------------------------------------------");
+
+            }
+        }
+
+            // Method will now prompt user for more specific data from the order wanting to delete
+            System.out.println("\nNow enter the date of the order you would like to delete"); // Prompts date from order
+            System.out.println("Note: *** Date must be in this format: (yyyy-mm-dd) Ex: (2020-01-14) ***"); // Note to user regarding date format
+            System.out.println("Please enter date now:");
+            String entered_date = dateScanner.next(); // Reads in user's entered date
+            System.out.println("Date Entered: " + entered_date); // Mirrors back entered date
+
+            System.out.println("\nNow please enter the product id associated with the order you would like to delete: ");// Prompts product ID from order
+            String entered_productId = productIdScanner.next(); // Reads in user's entered product ID
+            System.out.println("Product ID Entered: " + entered_productId); // Mirrors back entered product ID
+
+            // newly iterate through "orderInfo" array, again
+            for (int j = 0; j < orderInfo.size(); j++) {
+                if (entered_productId.equalsIgnoreCase(orderInfo.get(j).getProductId()) // if appropriate product ID, E-mail, and date matches an order, retrieve info
+                        && entered_email.equalsIgnoreCase(orderInfo.get(j).getCustomerEmail())
+                        && entered_date.equalsIgnoreCase(orderInfo.get(j).getOrderDate())) {
+                    combinationSearchingFor = orderInfo.get(j); // combinationSearchingFor is set to the value
+
+                    // Prints appropriate values
+                    System.out.println("\nRequested Order to Delete: "+ "\n" + "----------------------------------------------");
+                    System.out.println("Date: " + combinationSearchingFor.getOrderDate()
+                            + ", Customer E-mail: " + combinationSearchingFor.getCustomerEmail()
+                            + ", Customer Location: " + combinationSearchingFor.getCustomerLocation()
+                            + ", Product ID: " + combinationSearchingFor.getProductId()
+                            + ", Product Quantity: " + combinationSearchingFor.getQuantity());
+
+                        System.out.println("----------------------------------------------");
+                        // break;
+                }
+            }
+
+
+            // If no information was found/exists, then notify user
+            if (itemSearchingFor == null || combinationSearchingFor == null) {
+                System.out.println("\n" + "----------------------------------------------");
+                System.out.println("Sorry, the order you are looking for was not found!");
+                System.out.println("----------------------------------------------" + "\n");
+            }
+
+            // If correct information was found, then ask user if they would like to delete the order
+            if(combinationSearchingFor != null) {
+                System.out.println("\nAre you sure you want to delete this record?: 'yes' or 'no'");
+                String deleteAttribute = sc.next(); // Read in user's answer
+
+                //if user enters yes then the item is deleted
+                if (deleteAttribute.equalsIgnoreCase("yes")) {
+                    orderInfo.remove(combinationSearchingFor); // Removes order from array
+                    System.out.println("\nRecord has been SUCCESSFULLY deleted."); // Message to let user know of deletion
+                    System.out.println("");
+                }
+                //if user enters 'no' or anything else, then order will not be deleted
+                else {
+                    System.out.println("\nRecord was NOT deleted.\n");
+                }
+            }
+
+            // Asks user if they would like to delete another order
+            System.out.println("Would you like to search for another order to delete? ('yes'/'no')");
+            String searchAttribute = sc.next();
+
+            // if 'yes' then restarts deleteOrder() method again
+            if (searchAttribute.equalsIgnoreCase("yes")) {
+                System.out.println("\n");
+                deleteOrder();
+            }
+            // Else if 'no',then exits the deleteOrder() method
+            else if (searchAttribute.equalsIgnoreCase("no")) {
+                System.out.println("\n");
+                return;
+            }
+            // Else if other answer, shows an invalid response message and exits to main menu
+            else if (searchAttribute != "no" || searchAttribute != "yes") {
+                    System.out.println("Invalid Response! Now Exiting to Menu!\n");
+            }
+    } // END OF DELETE METHOD
 
     //This method will view the order specifically with the
     // date, customer_email, customer_location, productID
