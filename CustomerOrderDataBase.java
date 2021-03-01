@@ -295,7 +295,7 @@ public class CustomerOrderDataBase {
                 }
                 else {
                     System.out.print("Invalid response. Please type 'yes' or 'no': ");
-                    inp = console.nextLine();
+                    inp = console.next();
                 }
             }
         }
