@@ -318,7 +318,7 @@ public class CustomerOrderDataBase {
                 valid = true;                                       // possibly direct to main menu later
             } else {
                 System.out.print("Invalid response. Please type 'yes' or 'no': ");
-                inp = console.nextLine();
+                inp = console.next();
             }
         }
     }
