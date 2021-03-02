@@ -481,14 +481,14 @@ public class CustomerOrderDataBase {
             System.out.println("--------------------------------------------");
             String exitAttribute = sc.next();
             if(exitAttribute.equalsIgnoreCase("x")) {
-                displayMenue();
+                return;
             }
             else{
                 while(!exitAttribute.equalsIgnoreCase("x")) {
                     System.out.println("Sorry please enter 'x' to be redirected! ");
                     exitAttribute = sc.next();
                     if(exitAttribute.equalsIgnoreCase("x")) {
-                        displayMenue();
+                        return;
                     }
                 }
             }
