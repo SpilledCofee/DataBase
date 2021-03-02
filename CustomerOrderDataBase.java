@@ -335,7 +335,7 @@ public class CustomerOrderDataBase {
         //Searching OrderInfo for orders belonging to the email address.
         ArrayList<OrderItem> potentialOrderUpdate = new ArrayList<OrderItem>();
         for (int i=0; i<orderInfo.size(); i++ ){
-            if (customerEmail.equals(orderInfo.get(i).getCustomerEmail())) {
+            if (customerEmail.equalsIgnoreCase(orderInfo.get(i).getCustomerEmail())) {
                 potentialOrderUpdate.add(orderInfo.get(i));
             }
         }
@@ -346,18 +346,31 @@ public class CustomerOrderDataBase {
             return;
         }
 
-        //Display all of the options and ask the user to select one to update.
-        for(int i=0; i<potentialOrderUpdate.size(); i++){
-            System.out.println((i+1) + ". Product ID: " + potentialOrderUpdate.get(i).getProductId()+ "     "
-                    + "Quantity: " + potentialOrderUpdate.get(i).getQuantity()+ "     "
-                    + "Customer Email: " + potentialOrderUpdate.get(i).getCustomerEmail()+ "     "
-                    + "Customer Zip Code: " + potentialOrderUpdate.get(i).getCustomerLocation()+ "     "
-                    + "Order Date: " + potentialOrderUpdate.get(i).getOrderDate());
-        }
-
         //Prompt the order to update.
-        System.out.println("Enter order number you would like to update: ");
-        int recordIndex = Integer.parseInt(console.next())-1;
+        int recordIndex = -1;
+        boolean validOrderNumber = false;
+        while (!validOrderNumber){
+            try{
+                //Display all of the options and ask the user to select one to update.
+                for(int i=0; i<potentialOrderUpdate.size(); i++){
+                    System.out.println((i+1) + ". Product ID: " + potentialOrderUpdate.get(i).getProductId()+ "     "
+                            + "Quantity: " + potentialOrderUpdate.get(i).getQuantity()+ "     "
+                            + "Customer Email: " + potentialOrderUpdate.get(i).getCustomerEmail()+ "     "
+                            + "Customer Zip Code: " + potentialOrderUpdate.get(i).getCustomerLocation()+ "     "
+                            + "Order Date: " + potentialOrderUpdate.get(i).getOrderDate());
+                }
+
+                System.out.println("Enter order number you would like to update: ");
+                recordIndex = Integer.parseInt(console.next())-1;
+
+                if (potentialOrderUpdate.get(recordIndex) != null){
+                    validOrderNumber = true;
+                }
+            }
+            catch (Exception exception){
+                System.out.println("Error! Order number is invalid.");
+            }
+        }
 
         //Display chosen order.
         System.out.println();
