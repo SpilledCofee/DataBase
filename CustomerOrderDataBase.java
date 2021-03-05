@@ -110,10 +110,10 @@ public class CustomerOrderDataBase {
         custOrder.displayMenue(); // Calls the Display Menu Method
         custOrder.saveFile(); // Saves changes to the file at the end- when program ends
 
+
         /*If the load isn't working try running the saveFile method.
         The save file will create a new file has the proper name and location in your computer to run.
         Then just copy and past the data into the new file that it creates.
-
         custOrder.saveFile();
 
 
@@ -645,7 +645,6 @@ public class CustomerOrderDataBase {
                             + "Customer Zip Code: " + pIdSearchingFor.getCustomerLocation()+ "     "
                             + "Order Date: " + pIdSearchingFor.getOrderDate());
                     
-                    System.out.println();
         
         }
     
@@ -659,14 +658,13 @@ public class CustomerOrderDataBase {
 }
             }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-                ///direct to main menu eventually
-            }
+
         }
         //if b is selected enter the customer email
         else if(attribute.equals("b")) {
@@ -687,7 +685,6 @@ public class CustomerOrderDataBase {
                             + "Customer Zip Code: " + custSearchingFor.getCustomerLocation()+ "     "
                             + "Order Date: " + custSearchingFor.getOrderDate());
                     
-                    System.out.println();
                  
             }       
                 else{
@@ -701,14 +698,13 @@ public class CustomerOrderDataBase {
             }
         }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-                ///direct to main menu
-            }
+
         }
          //if c is selected enter the customer zip code
         else if(attribute.equals("c")) {
@@ -729,7 +725,6 @@ public class CustomerOrderDataBase {
                             + "Customer Zip Code: " + locSearchingFor.getCustomerLocation() + "     "
                             + "Order Date: " + locSearchingFor.getOrderDate());
 
-                    System.out.println();
                 }
                 
             
@@ -743,14 +738,13 @@ public class CustomerOrderDataBase {
         }
             }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-                ///direct to main menu
-            }
+
     }
 
         //if d is selected enter the customer order date
@@ -770,9 +764,8 @@ public class CustomerOrderDataBase {
                             + "Quantity:        " + dateSearchingFor.getQuantity() + "     "
                             + "Customer Email:   " + dateSearchingFor.getCustomerEmail() + "     "
                             + "Customer Zip Code:       " + dateSearchingFor.getCustomerLocation() + "     "
-                            + "Order Date:       " + dateSearchingFor.getOrderDate());
+                            + "Order Date:       " + dateSearchingFor.getOrderDate());}
                     
-                    System.out.println();}
                 
                 
                 else{
@@ -786,14 +779,13 @@ public class CustomerOrderDataBase {
         }
             }
             //prompt to continue viewing orders or exit program
+            System.out.println();
             System.out.println("Would you like to continue viewing orders? Enter yes or no: ");
             String cont = console.next();
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-            else{
-                ///direct to main menu
-            }
+
 }
 }
 }
