@@ -428,4 +428,40 @@ public class DataBase {
             System.out.println("\nRecord was NOT deleted.\n");
         }
     }
+      /*Adding a method that can will give back the EntryItem we are looking for.
+    -Will interact with Inventory updator;
+    -is a mostly duplicate of lookUpRecord w/o the user prompts
+    -Takes in a product ID and returns an EntryItem
+     */
+    public EntryItem viewRecord(String product_id){
+
+        EntryItem item = new EntryItem();
+
+        // user product id scanner
+        Scanner sc = new Scanner(System.in);
+        EntryItem itemSearchingFor = null;
+
+
+        // If product id is less than or greater than 12 characters it's invalid so notify user
+        if (product_id.length() < 12 || product_id.length() > 12){
+            System.out.println( product_id + "is an invalid entry: Product ID must be 12 characters long."); // Error Message
+            return itemSearchingFor;
+        }
+
+
+        // Search the array; if entered product id is found/exists, it will send the EntryItem object back
+        // iterate through "records"
+        for (int i=0; i<records.size(); i++ ){
+            if (product_id.equalsIgnoreCase(records.get(i).getProduct_id())) { // if product id is found, retrieve info
+                itemSearchingFor = records.get(i); // itemSearchingFor is set to item
+                break;
+            }
+        }
+
+        // If product id was not found, notify user that it was not found/does not exist
+        if (itemSearchingFor == null){
+            System.out.println("Sorry, the record you are looking for was not found.");
+        }
+        return itemSearchingFor;
+    } 
 }
