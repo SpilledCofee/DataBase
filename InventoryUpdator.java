@@ -12,21 +12,26 @@ import java.util.ArrayList;
 
 public class InventoryUpdator {
     private DataBase dataBase;
+    private CustomerOrderDataBase orderDB;
     private String FILE;
     private Scanner in;
-    private ArrayList<OrderItem> array;
+    //Theses might be useful if we wanted to make a
+    //receipt of all the orders that went through and all the orders that failed
+    private ArrayList<OrderItem> validOrders, failedOrders;
+    //These two arrays are dublicates of the data bases' arrays
+    private ArrayList<OrderItem> currentOrders;
+    private ArrayList<EntryItem> inventory;
     private boolean product_idOK, stockOK;
     EntryItem item;
 
     public InventoryUpdator(){
         dataBase = new DataBase();
-        array = new ArrayList<>(60000);
         try {
             dataBase.loadFile();
         } catch (FileNotFoundException fileNotFoundException) {
             fileNotFoundException.printStackTrace();
         }
-
+        inventory = dataBase.getRecordsArray();
     }
 
     //This will make a menu giving the user options to use either a file or place a single order
@@ -34,9 +39,22 @@ public class InventoryUpdator {
 
     }
 
-    //This will load a file from the user
-    public void loadUserFile(){
-
+    /* This will load a file from the user
+          -It calls on the CustomerOrderDataBase's load method.
+          -The file name can be changed
+          -There are no user prompts! :) (this keeps the code more flexible)
+     */
+    public void loadUserFile(String file){
+        orderDB = new CustomerOrderDataBase(file);
+        try {
+            orderDB.loadFile();
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
+        currentOrders = orderDB.getOrderArray();
+        //TESTING
+        //System.out.println(currentOrders.size());
+        //System.out.println(currentOrders.toString());
     }
 
     //will call most of the other methods to validate that an order is valid
@@ -47,7 +65,7 @@ public class InventoryUpdator {
     //This will check to see if there is a product with the same ID
     public boolean validateProductID( String product_id){
         item = dataBase.viewRecord(product_id);
-        if(item == null){ product_idOK = false;}
+        if(item == null){product_idOK = false;}
         else{product_idOK = true;}
         //TEST: System.out.println(item.toString());
         //TEST: System.out.println(product_idOK);
@@ -74,6 +92,12 @@ public class InventoryUpdator {
     //This will create an interface with the user to make a single order
     public void individualOrdering(){
 
+    }
+    //This will print an array's data, each with their own line.
+    public void printArray(ArrayList array){
+        for (int i = 0; i < array.size() ; i++) {
+            System.out.println(array.get(i).toString());
+        }
     }
 
 }//FIN
