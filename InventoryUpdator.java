@@ -113,10 +113,13 @@ public class InventoryUpdator {
         dataBase.saveFile();
     }
 
+
     private OrderItem GetOrder(){
         // Variables
         String date = null, cust_email = null, cust_location = null, product_id = null;
         int quantity = 0;
+        LocalDate now = LocalDate.now();
+        date = now + "";
 
         // Date-Time Format "YYYY-MM-DD"
         DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
@@ -127,22 +130,7 @@ public class InventoryUpdator {
 
         boolean user_confirmed = false;
         while (!user_confirmed) {
-            // Getting the user date for entry
-            System.out.print("Enter Date(YYYY-MM-DD): ");
-            date = in.next();
-            //This while loop will check if the date is valid
-            while (!date_Valid) {
-                try {
-                    LocalDate.parse(date, dateFormatter);
-                    System.out.println("Validated Date");
-                    date_Valid = true;
-                } catch (DateTimeParseException e) {
-                    date_Valid =  false;
-                    System.out.println("Invalid Date");
-                    System.out.print("Enter valid date(YYYY-MM-DD):");
-                    date = in.next();
-                }
-            }
+            //get date
 
             // Getting user email
             System.out.print("Enter customer email: ");
@@ -243,8 +231,16 @@ public class InventoryUpdator {
                 }
             }
         }
+        //This will add the order to the CustomerOrderDatabase once the order has been placed
+        OrderItem item = new OrderItem(date, cust_email, cust_location, product_id, quantity);
+        orderDB.getOrderArray().add(item);
+        try {
+            orderDB.saveFile();
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
 
-        return new OrderItem(date, cust_email, cust_location, product_id, quantity);
+        return item;
     }
 
     //This will check to see if there is a product with the same ID
@@ -263,7 +259,7 @@ public class InventoryUpdator {
         stockOK = false;
         //If the product doesn't exist then there is not need to continue
         if(product_idOK){
-            //this checks how much the Entryitem has;
+            //this checks how much the EntryItem has;
             int stock = item.getQuantity();
             if(quantity <= stock) {
                 stockOK = true;
@@ -274,22 +270,24 @@ public class InventoryUpdator {
     }
 
     //This will create an interface with the user to upload their file
-    public void massOrdering(){
+    public void massOrdering() throws FileNotFoundException {
 
-    //This will create an interface with the user to make a single order
-    public void individualOrdering() throws FileNotFoundException {
-        // Getting order information from user
-        OrderItem order = GetOrder();
-
-        // Processing order
-        processOrder(order);
     }
 
-    //This will print an array's data, each with their own line.
-    public void printArray(ArrayList array){
-        for (int i = 0; i < array.size() ; i++) {
-            System.out.println(array.get(i).toString());
+        //This will create an interface with the user to make a single order
+        public void individualOrdering() throws FileNotFoundException {
+            // Getting order information from user
+            OrderItem order = GetOrder();
+
+            // Processing order
+            processOrder(order);
         }
-    }
 
-}//FIN
+        //This will print an array's data, each with their own line.
+        public void printArray(ArrayList array){
+            for (int i = 0; i < array.size() ; i++) {
+                System.out.println(array.get(i).toString());
+            }
+        }
+
+    }//FIN
