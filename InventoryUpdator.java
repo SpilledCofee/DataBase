@@ -47,10 +47,9 @@ public class InventoryUpdator {
 
     //will call most of the other methods to validate that an order is valid
     //This will be able to access the data base and save the changes to the file....../XDm
-    public void makeOrder() {
+    public void makeOrder(){
 
     }
-
 
     private void processOrder(OrderItem order) throws FileNotFoundException {
         // Validating product id
