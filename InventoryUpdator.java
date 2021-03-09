@@ -22,6 +22,9 @@ public class InventoryUpdator {
     EntryItem item;
 
     public InventoryUpdator(){
+        in = new Scanner(System.in);
+        validOrders = new ArrayList<>(4000000);
+        failedOrders = new ArrayList<>(4000000);
         dataBase = new DataBase();
         array = new ArrayList<>(60000);
         try {
@@ -44,8 +47,57 @@ public class InventoryUpdator {
 
     //will call most of the other methods to validate that an order is valid
     //This will be able to access the data base and save the changes to the file....../XDm
-    public void makeOrder(){
+    public void makeOrder() throws FileNotFoundException {
+        // Getting order information from user
+        OrderItem order = GetOrder();
 
+        // Processing order
+        processOrder(order);
+    }
+
+
+    private void processOrder(OrderItem order) throws FileNotFoundException {
+        // Validating product id
+        if (!validateProductID(order.getProductId())){
+            System.out.println("Product does not exist in inventory.");
+
+            // Product id is invalid, adding order to failed orders
+            failedOrders.add(order);
+
+            return;
+        }
+
+        // Validating stock
+        if (!validateStock(order.getQuantity())){
+            if (item.getQuantity() == 0){
+                System.out.println("The product: "+ order.getProductId() + "is out of stock.");
+                return;
+            }
+            else{
+                System.out.println("Insufficient stock for product: " + order.getProductId() + " Only " + item.getQuantity() + " remaining");
+            }
+
+            // Not enough stock for product, adding order to failed orders
+            failedOrders.add(order);
+
+            return;
+        }
+
+        // Order is valid, updating quantity
+        int currentQuantity = item.getQuantity();
+        item.setQuantity(currentQuantity - order.getQuantity());
+
+        validOrders.add(order);
+
+        System.out.println();
+        System.out.println("Order completed successfully. New inventory value for product: ");
+        System.out.println("Product ID:        " + item.getProduct_id()
+                + "\nQuantity:          " + item.getQuantity()
+                + "\nWhole Sale Cost:   " + item.getWholesale_cost()
+                + "\nSale Price:        " + item.getSale_price()
+                + "\nSupplier ID:       " + item.getSupplier_id());
+
+        dataBase.saveFile();
     }
 
     private OrderItem GetOrder(){
@@ -62,12 +114,6 @@ public class InventoryUpdator {
 
         boolean user_confirmed = false;
         while (!user_confirmed) {
-
-            // module header
-            System.out.println(s);
-            System.out.println("Adding Order: ");
-            System.out.println(s);
-
             // Getting the user date for entry
             System.out.print("Enter Date(YYYY-MM-DD): ");
             date = in.next();
@@ -184,6 +230,7 @@ public class InventoryUpdator {
                 }
             }
         }
+
         return new OrderItem(date, cust_email, cust_location, product_id, quantity);
     }
 
@@ -198,7 +245,7 @@ public class InventoryUpdator {
     }
 
     //This will validate that there is enough items in stock to place the order
-    public void validateStock(int quantity){
+    public boolean validateStock(int quantity){
         //automatically making it false reduces the needs for checks
         stockOK = false;
         //If the product doesn't exist then there is not need to continue
@@ -209,6 +256,8 @@ public class InventoryUpdator {
                 stockOK = true;
             }
         }
+
+        return stockOK;
     }
 
     //This will create an interface with the user to upload their file
