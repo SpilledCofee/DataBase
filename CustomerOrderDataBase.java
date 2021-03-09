@@ -52,8 +52,21 @@ public class CustomerOrderDataBase {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+    //This new constuctor will be used in InventoryUpdater to allow a user to use the load method but with thier own file name
+    public CustomerOrderDataBase(String file) {
+        this.FILE_NAME = file;
+        orderInfo = new ArrayList<>(4000000);
+        console = new Scanner(System.in);
+        try {
+            loadFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
+    //A getter for the array list
+    public ArrayList<OrderItem> getOrderArray(){return orderInfo;}
 
     public void loadFile() throws FileNotFoundException {
         try {
@@ -785,7 +798,6 @@ public class CustomerOrderDataBase {
             if(cont.equalsIgnoreCase("yes")){
                 viewOrder();
             }
-
-}
-}
+        }
+    }
 }

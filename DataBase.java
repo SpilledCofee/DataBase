@@ -28,6 +28,9 @@ public class DataBase {
             e.printStackTrace();
         }
     }
+    //A getter method for the array list
+    public ArrayList<EntryItem> getRecordsArray(){return records;}
+    
     /* This method will read the CSV file and break up the data contained in each line.
     Then it will create an entryItem with the data contained in each line and push that entryItem into the array - JS
     */
