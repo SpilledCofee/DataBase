@@ -267,12 +267,4 @@ public class InventoryUpdator {
         // Processing order
         processOrder(order);
     }
-
-    //This will print an array's data, each with their own line.
-    public void printArray(ArrayList array){
-        for (int i = 0; i < array.size() ; i++) {
-            System.out.println(array.get(i).toString());
-        }
-    }
-
 }//FIN
