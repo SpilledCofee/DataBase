@@ -47,12 +47,8 @@ public class InventoryUpdator {
 
     //will call most of the other methods to validate that an order is valid
     //This will be able to access the data base and save the changes to the file....../XDm
-    public void makeOrder() throws FileNotFoundException {
-        // Getting order information from user
-        OrderItem order = GetOrder();
+    public void makeOrder() {
 
-        // Processing order
-        processOrder(order);
     }
 
 
@@ -265,7 +261,19 @@ public class InventoryUpdator {
 
     //This will create an interface with the user to make a single order
     public void individualOrdering(){
+    public void individualOrdering() throws FileNotFoundException {
+        // Getting order information from user
+        OrderItem order = GetOrder();
 
+        // Processing order
+        processOrder(order);
+    }
+
+    //This will print an array's data, each with their own line.
+    public void printArray(ArrayList array){
+        for (int i = 0; i < array.size() ; i++) {
+            System.out.println(array.get(i).toString());
+        }
     }
 
 }//FIN
