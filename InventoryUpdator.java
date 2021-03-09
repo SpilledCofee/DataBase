@@ -259,7 +259,6 @@ public class InventoryUpdator {
     public void massOrdering(){}
 
     //This will create an interface with the user to make a single order
-    public void individualOrdering(){
     public void individualOrdering() throws FileNotFoundException {
         // Getting order information from user
         OrderItem order = GetOrder();
