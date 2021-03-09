@@ -1,0 +1,433 @@
+/*
+========= MAIN =========
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #ffffff;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/spilled-coffee.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    color: #333333;
+    font-family: 'Lato', 'Arial', sans-serif;
+    font-weight: 300;
+    font-size: 24px;
+    text-rendering: optimizeLegibility;
+}
+
+.row {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.wrapper {
+    margin: 30px 0;
+}
+
+.align-right {
+    text-align: right;
+}
+
+/*
+========= HEADER =========
+*/
+
+
+nav {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.logo {
+    height: 100px;
+    width: auto;
+    float: left;
+    margin: 20px 20px;
+    
+}
+
+.cart-icon {
+    height: 25%;
+}
+
+.main-nav {
+    float: right;
+    list-style: none;
+    margin-top: 45px;
+}
+
+.main-nav li {
+    display: inline-block;
+    margin-left: 25px;
+}
+
+.main-nav li a:link,
+.main-nav li a:visited {
+    padding: 8px 0px;
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 100%;
+    border-bottom: 3px solid transparent;
+    transition: border-bottom .2s;
+}
+
+.main-nav li {
+    padding: 8px 0px;
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 100%;
+    border-bottom: 3px solid transparent;
+    transition: border-bottom .2s;
+}
+
+.main-nav li a:hover,
+.main-nav li a:active {
+    border-bottom: 3px solid #fff;
+}
+
+.hero-text-box {
+    position: absolute;
+    width: 1200px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/*
+========= HEADINGS =========
+*/
+
+h1 {
+    margin: 0;
+    color: #fff;
+    font-size: 400%;
+}
+
+h2 {
+    color: white;
+}
+
+h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 200%;
+    font-style: italic;
+}
+
+h4 {
+    color: white;
+}
+
+/*
+========= MODAL LOGIN/SIGNUP =========
+*/
+
+.login-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20%;
+    height: 10%;
+    background-color: #fff;
+    padding: 5rem;
+    border-radius: 5px;
+    box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.signup-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18%;
+    height: 50%;
+    background-color: #fff;
+    padding: 5rem;
+    border-radius: 5px;
+    box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 5;
+}
+
+.close-login-modal {
+    position: absolute;
+    text-align: right;
+    top: 0;
+    right: 20px;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.close-signup-modal {
+    position: absolute;
+    text-align: right;
+    top: 0;
+    right: 20px;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.login-form {
+    position: absolute;
+    text-align: center;
+    font-size: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.signup-form {
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-btn {
+    background-color:burlywood;
+    border-radius: 50px;
+    color: saddlebrown;
+    text-transform: uppercase;
+}
+
+/*
+========= BUTTONS =========
+*/
+
+.btn {
+    display: inline-block;
+    padding: 10px 30px;
+    font-weight: 500;
+    text-decoration: none;
+    margin: 15px 10px 0px 0px;
+}
+
+.btn-full {
+    background-color:burlywood;
+    border-radius: 50px;
+    color: saddlebrown;
+}
+
+.btn-full-bw {
+    background-color:rgba(0, 0, 0, 0.5);
+    border-radius: 50px;
+    color: rgb(255, 255, 255);
+}
+
+.btn-full-bw:hover {
+    background-color:rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    color: rgb(0, 0, 0);
+}
+
+/*
+========= FORMS =========
+*/
+
+input {
+    margin: 10px 0;
+    padding: 5px 3px;
+}
+
+/*
+========= PRODUCT GRID =========
+*/
+
+.grid-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: 31% 31% 31%;
+    column-gap: 42px;
+    width: 100%;
+}
+
+.sub-grid-container {
+    display: grid;
+    grid-template-columns: 32% 25% 41%;
+    column-gap: 2px;
+    width: 100%;
+    align-items: center;
+    justify-items: center;
+    height: 80px;
+    border-top: 2px dotted rgba(255, 255, 255, 0.5);
+}
+
+.stock-status {
+    color: white;
+    font-weight: 500;
+    border: 2px dotted rgba(255, 255, 255, 0.5);
+    font-size: 60%;
+    padding: 5px;
+}
+
+.stock-message {
+    color: white;
+    font-weight: 300;
+    font-size: 40%;
+    padding: 3px;
+}
+
+.quant-input {
+    width: 75%;
+    /* height: 40px; */
+}
+
+.quant-label {
+    color: white;
+    font-weight: 300;
+    font-size: 55%;
+    padding: 0;
+    margin-bottom: -10px;
+}
+
+.grid-item {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 0;
+    font-size: 30px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.grid-item > img {
+    max-width: 100%;
+}
+
+.grid-item > p {
+    color: #fff;
+    font-weight: 300;
+    font-size: 80%;
+    text-align: left;
+    padding: 15px;
+    margin-bottom: 20px;
+    min-width: 100%;
+    min-height: 100px;
+}
+
+.grid-item-button {
+    text-decoration: none;
+    font-size: 50%;
+    font-weight: 800;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    margin: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/*
+========= USER MESSAGES =========
+*/
+
+.user-message-products {
+    position: relative;
+    height: 100px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.75);
+    color: black;
+    text-align: center;
+    font-size: 160%;
+    margin-bottom: 30px;
+}
+
+.user-message-products > p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+.close-user-message-products {
+    position: absolute;
+    text-align: right;
+    top: 0;
+    right: 20px;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.user-message-cart {
+    position: relative;
+    height: 100px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.75);
+    color: black;
+    text-align: center;
+    font-size: 160%;
+    margin-bottom: 30px;
+}
+
+.user-message-cart > p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+
+/*
+========= CART =========
+*/
+
+.cart-container {
+    width:100%;
+}
+
+.cart-table {
+    width: 100%;
+    color: white;
+    border: 3px solid white;
+    padding: 50px 15px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.btn-table {
+    vertical-align: middle;
+    margin: 10px;
+    padding: 10px 10px;
+}
+
+.cart-table-top-row {
+    border-bottom: 3px solid white;
+}
+
+.cart-table-border-cell {
+    border-bottom: 3px solid white;
+}
