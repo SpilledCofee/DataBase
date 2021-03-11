@@ -22,22 +22,23 @@ public class InventoryUpdator {
     //receipt of all the orders that went through and all the orders that failed
     private ArrayList<OrderItem> validOrders, failedOrders;
     //These two arrays are dublicates of the data bases' arrays
-    private ArrayList<OrderItem> currentOrders;
+    private ArrayList<OrderItem> currentOrders, orders;
     private ArrayList<EntryItem> inventory;
     private boolean product_idOK, stockOK;
     EntryItem item;
 
     public InventoryUpdator(){
         in = new Scanner(System.in);
-        validOrders = new ArrayList<>(4000000);
-        failedOrders = new ArrayList<>(4000000);
+        validOrders = new ArrayList<>(40000);
+        failedOrders = new ArrayList<>(40000);
+
+        //This loads the inventory database
         dataBase = new DataBase();
-        try {
-            dataBase.loadFile();
-        } catch (FileNotFoundException fileNotFoundException) {
-            fileNotFoundException.printStackTrace();
-        }
         inventory = dataBase.getRecordsArray();
+
+        //this loads the Customer Order data base
+        orderDB = new CustomerOrderDataBase();
+        orders = orderDB.getOrderArray();
     }
 
     //This will make a menu giving the user options to use either a file or place a single order
@@ -51,22 +52,16 @@ public class InventoryUpdator {
           -There are no user prompts! :) (this keeps the code more flexible)
      */
     public void loadUserFile(String file){
-        orderDB = new CustomerOrderDataBase(file);
+        CustomerOrderDataBase temp = new CustomerOrderDataBase(file);
         try {
-            orderDB.loadFile();
+            temp.loadFile();
         } catch (FileNotFoundException fileNotFoundException) {
             fileNotFoundException.printStackTrace();
         }
-        currentOrders = orderDB.getOrderArray();
+        currentOrders = temp.getOrderArray();
         //TESTING
         //System.out.println(currentOrders.size());
         //System.out.println(currentOrders.toString());
-    }
-
-    //will call most of the other methods to validate that an order is valid
-    //This will be able to access the data base and save the changes to the file....../XDm
-    public void makeOrder(){
-
     }
 
     private void processOrder(OrderItem order) throws FileNotFoundException {
@@ -101,7 +96,10 @@ public class InventoryUpdator {
         item.setQuantity(currentQuantity - order.getQuantity());
 
         validOrders.add(order);
-
+        orders.add(order);
+        saveInventory();
+        saveOrders();
+        /*
         System.out.println();
         System.out.println("Order completed successfully. New inventory value for product: ");
         System.out.println("Product ID:        " + item.getProduct_id()
@@ -110,7 +108,8 @@ public class InventoryUpdator {
                 + "\nSale Price:        " + item.getSale_price()
                 + "\nSupplier ID:       " + item.getSupplier_id());
 
-        dataBase.saveFile();
+        */
+
     }
 
 
@@ -175,6 +174,7 @@ public class InventoryUpdator {
                     break;
                 } else {
                     System.out.println("Invalid Email");
+                    cust_email = in.nextLine();
                 }
             }
 
@@ -233,13 +233,6 @@ public class InventoryUpdator {
         }
         //This will add the order to the CustomerOrderDatabase once the order has been placed
         OrderItem item = new OrderItem(date, cust_email, cust_location, product_id, quantity);
-        orderDB.getOrderArray().add(item);
-        try {
-            orderDB.saveFile();
-        } catch (FileNotFoundException fileNotFoundException) {
-            fileNotFoundException.printStackTrace();
-        }
-
         return item;
     }
 
@@ -290,4 +283,36 @@ public class InventoryUpdator {
             }
         }
 
+    public void saveInventory() throws FileNotFoundException {
+
+        try {
+            PrintWriter out = new PrintWriter("inventory_team1.csv");
+            //This puts back the labels that the loadFile removed
+            out.println("product_id,quantity,wholesale_cost,sale_price,supplier_id");
+            int i = 0;
+
+            while (i < inventory.size()) {
+                String saved = inventory.get(i).toString();
+                out.println(saved);
+                i++;
+            }
+            out.close();
+        } catch (FileNotFoundException e) { }
+    }
+    public void saveOrders() throws FileNotFoundException {
+
+        try {
+            PrintWriter out = new PrintWriter("customer_orders_team1.csv");
+            //This puts back the labels that the loadFile removed
+            out.println("date,cust_email,cust_location,product_id,product_quantity");
+            int i = 0;
+
+            while (i < orders.size()) {
+                String saved = orders.get(i).toString();
+                out.println(saved);
+                i++;
+            }
+            out.close();
+        } catch (FileNotFoundException e) { }
+    }
     }//FIN
