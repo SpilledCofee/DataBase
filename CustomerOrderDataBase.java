@@ -102,7 +102,7 @@ public class CustomerOrderDataBase {
         try {
             PrintWriter out = new PrintWriter(FILE_NAME);
             //This puts back the labels that the loadFile removed
-            out.println();
+            out.println("date,cust_email,cust_location,product_id,product_quantity");
             int i = 0;
 
             while (i < orderInfo.size()) {
