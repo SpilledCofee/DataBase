@@ -6,15 +6,33 @@ const overlay = document.querySelector('.overlay');
 const btnsShowLoginModal = document.querySelector('.show-login-modal');
 const btnsShowSignupModal = document.querySelector('.show-signup-modal');
 const linkShowLoginModal = document.querySelector('.show-login-modal-link');
+const linkShowSignupModal = document.querySelector('.show-signup-modal-link');
 const btnCloseLoginModal = document.querySelector('.close-login-modal');
 const btnCloseSignupModal = document.querySelector('.close-signup-modal');
-const btnCloseUserMessageProducts = document.querySelector('.close-user-message-products');
-const userMessageProducts = document.querySelector('.user-message-products');
+const btnCloseUserMessage = document.querySelector('.close-user-message');
+const btnCloseUserMessageCart = document.querySelector('.close-user-message-cart');
+const btnCloseUserMessageOrders = document.querySelector('.close-user-message-order');
+const btnCloseUserMessageCheckout = document.querySelector('.close-user-message-checkout');
+const btnCloseUserMessageStatement = document.querySelector('.close-user-message-statement');
+const userMessage = document.querySelector('.user-message');
+const userMessageCart = document.querySelector('.user-message-cart');
+const userMessageOrders = document.querySelector('.user-message-orders');
+const userMessageCheckout = document.querySelector('.user-message-checkout');
+const userMessageStatement = document.querySelector('.user-message-statement');
+
 
 if (linkShowLoginModal) {
     linkShowLoginModal.addEventListener('click', function() {
         console.log('Button clicked');
         login_modal.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+    })
+}
+
+if (linkShowSignupModal) {
+    linkShowSignupModal.addEventListener('click', function() {
+        console.log('Button clicked');
+        signup_modal.classList.remove('hidden');
         overlay.classList.remove('hidden');
     })
 }
@@ -49,9 +67,10 @@ if (btnCloseSignupModal) {
     })
 }
 
-if (btnCloseUserMessageProducts) {
-    btnCloseUserMessageProducts.addEventListener('click', function() {
+if (btnCloseUserMessage) {
+    btnCloseUserMessage.addEventListener('click', function() {
         console.log('Button clicked');
-        userMessageProducts.classList.add('hidden');
+        userMessage.classList.add('hidden');
     })
 }
+
