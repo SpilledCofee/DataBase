@@ -1,7 +1,7 @@
 Last update: 3-12-21
 
-Customer Web App Test
-Team 1: SpilledCoffee
+# Customer Web App Test
+# Team 1: SpilledCoffee
 
 Basic website for customer order placement using HTML/CSS/JS/PHP/MySQL.
 All images used are free-to-use with no attribution.
@@ -28,7 +28,8 @@ Current functionality:
   - Error messages
   
 Sprint 3 Goals:
-  - Validate checkout form for valid zip code
+  - Add comments to code
+  - Validate checkout form
   - Double check all error msgs
   
 Future goals:
