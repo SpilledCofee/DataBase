@@ -41,8 +41,38 @@ public class InventoryUpdator {
         orders = orderDB.getOrderArray();
     }
 
+    // Main method to call other methods
+    public static void  main(String [] args) throws IOException{
+        InventoryUpdator inventoryUpdator = new InventoryUpdator();
+        inventoryUpdator.displayMenu();
+    }
+
     //This will make a menu giving the user options to use either a file or place a single order
-    public void displayMenu(){
+    public void displayMenu() throws FileNotFoundException {
+        boolean quit = false;
+        while (!quit) {
+            // Printing out prompts to the user
+            System.out.print("\na.    Place individual order\n" +
+                    "b.    Place mass order\n" +
+                    "c.    Quit\n" +
+                    "Please enter an letter prompt to proceed. ");
+
+
+            //This will receive the user input and process the correct char to
+            //the correct if statement to proceed to the methods
+            String input = in.next();
+            if (input.contains("a")) {
+                individualOrdering();
+            }
+            if (input.contains("b")) {
+                massOrdering();
+            }
+            if (input.contains("c")) {
+               quit = true;
+            }
+
+        }
+
 
     }
 
@@ -79,7 +109,7 @@ public class InventoryUpdator {
         if (!validateStock(order.getQuantity())){
             if (item.getQuantity() == 0){
                 System.out.println("The product: "+ order.getProductId() + "is out of stock.");
-                return;
+
             }
             else{
                 System.out.println("Insufficient stock for product: " + order.getProductId() + " Only " + item.getQuantity() + " remaining");

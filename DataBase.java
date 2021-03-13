@@ -438,8 +438,6 @@ public class DataBase {
      */
     public EntryItem viewRecord(String product_id){
 
-        EntryItem item = new EntryItem();
-
         // user product id scanner
         Scanner sc = new Scanner(System.in);
         EntryItem itemSearchingFor = null;
