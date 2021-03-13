@@ -10,13 +10,4 @@
         </form>
     </div>
 </div>
-<?php
-    if (isset($_GET["error"])){
-        if ($_GET["error"] == "emptyinput") {
-            echo "Please fill in all fields!";
-        } else if ($_GET["error"] == "wronglogin") {
-            echo "Incorrect login information!";
-        }
-    }
-?>
 <div class="overlay hidden"></div>

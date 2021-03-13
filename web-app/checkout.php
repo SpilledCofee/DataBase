@@ -1,38 +1,31 @@
 <?php
-    include_once 'header.php'
+    include_once 'header.php';
 ?>
 <div class="row">
     <div class="cart-container">
-        <?php
+        <?php       
             if (!isset($_SESSION['useruid'])) {
                 header('Location: ./?error=illegalaccess');
             }
-            if (isset($_GET['error'])) {
-                if ($_GET['error'] === 'stmtfailed') {
-                echo '<div class="user-message">';
-                echo '<div class="close-user-message">&times;</div>';
-                    echo '<p>There was a problem getting the information. Try again later.</p>';
-                echo '</div>';
-                }
-            }
             if (isset($_GET['removedfromcart'])) {
-                echo '<div class="user-message">';
-                echo '<div class="close-user-message">&times;</div>';
+                echo '<div class="user-message-cart">';
+                echo '<div class="close-user-message-cart">&times;</div>';
                     echo '<p>Item has been removed from your cart!</p>';
                 echo '</div>';
             }
             if (empty($_SESSION['cart'])) {
-                echo '<div class="user-message">';
+                echo '<div class="user-message-cart">';
+                echo '<div class="close-user-message-cart">&times;</div>';
                     echo '<p>Your cart is currently empty!<br>Check out our <a href="./products">products</a>.</p>';
                 echo '</div>';
             } else {
-                echo '<h2>YOUR SHOPPING CART</h2>';
+                echo '<h2>CONFIRM YOUR ORDER</h2>';
                 echo '<table class="cart-table" cellspacing="5px">';
                 echo '<tr style="padding-top: 50px;">';
-                echo '<td>ITEM #</td>';
-                echo '<td style="width:50%;">PRODUCT</td>';
-                echo '<td style="width:10%;">QTY</td>';
-                echo '<td style="width:10%;">PRICE</td>';
+                echo '<td>Item #</td>';
+                echo '<td>PRODUCT</td>';
+                echo '<td>QTY</td>';
+                echo '<td>PRICE</td>';
                 echo '</tr>';
                 echo '<tr>';
                 echo '<td class="cart-table-top-row" colspan="5"></td>';
@@ -59,28 +52,23 @@
 
                     $row = mysqli_fetch_assoc($resultdata);
 
-                    $product_title = $row["product_title"];
-                    $product_desc = $row["product_description"];
-                    $price = $row["price"];
+                        $product_title = $row["product_title"];
+                        $product_desc = $row["product_description"];
+                        $price = $row["price"];
 
-                    echo '<h2 style="color: white">';
-                    echo '<tr>';
-                    echo '<td>';
-                    echo $i+1;
-                    echo '</td><td>';
-                    echo $product_title;
-                    echo '</td><td>';
-                    echo $cart[$i][1];
-                    echo '</td><td>';
-                    echo number_format($price*$cart[$i][1], 2);
-                    echo '</td><td valign="middle">';
-                    // echo '<button class="btn btn-full-bw btn-table">';
-                    // echo '&nbsp&nbspUPDATE&nbsp&nbsp</button>';
-                    echo '<button class="btn btn-full-bw btn-table" type="submit"';
-                        echo 'onclick="delRedirect('.$i.')">';
-                    echo '<script src="js/delRedirect.js"></script>';
-                    echo '&nbsp&nbspDELETE&nbsp&nbsp</button>';
-                    echo '</td></tr></h2>';
+                        echo '<h2 style="color: white">';
+                        echo '<tr>';
+                        echo '<td>';
+                        echo $i+1;
+                        echo '</td><td>';
+                        echo $product_title;
+                        echo '</td><td>';
+                        echo $cart[$i][1];
+                        echo '</td><td>';
+                        echo number_format($price*$cart[$i][1], 2);
+                        echo '</td><td valign="middle">';
+                        echo '</td></tr></h2>';
+                    
 
                     mysqli_stmt_close($stmt);
                     $totalprice += $price*$cart[$i][1];
@@ -95,15 +83,15 @@
                 echo $totalquantity;
                 echo '</td><td>';
                 echo number_format($totalprice, 2);
-                echo '</td><td style="width: 15%"></td><tr><td align="center" colspan="5">';
-                echo '<a href="checkout"><button class="btn btn-full-bw btn-table"><h2>&nbsp&nbspCHECKOUT&nbsp&nbsp</h3></button>';
+                echo '</td><td>';
                 echo '</td></tr></h2>';
                 echo '</table>';
+                include_once 'checkout-form.php';
             }
         ?>
     </div>
 </div>
 
 <?php
-    include_once 'footer.php'
+    include_once 'footer.php';
 ?>

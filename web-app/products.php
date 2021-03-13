@@ -3,8 +3,8 @@
 ?>
 
 <?php
-    if (!isset($_SESSION["useruid"]) && !isset($_SESSION["userid"])) {
-        header('Location: index.php?error=illegalaccess');
+    if (!isset($_SESSION["useruid"]) || !isset($_SESSION["userid"])) {
+        header('Location: ./?error=illegalaccess');
         exit();
     }
 ?>

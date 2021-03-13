@@ -1,15 +1,29 @@
+<?php
+    session_start();
+    if (!isset($_SESSION["useruid"]) || !isset($_SESSION["userid"])) {
+        header('Location: ./?error=illegalaccess');
+        exit();
+    }
+?>
+
 <div class="row">
     <?php
         if (isset($_GET['addedtosessioncart'])) {
-            echo '<div class="user-message-products">';
-                echo '<div class="close-user-message-products">&times;</div>';
-                echo '<p>Item added to you cart!</p>';
+            echo '<div class="user-message">';
+                echo '<div class="close-user-message">&times;</div>';
+                echo '<p>Item added to you cart!<br><a class="btn btn-full" style="font-size: 80%;" href="cart">VIEW CART</a></p>';
             echo '</div>';
         } else if (isset($_GET['error'])) { 
             if ($_GET['error'] == 'selectquantity') {
-                echo '<div class="user-message-products">';
-                    echo '<div class="close-user-message-products">&times;</div>';
-                    echo '<p>You must choose a quantity to add item to your cart!</p>';
+                echo '<div class="user-message">';
+                    echo '<div class="close-user-message">&times;</div>';
+                    echo '<p>You must choose a quantity to add an item to your cart!</p>';
+                echo '</div>';
+            }
+            if ($_GET['error'] == 'stmtfailed') {
+                echo '<div class="user-message">';
+                    echo '<div class="close-user-message">&times;</div>';
+                    echo '<p>There was a problem retrieving our products!<br>Try again later or contact us.</p>';
                 echo '</div>';
             }
         }
@@ -44,15 +58,24 @@
                         }
                         echo '</div>';
                         echo '<div class="align-right">';
-                            if ($quantity > 10) {
-                                echo '<p class="quant-label">QTY:</p>';
-                                echo '<input class="quant-input" type="number" id="'.$product_id.'quantity" name="quantity" min="0" max="10">';
-                            } else if ($quantity < 10 && $quantity > 0) {
-                                echo '<p class="quant-label">QTY:</p>';
-                                echo '<input class="quant-input" type="number" id="'.$product_id.'quantity" name="quantity" min="0" max="'.$quantity.'">';
-                            } else {
-                                echo '';
-                            }
+                                if ($quantity > 10) {
+                                    echo '<p class="quant-label">QTY:</p>';
+                                    echo '<select id="'.$product_id.'quantity" name="quantity">';
+                                    echo '<option value="0"></option>';
+                                    for ($i = 1; $i <= 10; $i++) {
+                                        echo '<option value="'.$i.'">'.$i.'</option>';
+                                    }
+                                } else if ($quantity < 10 && $quantity > 0) {
+                                    echo '<p class="quant-label">QTY:</p>';
+                                    echo '<select id="'.$product_id.'quantity" name="quantity">';
+                                    echo '<option value="0"></option>';
+                                    for ($i = 1; $i <= $quantity; $i++) {
+                                        echo '<option value="'.$i.'">'.$i.'</option>';
+                                    }
+                                } else {
+                                    echo '';
+                                }
+                            echo '</select>';
                         echo '</div>';
                         echo '<button class="btn btn-full-bw grid-item-button" type="submit" onclick="redirect('.$product_id.');">ADD TO CART</button>';
                         echo '<script src="js/redirect.js"></script>';
