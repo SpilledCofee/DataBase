@@ -112,7 +112,59 @@ function loginUser($conn, $username, $psw) {
         $_SESSION["userid"] = $uidExists["usersId"];
         $_SESSION["useruid"] = $uidExists["usersUid"];
         $_SESSION["cart"] = array();
-        header("location: ../products.php");
+        header("location: ../products");
         exit();
     }
+}
+
+function ordersExist($conn, $usersId) {
+    $sql = "SELECT * FROM orders WHERE usersId = ?";
+
+    $stmt = mysqli_stmt_init($conn);
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ./orders?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $usersId);
+    mysqli_stmt_execute($stmt);
+
+    $resultdata = mysqli_stmt_get_result($stmt);
+
+    if ($row = mysqli_fetch_assoc($resultdata)) {
+        $result = true;
+        return $result;
+    } else {
+        $result = false;
+        return $result;
+    }
+
+    mysqli_stmt_close($stmt);
+}
+
+function getUserOrders ($conn, $id) {
+
+    $sql = "SELECT * FROM orders WHERE usersId = ?;";
+
+    $stmt = mysqli_stmt_init($conn);
+
+    if (!mysqli_stmt_prepare($stmt, $sql)) {
+        header("location: ../orders.php?error=stmtfailed");
+        exit();
+    }
+
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
+
+    $resultdata = mysqli_stmt_get_result($stmt);
+
+    while ($row = mysqli_fetch_assoc($resultdata)) {
+        $order_id = $row['order_id'];
+        $order_date = $row['order_date'];
+        $order_quantity = $row['order_quantity'];
+        $order_total = $row['order_total'];
+        $order_status = $row['order_status'];
+        include 'order-table-inc.php';
+    }
+    mysqli_stmt_close($stmt);
 }
