@@ -9,7 +9,6 @@
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.ArrayList;
 
@@ -68,7 +67,7 @@ public class InventoryUpdator {
                 massOrdering();
             }
             if (input.contains("c")) {
-               quit = true;
+                quit = true;
             }
 
         }
@@ -83,11 +82,6 @@ public class InventoryUpdator {
      */
     public void loadUserFile(String file){
         CustomerOrderDataBase temp = new CustomerOrderDataBase(file);
-        try {
-            temp.loadFile();
-        } catch (FileNotFoundException fileNotFoundException) {
-            fileNotFoundException.printStackTrace();
-        }
         currentOrders = temp.getOrderArray();
         //TESTING
         //System.out.println(currentOrders.size());
@@ -117,18 +111,14 @@ public class InventoryUpdator {
 
             // Not enough stock for product, adding order to failed orders
             failedOrders.add(order);
-
             return;
         }
 
         // Order is valid, updating quantity
         int currentQuantity = item.getQuantity();
         item.setQuantity(currentQuantity - order.getQuantity());
-
         validOrders.add(order);
         orders.add(order);
-        saveInventory();
-        saveOrders();
         /*
         System.out.println();
         System.out.println("Order completed successfully. New inventory value for product: ");
@@ -288,30 +278,81 @@ public class InventoryUpdator {
                 stockOK = true;
             }
         }
-
         return stockOK;
+    }
+    public String getFILE(){
+        Scanner user = new Scanner(System.in);
+        System.out.println("Please enter the file's name");
+        String file = user.nextLine();
+        return file;
     }
 
     //This will create an interface with the user to upload their file
     public void massOrdering() throws FileNotFoundException {
+        String s = "----------------------------------------"; // separator
+        String file = getFILE();
+        loadUserFile(file);
+        for (int i = 0; i < currentOrders.size(); i++) {
+            processOrder(currentOrders.get(i));
+        }
 
+        if(failedOrders.size() == 0){
+            System.out.println(s);
+            System.out.println("All orders were able to be placed!");
+            System.out.println(s);
+            System.out.println();
+            System.out.println("Would you like to place these orders?");
+        }
+        else{
+            System.out.println("Sorry. these orders were not able to be processed");
+            System.out.println(s);
+            System.out.println();
+            printArray(failedOrders);
+            System.out.println("These are able to be processed:");
+            System.out.println(s);
+            System.out.println();
+            printArray(validOrders);
+            System.out.println("Would you like to place these orders? 'yes' or 'no'");
+        }
+        Boolean good = false;
+        String answer = in.nextLine();
+        while(!good)
+
+        if(answer.contains("y")){
+            saveOrders();
+            saveInventory();
+            System.out.println(s);
+            System.out.println("Orders have been placed.");
+            System.out.println(s);
+            good = true;
+        }
+        else if (answer.contains("n")){
+            System.out.println("Ok, orders will not be placed. Good bye!");
+            //Existing because it will be too difficult to try to delete order items out of array
+            System.exit(1);
+        }
+        else{
+            System.out.println("Please enter yes or no");
+            answer = in.nextLine();
+        }
     }
 
-        //This will create an interface with the user to make a single order
-        public void individualOrdering() throws FileNotFoundException {
-            // Getting order information from user
-            OrderItem order = GetOrder();
+    //This will create an interface with the user to make a single order
+    public void individualOrdering() throws FileNotFoundException {
+        // Getting order information from user
+        OrderItem order = GetOrder();
+        // Processing order
+        processOrder(order);
+        saveInventory();
+        saveOrders();
+    }
 
-            // Processing order
-            processOrder(order);
+    //This will print an array's data, each with their own line.
+    public void printArray(ArrayList array){
+        for (int i = 0; i < array.size() ; i++) {
+            System.out.println(array.get(i).toString());
         }
-
-        //This will print an array's data, each with their own line.
-        public void printArray(ArrayList array){
-            for (int i = 0; i < array.size() ; i++) {
-                System.out.println(array.get(i).toString());
-            }
-        }
+    }
 
     public void saveInventory() throws FileNotFoundException {
 
@@ -330,7 +371,6 @@ public class InventoryUpdator {
         } catch (FileNotFoundException e) { }
     }
     public void saveOrders() throws FileNotFoundException {
-
         try {
             PrintWriter out = new PrintWriter("customer_orders_team1.csv");
             //This puts back the labels that the loadFile removed
@@ -345,4 +385,4 @@ public class InventoryUpdator {
             out.close();
         } catch (FileNotFoundException e) { }
     }
-    }//FIN
+}//FIN
