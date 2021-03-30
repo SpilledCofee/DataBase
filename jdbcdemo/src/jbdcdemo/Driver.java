@@ -1,9 +1,15 @@
 package jbdcdemo;
 import java.util.*;
+
+
 import java.sql.*;
 
 public class Driver {
-	
+
+	public static String url = "";
+	public static String username = "";
+	public static String password = "";
+
 	public static void main(String[] args) {
 		
 		Scanner input = new Scanner(System.in);
@@ -32,11 +38,8 @@ public class Driver {
 	}
 	public static void searchOrder() {
 		
-		String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
-		String username = "fbacon_josht";
-		String password = "spilled123";
-		
-	
+
+
 		Scanner scanner = new Scanner(System.in);
 		
 		try {
@@ -207,11 +210,7 @@ public class Driver {
 		
 		public static void addOrder() {
 			
-			String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
-			String username = "fbacon_josht";
-			String password = "spilled123";
 			
-		
 			Scanner scanner = new Scanner(System.in);
 			Connection connection = null;
 			Statement myStmt = null;
@@ -278,11 +277,6 @@ public class Driver {
 			
 	}
 		public static void updateOrder() {
-			
-			String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
-			String username = "fbacon_josht";
-			String password = "spilled123";
-			
 			
 		
 			Scanner scanner = new Scanner(System.in);
@@ -426,12 +420,6 @@ public class Driver {
 	}
 		
 		public static void deleteOrder() {
-			
-			String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
-			String username = "fbacon_josht";
-			String password = "spilled123";
-			
-			
 		
 			Scanner scanner = new Scanner(System.in);
 			Connection connection = null;
