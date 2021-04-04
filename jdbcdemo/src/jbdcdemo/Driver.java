@@ -10,15 +10,21 @@ public class Driver {
 	public static String username = "";
 	public static String password = "";
 
+	private Scanner in = new Scanner(System.in);
+
 	public static void main(String[] args) {
+		Driver drive = new Driver();
+		drive.displayMenu();
 		
+	}
+	public void displayMenu(){
 		Scanner input = new Scanner(System.in);
-		
 		System.out.println("Select a prompt: ");
-		System.out.print("a. Search for orders\n"
-				+ "b. Add a new order\n"
-				+ "c. Update an order\n"
-				+ "d. Delete an order\n");;
+		System.out.println("a. Search for orders\n"
+			+ "b. Add a new order\n"
+			+ "c. Update an order\n"
+			+ "d. Delete an order\n"
+			+ "f. To quite\n");
 
 		String prompt = input.next();
 		
@@ -35,11 +41,19 @@ public class Driver {
 		if(prompt.contains("d")) {
 			deleteOrder();
 		}
+		if(prompt.contains("f")) {
+			System.exit(1);
+		}
+		/*else{
+			System.out.println("Please enter a valid selection.\n");
+			displayMenu();
+		}
+		*/
+
 	}
-	public static void searchOrder() {
+
+	public void searchOrder() {
 		
-
-
 		Scanner scanner = new Scanner(System.in);
 		
 		try {
@@ -55,12 +69,9 @@ public class Driver {
 			System.out.println();
 			String select = scanner.next();
 			
-			
-			
-			
+
 			if(select.contains("a")) {
 				
-			
 				System.out.println("Enter Customer Email: ");
 				String email = scanner.next();
 			
@@ -69,6 +80,17 @@ public class Driver {
 		
 			
 				ResultSet myRs = myStmt.executeQuery();
+				
+				/*Would like to find out how to give a entry not found message
+
+				FAILED:
+				if(myRs == null){
+					System.out.println("Sorry, that email was not found.");
+				}
+				
+				FAILED: if(myRs.getFetchSize() == 0)
+
+				*/
 			
 			
 				while (myRs.next()) {
@@ -80,13 +102,7 @@ public class Driver {
 					System.out.println("Quantity: " + myRs.getInt("product_quantity"));
 					System.out.println("Order ID: " + myRs.getString("order_id"));
 					System.out.println();
-			}
-				
-				
-				
-				
-				
-				
+				}				
 			}
 			
 			if(select.contains("b")) {
@@ -140,9 +156,7 @@ public class Driver {
 					System.out.println("Order ID: " + myRs.getString("order_id"));
 					System.out.println();
 			}
-				
-				
-				
+					
 			}
 			
 			if(select.contains("d")) {
@@ -205,12 +219,19 @@ public class Driver {
 			System.out.println("oops, error!");
 			e.printStackTrace();
 		}
+		System.out.println("Would you like to make another search?\n" 
+			+ "Yes or no?\n");
+		String answer = in.nextLine();
+		if(answer.contains("y") || answer.contains("Y")){
+			searchOrder();
+		}
+		else{
+			displayMenu();
 		}
 	
-		
-		public static void addOrder() {
-			
-			
+	}
+		public void addOrder() {
+
 			Scanner scanner = new Scanner(System.in);
 			Connection connection = null;
 			Statement myStmt = null;
@@ -225,6 +246,10 @@ public class Driver {
 				System.out.println();
 				System.out.println("Enter the date(format 01-01-2021): ");
 				String date = scanner.next();
+				while(!date.contains("-")){
+					System.out.println("Please enter the date in corect format: ");
+					date = scanner.next();
+				}
 				System.out.println();
 				
 				System.out.println();
@@ -235,6 +260,10 @@ public class Driver {
 				System.out.println();
 				System.out.println("Enter customer zip code: ");
 				String custZip = scanner.next();
+				while(custZip.length() != 5){
+					System.out.println("Invalid zip, try again: ");
+					custZip = scanner.next();
+				}
 				System.out.println();
 				
 				System.out.println();
@@ -274,9 +303,18 @@ public class Driver {
 			}catch(SQLException se) {
 				se.printStackTrace();
 			}
+			System.out.println("Would you like to add another order?\n" 
+			+ "Yes or no?\n");
+		String answer = in.nextLine();
+		if(answer.contains("y") || answer.contains("Y")){
+			addOrder();
+		}
+		else{
+			displayMenu();
+		}
 			
 	}
-		public static void updateOrder() {
+		public void updateOrder() {
 			
 		
 			Scanner scanner = new Scanner(System.in);
@@ -290,11 +328,11 @@ public class Driver {
 				
 				System.out.println();
 				System.out.println("Search for the order you'd like to update by: ");
-				System.out.println("a. Customer email.");
+				//System.out.println("a. Customer email.");
+				//System.out.println("b. Zip.");
+				//System.out.println("b. Product ID.");
 				System.out.println();
 				String select = scanner.next();
-				
-				
 				
 				
 				if(select.contains("a")) {
@@ -397,9 +435,7 @@ public class Driver {
 						upStmt2.execute();
 						
 					}
-					
-				
-					
+
 				
 				}
 				
@@ -416,86 +452,105 @@ public class Driver {
 			}catch(SQLException se) {
 				se.printStackTrace();
 			}
+		System.out.println("Would you like to update another order?\n" 
+			+ "Yes or no?\n");
+		String answer = in.nextLine();
+		if(answer.contains("y") || answer.contains("Y")){
+			updateOrder();
+		}
+		else{
+			displayMenu();
+		}
 			
 	}
 		
-		public static void deleteOrder() {
+	public void deleteOrder() {
 		
-			Scanner scanner = new Scanner(System.in);
-			Connection connection = null;
-			Statement myStmt = null;
+		Scanner scanner = new Scanner(System.in);
+		Connection connection = null;
+		Statement myStmt = null;
 			
-			try {
+		try {
 				
-				connection = DriverManager.getConnection(url, username, password);
-				
-				System.out.println();
-				System.out.println("Search order to delete.");
-				System.out.println("Enter the selection to search by: ");
-				System.out.println("a. Customer email.");
-
-				System.out.println();
-				String select = scanner.next();
-				
-				if(select.contains("a")) {
+			connection = DriverManager.getConnection(url, username, password);
 					
-					
-					System.out.println("Enter Customer Email: ");
-					String email = scanner.next();
-				
-				
-					//Statement myStmt = connection.createStatement();
-					PreparedStatement searchStmt = connection.prepareStatement("Select * FROM customer_orders2 WHERE cust_email = '" + email + "'");
-			
-				
-					ResultSet myRs = searchStmt.executeQuery();
-				
-				
-					while (myRs.next()) {
-						System.out.println();
-						System.out.println("Date: " + myRs.getString("date"));
-						System.out.println("Email: " + myRs.getString("cust_email"));
-						System.out.println("Zip Code: " + myRs.getString("cust_location"));
-						System.out.println("Product ID: " + myRs.getString("product_id"));
-						System.out.println("Quantity: " + myRs.getInt("product_quantity"));
-						System.out.println("Order ID: " + myRs.getString("order_id"));
-						System.out.println();
-						System.out.println();
+			System.out.println("Do you have the order ID? Yes or no?");
+			String answer = scanner.next();
+			if(answer.contains("Y") || answer.contains("y")){
 						
+				System.out.println("Enter the order ID of the order you would like deleted.");
+				int oid = scanner.nextInt();
+				System.out.println();
+						
+				System.out.println("Are you sure you want to delete this order?");
+				String ans = scanner.next();
+						
+				if(ans.contains("y") || ans.contains("Y")) {
+					String query = "DELETE FROM customer_orders2 WHERE order_id = '" + oid + "'";
+						
+					PreparedStatement delStmt = connection.prepareStatement(query);
+					delStmt.execute();
+				}
+			}
+			else{
+				System.out.println("Enter Customer Email: ");
+				String email = scanner.next();
+					
+					
+				//Statement myStmt = connection.createStatement();
+				PreparedStatement searchStmt = connection.prepareStatement("Select * FROM customer_orders2 WHERE cust_email = '" + email + "'");
+				
+					
+				ResultSet myRs = searchStmt.executeQuery();
+					
+					
+				while (myRs.next()) {
+					System.out.println();
+					System.out.println("Date: " + myRs.getString("date"));
+					System.out.println("Email: " + myRs.getString("cust_email"));
+					System.out.println("Zip Code: " + myRs.getString("cust_location"));
+					System.out.println("Product ID: " + myRs.getString("product_id"));
+					System.out.println("Quantity: " + myRs.getInt("product_quantity"));
+					System.out.println("Order ID: " + myRs.getString("order_id"));
+					System.out.println();
+					System.out.println();
+							
 					System.out.println("Enter the order ID of the order you would like deleted.");
 					int oid = scanner.nextInt();
 					System.out.println();
-					
+						
 					System.out.println("Are you sure you want to delete this order?");
 					String ans = scanner.next();
-					
-					if(ans.contains("y")) {
+						
+					if(ans.contains("y") || ans.contains("Y")) {
 						String query = "DELETE FROM customer_orders2 WHERE order_id = '" + oid + "'";
-					
+						
 						PreparedStatement delStmt = connection.prepareStatement(query);
 						delStmt.execute();
 					}
+					break;
 				}
-					
-					
-					
-				}
-				
 
-				
-			} catch (SQLException se) {
-				
-				// TODO Auto-generated catch block
-				System.out.println("oops, error!");
-				se.printStackTrace();
-				
-			} 
-			try {
-				if(connection!=null)
-					connection.close();
-			}catch(SQLException se) {
-				se.printStackTrace();
 			}
-			
+		} catch (SQLException se) {
+				
+			// TODO Auto-generated catch block
+			System.out.println("oops, error!");
+			se.printStackTrace();	
+		} 
+		try {
+			if(connection!=null){
+			connection.close();
+			}
+		}catch(SQLException se) {se.printStackTrace();}
+		
+		System.out.println("Would you like to delete another order?\n" 
+			+ "Yes or no?\n");
+		String answer = in.nextLine();
+		if(answer.contains("y") || answer.contains("Y")){
+			deleteOrder();
+		}
+		else{displayMenu();}
+
 	}
 }
