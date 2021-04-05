@@ -6,9 +6,9 @@ import java.sql.*;
 
 public class Driver {
 
-	public static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
-	public static String username = "fbacon_juliet";
-	public static String password = "spilled123";
+	public static String url = "";
+	public static String username = "";
+	public static String password = "";
 
 	private Scanner in = new Scanner(System.in);
 
@@ -24,7 +24,7 @@ public class Driver {
 			+ "b. Add a new order\n"
 			+ "c. Update an order\n"
 			+ "d. Delete an order\n"
-			+ "f. To quite\n");
+			+ "f. To quit\n");
 
 		String prompt = input.next();
 		
@@ -59,6 +59,7 @@ public class Driver {
 			ResultSet myRs = myStmt.executeQuery();
 			if (myRs.next()) {
 
+				
 				//The first order was not printing, so I added this print section to get first item
 				System.out.println();
 				System.out.println("Date: " + myRs.getString("date"));
@@ -67,7 +68,7 @@ public class Driver {
 				System.out.println("Product ID: " + myRs.getString("product_id"));
 				System.out.println("Quantity: " + myRs.getInt("product_quantity"));
 				System.out.println("Order ID: " + myRs.getString("order_id"));
-				System.out.println();
+				System.out.println(); 
 
 				while (myRs.next()) {
 					System.out.println();
@@ -317,10 +318,10 @@ public class Driver {
 						" VALUES (?, ?, ?, ?, ?)";
 						
 				System.out.println();
-				System.out.println("Enter the date(format 01-01-2021): ");
+				System.out.println("Enter the date(format 01/01/2021): ");
 				String date = scanner.next();
-				while(!date.contains("-")){
-					System.out.println("Please enter the date in corect format: ");
+				while(!date.contains("/")){
+					System.out.println("Please enter the date in correct format: ");
 					date = scanner.next();
 				}
 				System.out.println();
@@ -455,7 +456,7 @@ public class Driver {
 		if(ans.contains("a")) {
 						
 			System.out.println();
-			System.out.println("Enter the new date(ex:1-1-2020): ");
+			System.out.println("Enter the new date(ex:1/1/2020): ");
 			System.out.println();
 			String date = scanner.next();
 						
