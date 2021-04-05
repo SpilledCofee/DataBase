@@ -11,9 +11,9 @@ import java.util.Scanner;
 
 public class inventory_db_remote {
 
-	public static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
-	public static String username = "fbacon_josht";
-	public static String password = "spilled123";
+	public static String url = "";
+	public static String username = "";
+	public static String password = "";
 	
 	public static void main(String[] args) {
 		
