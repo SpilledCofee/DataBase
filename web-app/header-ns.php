@@ -5,11 +5,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- <link rel="stylesheet" type="text/css" href="css/normalize.css"> -->
+        <link rel="stylesheet" type="text/css" href="css/normalize.css">
         <link rel="stylesheet" type="text/css" href="css/grid.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="shortcut icon" type="image/png" href="img/fav2.png">
         <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,300italic' rel="stylesheet" type='text/css'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="js/jquery-3.6.0.js"></script>
+        <!-- <script src="js/login-form.js"></script> -->
+        <script src="js/script.js"></script>
         <title>Spilled Coffee</title>
     </head>
     <?php
@@ -24,7 +28,6 @@
                 <div class="row">
                     <a href="./"><img src="img/coffee_cup_logo_small_invert.png" alt="spilled_coffee_logo" class="logo"></a>
                     <ul class="main-nav">
-                        
                         <?php
                             if (isset($_SESSION["useruid"])) {
                                 echo '<div class="dropdown"><li><a href="products">SHOP</a></li></div>';
@@ -40,12 +43,12 @@
                                 echo '</div>';
                                 // echo '<li><button style="height:140px; width: 40px;"><a href="cart.php"><img src="img/cart_100.png"  class="cart-icon"></a></button></li>';       
                             } else {
-                                echo '<li><a class="show-login-modal-link">Log in</button></li>';
-                                echo '<li><a class="show-signup-modal-link">Sign up</button></li>';
+                                echo '<li><div onclick="showModal(1)" class="show-login-modal-link"><a>Log in</a></div></li>';
+                                echo '<li><div onclick="showModal(2)" class="show-signup-modal-link"><a>Sign up</a></div></li>';
                             }
-                        ?>                     
+                        ?>
                     </ul>
                 </div>
             </nav>
         </header>
-        <div class="wrapper">
+    <div class="wrapper">

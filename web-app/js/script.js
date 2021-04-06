@@ -1,76 +1,142 @@
 'use strict';
 
-const login_modal = document.querySelector('.login-modal');
-const signup_modal = document.querySelector('.signup-modal');
-const overlay = document.querySelector('.overlay');
-const btnsShowLoginModal = document.querySelector('.show-login-modal');
-const btnsShowSignupModal = document.querySelector('.show-signup-modal');
-const linkShowLoginModal = document.querySelector('.show-login-modal-link');
-const linkShowSignupModal = document.querySelector('.show-signup-modal-link');
-const btnCloseLoginModal = document.querySelector('.close-login-modal');
-const btnCloseSignupModal = document.querySelector('.close-signup-modal');
-const btnCloseUserMessage = document.querySelector('.close-user-message');
-const btnCloseUserMessageCart = document.querySelector('.close-user-message-cart');
-const btnCloseUserMessageOrders = document.querySelector('.close-user-message-order');
-const btnCloseUserMessageCheckout = document.querySelector('.close-user-message-checkout');
-const btnCloseUserMessageStatement = document.querySelector('.close-user-message-statement');
-const userMessage = document.querySelector('.user-message');
-const userMessageCart = document.querySelector('.user-message-cart');
-const userMessageOrders = document.querySelector('.user-message-orders');
-const userMessageCheckout = document.querySelector('.user-message-checkout');
-const userMessageStatement = document.querySelector('.user-message-statement');
+$(document).ready(function(){
 
+    const userMessage = document.querySelector('.user-message');
+    const btnCloseUserMessage = document.querySelector('.close-user-message');
+    console.log(btnCloseUserMessage);
 
-if (linkShowLoginModal) {
-    linkShowLoginModal.addEventListener('click', function() {
-        console.log('Button clicked');
-        login_modal.classList.remove('hidden');
+    if (btnCloseUserMessage) {
+        btnCloseUserMessage.addEventListener('click', function() {
+            console.log('Button clicked');
+            userMessage.classList.add('hidden');
+        })
+    }
+
+})
+
+function showModal(type) {
+
+    console.log('Button clicked');
+
+    const overlay = document.querySelector('.overlay');
+    const modal = document.querySelector('.modal');
+
+    if (type === 1) {
+        $('#modal-contents').load('login-form.php');
+        var done = true;
+    } else if (type === 2) {
+        $('#modal-contents').load('signup-form.php');
+        var done = true;
+    } else if (type === 3) {
+        $('#modal-contents').load('includes/cancel-confirm-inc.php');
+        var done = true;
+    }
+
+    $('#modal').css({position: 'fixed'})
+
+    // if (type === 1) {
+    //     $(document).ready(function(){
+    //         $('#modal-contents').load('login-form.php');
+    //     });
+    // } else if (type === 2) {
+    //     $(document).ready(function(){
+    //         $('#modal-contents').load('signup-form.php');
+    //     });
+    // } else if (type === 3) {
+    //     $(document).ready(function(){
+    //         $('#modal-contents').load('includes/cancel-confirm-inc.php');
+    //     });
+    // }
+
+    if (done = true) {
         overlay.classList.remove('hidden');
-    })
+        modal.classList.remove('hidden');
+        overlay.style.opacity = 1;
+        modal.style.opacity = 1;
+    }
+
+    // $('body').classList.add('fixed');
+    // document.body.classList.add('fixed');
+    // document.body.style.position = 'fixed';
+    // document.body.style.top = '0px';
+
 }
 
-if (linkShowSignupModal) {
-    linkShowSignupModal.addEventListener('click', function() {
-        console.log('Button clicked');
-        signup_modal.classList.remove('hidden');
-        overlay.classList.remove('hidden');
-    })
-}
+function closeModal() {
 
-if (btnsShowSignupModal) {
-    btnsShowSignupModal.addEventListener('click', function() {
-        console.log('Button clicked');
-        signup_modal.classList.remove('hidden');
-        overlay.classList.remove('hidden');
-    })
-}
+    console.log('Button clicked');
 
-if (btnsShowLoginModal) {
-    btnsShowLoginModal.addEventListener('click', function() {
-        console.log('Button clicked');
-        login_modal.classList.remove('hidden');
-        overlay.classList.remove('hidden');
-    })
-}
-
-if (btnCloseLoginModal) {
-    btnCloseLoginModal.addEventListener('click', function() {
-        login_modal.classList.add('hidden');
+    const overlay = document.querySelector('.overlay');
+    const modal = document.querySelector('.modal');
+    overlay.style.opacity = 0;
+    modal.style.opacity = 0;
+    setTimeout(() => { 
         overlay.classList.add('hidden');
-    })
+        modal.classList.add('hidden');
+        $('#modal-contents').empty();
+    }, 800);
+    
 }
 
-if (btnCloseSignupModal) {
-    btnCloseSignupModal.addEventListener('click', function() {
-        signup_modal.classList.add('hidden');
-        overlay.classList.add('hidden');
-    })
+function submitLogin() {
+    console.log('submitLogin called');
+    $("#login-message").empty();
+    $("#login-message").load("includes/login-inc-test.php", {
+        submit: true,
+        uid: $("#uid").val(),
+        pass: $("#psw").val(),
+    }, function(data) {
+        if (data == '') {
+            location.reload();
+        }
+    });
 }
 
-if (btnCloseUserMessage) {
-    btnCloseUserMessage.addEventListener('click', function() {
-        console.log('Button clicked');
-        userMessage.classList.add('hidden');
-    })
+function submitSignUp() {
+    console.log('submitSignUp called');
+    $("#signup-message").empty();
+    $("#signup-message").load("includes/signup-inc-test.php", {
+        submit: true,
+        fname: $("#fname").val(),
+        email: $("#email").val(),
+        uname: $("#uname").val(),
+        psw: $("#psw").val(),
+        pswrep: $("#pswrep").val()
+    }, function(data) {
+        if (data == '') {
+            location.reload();
+        }
+    });
 }
 
+function showCancelConfirm(order_id) {
+
+    console.log('Button clicked');
+
+    const overlay = document.querySelector('.overlay');
+    const modal = document.querySelector('.modal');
+    overlay.classList.remove('hidden');
+    modal.classList.remove('hidden');
+    overlay.style.opacity = 1;
+    modal.style.opacity = 1;
+
+    $(document).ready(function(){
+        $('#modal-contents').load('includes/cancel-confirm-inc.php');
+        $('input[name="modal-data"]').val(order_id);
+    });
+
+    // const func = 'confirmCancel(' + order_id + ')';
+    // document.getElementById('cancel-confirm').setAttribute('onclick', func);
+
+}
+
+function confirmCancel() {
+    console.log('confirmCancel called');
+    $("#modal-contents").load("includes/cancel-order-inc.php", {
+        submit: true,
+        order_id: $("#modal-data").val()
+    }, function() {
+        location.reload();
+    });
+}
