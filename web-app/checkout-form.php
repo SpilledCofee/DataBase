@@ -1,5 +1,4 @@
 <?php
-    session_start();
     if (!isset($_SESSION["useruid"]) || !isset($_SESSION["userid"])) {
         header('Location: ./?error=illegalaccess');
         exit();

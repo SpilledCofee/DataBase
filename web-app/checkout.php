@@ -1,7 +1,7 @@
 <?php
     include_once 'header.php';
 ?>
-<div class="row">
+<div class="row max-width">
     <div class="cart-container">
         <?php       
             if (!isset($_SESSION['useruid'])) {
@@ -68,7 +68,6 @@
                         echo number_format($price*$cart[$i][1], 2);
                         echo '</td><td valign="middle">';
                         echo '</td></tr></h2>';
-                    
 
                     mysqli_stmt_close($stmt);
                     $totalprice += $price*$cart[$i][1];

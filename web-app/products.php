@@ -3,14 +3,8 @@
 ?>
 
 <?php
-    if (!isset($_SESSION["useruid"]) || !isset($_SESSION["userid"])) {
-        header('Location: ./?error=illegalaccess');
-        exit();
-    }
-?>
-
-<?php
-    include_once 'products-grid.php'
+    $gridOK = true;
+    include_once 'products-grid.php';
 ?>
 
 <?php

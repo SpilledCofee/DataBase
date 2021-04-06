@@ -6,7 +6,7 @@ if (isset($_POST['submit'])) {
     $userId = $_SESSION['userid'];
     $order_id = uniqid($userId.'_');
     $order_date = date('Y-m-d');
-    $order_time = date('h:ia');
+    $order_time = date('h:i');
     $street = $_POST['street'];
     $city = $_POST['city'];
     $state = $_POST['state'];
@@ -51,6 +51,14 @@ if (isset($_POST['submit'])) {
     mysqli_stmt_close($stmt2);
 
     unset($_SESSION['cart']);
+    
+    require_once 'functions-inc.php';
+    ob_start();
+    include './confirm-order-email-inc.php';
+    $message = ob_get_clean();
+    $to = $_SESSION['userEmail'];
+    $from = "noreply@spilledcoffee.net";
+    sendConfirmation($to, $from, $message);
 
     header("location: ../orders?message=ordersuccess");
     exit();
