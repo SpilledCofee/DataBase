@@ -68,13 +68,8 @@ public class inventory_db_remote {
 			System.out.println("Enter Product ID: ");
 			String pid = scanner.next();
 			
-			while((pid.length() != 12)) {
-				System.out.println("Product ID must be 12 characters long!");
-				System.out.println("Enter Product ID: ");
-				pid = scanner.next();
-			}
 			
-			PreparedStatement myStmt = connection.prepareStatement("Select * FROM inventory WHERE product_id = '" + pid + "'", ResultSet.TYPE_SCROLL_SENSITIVE, 
+			PreparedStatement myStmt = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'", ResultSet.TYPE_SCROLL_SENSITIVE, 
                     ResultSet.CONCUR_UPDATABLE);
 	
 		
@@ -89,8 +84,10 @@ public class inventory_db_remote {
 					
 					System.out.println();
 					System.out.println("Product ID: " + myRs.getString("product_id"));
+					System.out.println("Product Title: " + myRs.getString("product_title"));
+					System.out.println("Product Description: " + myRs.getString("product_description"));
 					System.out.println("Quantity: " + myRs.getInt("quantity"));
-					System.out.println("Wholesale: " + myRs.getString("wholesale_cost"));
+					System.out.println("Wholesale: " + myRs.getString("wholesale_price"));
 					System.out.println("Sale Price: " + myRs.getString("sale_price"));
 					System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
 					System.out.println();
@@ -123,6 +120,7 @@ public class inventory_db_remote {
 		
 		
 		Scanner scanner = new Scanner(System.in);
+		Scanner scanner1 = new Scanner(System.in);
 		Connection connection = null;
 		Statement myStmt = null;
 		
@@ -137,63 +135,44 @@ public class inventory_db_remote {
 			
 			
 			double wholeCost = 0, salePrice = 0;
-
-					
+			
 
 			System.out.println();
-			System.out.println("Enter the Product ID: ");
-			String pid = scanner.next();
-            while ((pid.length()) != 12) {
-                System.out.println("Product ID must be 12 characters long!");
-                System.out.print("Enter Product ID: ");
-                pid = scanner.next();
-            }
+			System.out.println("Enter the Product Title: ");
+			String product_title = scanner.nextLine();
+			System.out.println();
 			
 			System.out.println();
-			System.out.println("Enter the Quantity: ");
-			while (!scanner.hasNextInt()) {
-	          System.out.println("Quantity must be a whole number!");
-	          System.out.println("Enter Quantity: ");
-	          int quantity = scanner.nextInt();
-			}
+			System.out.println("Enter Product Description: ");
+			String product_des = scanner.nextLine();
+			System.out.println();
+			
+			System.out.println();
+			System.out.println("Enter the quantity: ");
 			int quantity = scanner.nextInt();
-			
 			System.out.println();
-			System.out.println("Enter the Wholesale cost: ");
-			
-			while (!scanner.hasNextDouble()) {
-	          System.out.println("Wholesale cost must be a whole number or decimal!");
-	          System.out.println("Enter Wholesale cost: ");
-	          wholeCost = scanner.nextDouble();
-			}
+
+			System.out.println();
+			System.out.println("Enter the Wholesale Cost: ");
 			wholeCost = scanner.nextDouble();
-			
-				
+			System.out.println();
+
 			System.out.println();
 			System.out.println("Enter the Sale Price: ");
-			while (!scanner.hasNextDouble()) {
-	          System.out.println("Sale Price must be a whole number or decimal!");
-	          System.out.println("Enter the Sale Price: ");
-	          salePrice = scanner.nextDouble();
-			}
 			salePrice = scanner.nextDouble();
-			
 			System.out.println();
-			System.out.println("Enter the Supplier ID: ");
+
+			System.out.println();
+			System.out.println("Enter Supplier ID: ");
 			String sid = scanner.next();
-			sid.toUpperCase();
-			while (sid.length() != 8) {
-	          System.out.println("Supplier ID must be 8 characters long!");
-	          System.out.println("Enter the Supplier ID: ");
-	          sid = scanner.next();
-	          sid.toUpperCase();
-			}
 			System.out.println();
+
 						
 			
             System.out.println("You entered the following values:");
             System.out.println();
-            System.out.println("Product ID:        " + pid
+            System.out.println("Product Title:        " + product_title
+					+ "\nProduct Description:        " + product_des
                     + "\nQuantity:          " + quantity
                     + "\nWhole Sale Cost:   " + wholeCost
                     + "\nSale Price:        " + salePrice
@@ -207,15 +186,16 @@ public class inventory_db_remote {
             	if (inp.toLowerCase().contentEquals("yes")) {
             		
     				
-        			String query = " INSERT INTO inventory (product_id, quantity, wholesale_cost, sale_price, supplier_id)" +
-        					" VALUES (?, ?, ?, ?, ?)";
+        			String query = " INSERT INTO new_inventory (product_title, product_description, quantity, sale_price, wholesale_price, supplier_id)" +
+        					" VALUES (?, ?, ?, ?, ?, ?)";
         			
         			PreparedStatement prepStmt = connection.prepareStatement(query);
-        			prepStmt.setString (1, pid);
-        			prepStmt.setInt (2, quantity);
-        			prepStmt.setDouble (3, wholeCost);
+        			prepStmt.setString (1, product_title);
+					prepStmt.setString (2, product_des);
+        			prepStmt.setInt (3, quantity);
         			prepStmt.setDouble (4, salePrice);
-        			prepStmt.setString (5, sid);
+        			prepStmt.setDouble (5, wholeCost);
+        			prepStmt.setString (6, sid);
 
         			
         			prepStmt.execute();
@@ -296,13 +276,9 @@ public class inventory_db_remote {
 	        System.out.println("");
 	        String pid = scanner.next();
 
-			while((pid.length() != 12)) {
-				System.out.println("Product ID must be 12 characters long!");
-				System.out.println("Enter Product ID: ");
-				pid = scanner.next();
-			}
+	
 			
-			PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM inventory WHERE product_id = '" + pid + "'");
+			PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'");
 	
 			ResultSet myRs = myStmt2.executeQuery();
 		
@@ -315,8 +291,10 @@ public class inventory_db_remote {
 			while (myRs.next()) {
 				System.out.println();
 				System.out.println("Product ID: " + myRs.getString("product_id"));
+				System.out.println("Product Title: " + myRs.getString("product_title"));
+				System.out.println("Product Description: " + myRs.getString("product_description"));
 				System.out.println("Quantity: " + myRs.getInt("quantity"));
-				System.out.println("Wholesale: " + myRs.getString("wholesale_cost"));
+				System.out.println("Wholesale: " + myRs.getString("wholesale_price"));
 				System.out.println("Sale Price: " + myRs.getString("sale_price"));
 				System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
 				System.out.println();
@@ -327,12 +305,12 @@ public class inventory_db_remote {
 	        
 	        if (attribute.equalsIgnoreCase("yes")) {
 	        	
-				String query = "DELETE FROM inventory WHERE product_id = '" + pid + "'";
+				String query = "DELETE FROM new_inventory WHERE product_id = '" + pid + "'";
 				
 				PreparedStatement delStmt = connection.prepareStatement(query);
 				delStmt.execute();
 				
-				System.out.println("\nOrder was deleted.\n");
+				System.out.println("\nRecord was deleted.\n");
 				displayMenu();
 	        }
 	        
@@ -383,14 +361,8 @@ public class inventory_db_remote {
 	        System.out.println("Enter Product ID of the record you would like to update: ");
 	        System.out.println("");
 	        String pid = scanner.next();
-
-			while((pid.length() != 12)) {
-				System.out.println("Product ID must be 12 characters long!");
-				System.out.println("Enter Product ID: ");
-				pid = scanner.next();
-			}
 			
-			PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM inventory WHERE product_id = '" + pid + "'");
+			PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'");
 	
 			ResultSet myRs = myStmt2.executeQuery();
 		
@@ -403,8 +375,10 @@ public class inventory_db_remote {
 			while (myRs.next()) {
 				System.out.println();
 				System.out.println("Product ID: " + myRs.getString("product_id"));
+				System.out.println("Product Title: " + myRs.getString("product_title"));
+				System.out.println("Product Description: " + myRs.getString("product_description"));
 				System.out.println("Quantity: " + myRs.getInt("quantity"));
-				System.out.println("Wholesale: " + myRs.getString("wholesale_cost"));
+				System.out.println("Wholesale: " + myRs.getString("wholesale_price"));
 				System.out.println("Sale Price: " + myRs.getString("sale_price"));
 				System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
 				System.out.println();
@@ -420,9 +394,11 @@ public class inventory_db_remote {
 				System.out.println("Which field would you like to update? ");
 				System.out.println("a. Product ID");
 				System.out.println("b. Quantity");
-				System.out.println("c. Wholesale Cost");
+				System.out.println("c. Wholesale Price");
 				System.out.println("d. Sale Price");
 				System.out.println("e. Supplier ID");
+				System.out.println("f. Product Title");
+				System.out.println("g. Product Description");
 				System.out.println();
 				
 				String ans = scanner.next();
@@ -434,18 +410,13 @@ public class inventory_db_remote {
 					System.out.println("Enter the new Product ID: ");
 					System.out.println();
 					String pid2 = scanner.next();
-					while((pid2.length() != 12)) {
-						System.out.println("Product ID must be 12 characters long!");
-						System.out.println("Enter Product ID: ");
-						pid = scanner.next();
-					}
-					
+
 					System.out.println("\nAre you sure you want to update this record?: 'yes' or 'no'");
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
 			        	
-			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE inventory SET product_id = '" + pid2 +"' WHERE product_id = '"+ pid +"'");
+			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET product_id = '" + pid2 +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
 						System.out.println("Record has been updated.");
@@ -480,7 +451,7 @@ public class inventory_db_remote {
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
 			        	
-			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE inventory SET quantity = '" + quantity +"' WHERE product_id = '"+ pid +"'");
+			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET quantity = '" + quantity +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
 						System.out.println("Record has been updated.");
@@ -501,11 +472,11 @@ public class inventory_db_remote {
 					
 					System.out.println();
 					double wholeCost = 0;
-					System.out.println("Enter the new Wholesale Cost: ");
+					System.out.println("Enter the new Wholesale Price: ");
 					System.out.println();
 					while (!scanner.hasNextDouble()) {
-				          System.out.println("Wholesale cost must be a whole number or decimal!");
-				          System.out.println("Enter Wholesale cost: ");
+				          System.out.println("Wholesale Price must be a whole number or decimal!");
+				          System.out.println("Enter Wholesale Price: ");
 				          wholeCost = scanner.nextDouble();
 						}
 					wholeCost = scanner.nextDouble();
@@ -515,7 +486,7 @@ public class inventory_db_remote {
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
 			        	
-			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE inventory SET wholesale_cost = '" + wholeCost +"' WHERE product_id = '"+ pid +"'");
+			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET wholesale_price = '" + wholeCost +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
 						System.out.println("Record has been updated.");
@@ -551,7 +522,7 @@ public class inventory_db_remote {
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
 			        	
-						PreparedStatement upStmt2 = connection.prepareStatement("UPDATE inventory SET sale_price = '" + salePrice +"' WHERE product_id = '"+ pid +"'");
+						PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET sale_price = '" + salePrice +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
 						System.out.println("Record has been updated.");
@@ -584,7 +555,66 @@ public class inventory_db_remote {
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
 			        	
-			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE inventory SET supplier_id = '" + sid +"' WHERE product_id = '"+ pid +"'");
+			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET supplier_id = '" + sid +"' WHERE product_id = '"+ pid +"'");
+						upStmt2.execute();
+						
+						System.out.println("Record has been updated.");
+						
+						displayMenu();
+						
+			        }
+			        
+			        else {
+			        	System.out.println("\nRecord was NOT updated.\n");
+			        	displayMenu();
+			        }
+					
+					
+				}
+
+				if(ans.contains("f")) {
+					scanner.nextLine();
+					System.out.println();
+					System.out.println("Enter the Product Title: ");
+					String product_title = scanner.nextLine();
+					System.out.println();
+					
+					System.out.println("\nAre you sure you want to update this record?: 'yes' or 'no'");
+			        attribute = scanner.next();
+			        
+			        if (attribute.equalsIgnoreCase("yes")) {
+			        	
+			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET product_title = '" + product_title +"' WHERE product_id = '"+ pid +"'");
+						upStmt2.execute();
+						
+						System.out.println("Record has been updated.");
+						
+						displayMenu();
+						
+			        }
+			        
+			        else {
+			        	System.out.println("\nRecord was NOT updated.\n");
+			        	displayMenu();
+			        }
+					
+					
+				}
+
+				if(ans.contains("g")) {
+					
+					scanner.nextLine();
+					System.out.println();
+					System.out.println("Enter the new Product Description: ");
+					System.out.println();
+					String prod_des = scanner.nextLine();
+					
+					System.out.println("\nAre you sure you want to update this record?: 'yes' or 'no'");
+			        attribute = scanner.next();
+			        
+			        if (attribute.equalsIgnoreCase("yes")) {
+			        	
+			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET product_description = '" + prod_des +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
 						System.out.println("Record has been updated.");
@@ -625,6 +655,3 @@ public class inventory_db_remote {
 		
 	}
 	}
-
-	
-
