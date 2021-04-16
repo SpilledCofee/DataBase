@@ -16,9 +16,9 @@ import java.util.Date;
 public class cust_order_db_remote {
 
 	
-	public static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
-	public static String username = "fbacon_josht";
-	public static String password = "spilled123";
+	public static String url = "";
+	public static String username = "";
+	public static String password = "";
 
 	private Scanner in = new Scanner(System.in);
 
