@@ -34,19 +34,19 @@ public class inventory_db_remote {
 
 		String prompt = menuGui.getMenuSelection();
 
-		if(prompt.contains("a")) {
+		if(prompt.equals("Create a new record")) {
 			createRecord();
 		}
 
-		if(prompt.contains("b")) {
+		if(prompt.equals("Look up a record")) {
 			lookUpRecord();
 		}
 
-		if(prompt.contains("c")) {
+		if(prompt.equals("Update a record")) {
 			updateRecord();
 		}
 
-		if(prompt.contains("d")) {
+		if(prompt.equals("Delete an existing record")) {
 			deleteRecord();
 		}
 	}
