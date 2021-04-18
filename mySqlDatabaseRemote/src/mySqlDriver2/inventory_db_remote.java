@@ -9,19 +9,17 @@ import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+
 public class inventory_db_remote {
 
-	public static String url = "";
-	public static String username = "";
-	public static String password = "";
+	public static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main_dev";
+	public static String username = "fbacon_team_3250";
+	public static String password = "splldadmn123$";
 	
 	public static void main(String[] args) {
-		
-		
-		displayMenu();
-		
-		
-	}
+
+		displayMenu();	
+	}//END MAIN
 	
 	public static void displayMenu() {
 		
@@ -50,26 +48,40 @@ public class inventory_db_remote {
 		if(prompt.contains("d")) {
 			deleteRecord();
 		}
-		
-	}
-	
-	public static void lookUpRecord(){
-		
+		input.close();
+	}//END MENU
 
-		
-		Scanner scanner = new Scanner(System.in);
-		
+
+	//This is so we don't have to do so much repetitive coding
+	//It takes in a result set and then prints it all out
+	public static void printResults(int fieldtype, String itemLookup){
+
+		String query = "product_id";
+		 
+
+		switch(fieldtype){
+			case 1: query = "product_id";
+					break;
+			case 2: query = "product_title";
+					break;
+			case 3: query = "product_description";
+					break;
+			case 4: query = "quantity";
+					break;
+			case 5: query = "supplier_id";
+					break;
+			case 6: query = "wholesale_price";
+					break;
+			case 7: query = "sale_price";
+					break;
+			default: query = "product_id";
+					break;
+
+		}
 		try {
-			
+			System.out.println("sreaching for a " + query +" that has " + itemLookup);
 			Connection connection = DriverManager.getConnection(url, username, password);
-			
-			System.out.println();
-			System.out.println("Search by product id: ");
-			System.out.println("Enter Product ID: ");
-			String pid = scanner.next();
-			
-			
-			PreparedStatement myStmt = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'", ResultSet.TYPE_SCROLL_SENSITIVE, 
+			PreparedStatement myStmt = connection.prepareStatement("Select * FROM new_inventory WHERE " + query + "= '" + itemLookup + "'", ResultSet.TYPE_SCROLL_SENSITIVE, 
                     ResultSet.CONCUR_UPDATABLE);
 	
 		
@@ -95,17 +107,11 @@ public class inventory_db_remote {
 				
 					}}
 			else {
-				System.out.println("Product ID invalid.");
+				System.out.println("No record found");
 				System.out.println();
 			}
 
 			displayMenu();
-			
-				
-		
-				
-			
-			
 			
 			} catch (SQLException e) {
 			
@@ -113,7 +119,44 @@ public class inventory_db_remote {
 			System.out.println("oops, error!");
 			e.printStackTrace();
 		}
+
+	}
+	//This method takes in the user input and passes that infor to printResults were it will find 
+	// the needed result set. Can add more to the method but I only did basic version to see how well 
+	//the information can be  off to passedprintResults().
+	public static void lookUpRecord(){		
+		int fieldtype = 0;
+		String itemlookup;
+
+		//THIS CODE WORKS, ITS JUST NOT THE CODE FOR THE GUI
+		Scanner in = new Scanner(System.in);
+		System.out.println("Please enter the field you would like to search");
+		System.out.println("Product ID: 'a'\n" 
+			//+ "Product Title: 'c'\n"
+			+ "Supplier ID: 'b'");
+		while(fieldtype == 0){
+			String answer = in.nextLine();
+			if(answer.contains("a")){
+				fieldtype = 1;
+			}
+			else if(answer.contains("b")){
+				fieldtype = 5;
+			}
+			//This search insn't working cuz it is only reading one word. My GUI might fix it later
+			//else if(answer.contains("c")){
+			//	fieldtype = 2;
+			//}
+			else{
+				System.out.println("Please enter a valid selection");
+				answer = in.next();
+			}
+		}
+		System.out.println("Type in what you would like to search for: ");
 		
+		itemlookup = in.next();
+		printResults(fieldtype, itemlookup);
+		in.close();
+
 	}
 	public static void createRecord() {
 	
@@ -654,4 +697,4 @@ public class inventory_db_remote {
 		}
 		
 	}
-	}
+}
