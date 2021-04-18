@@ -1,4 +1,4 @@
-package mySqlDriver2;
+package mySqlDatabaseRemote.src.mySqlDriver2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,13 +14,41 @@ public class inventory_db_remote {
 	public static String url = "";
 	public static String username = "";
 	public static String password = "";
+	public static boolean useGui = false;
 	
 	public static void main(String[] args) {
-		
-		
-		displayMenu();
-		
-		
+
+		if (useGui){
+			// if use gui boolean is true, use gui version of the menu.
+			displayGuiMenu();
+		}
+		else{
+			// if use gui boolean is false, use console version of the menu.
+			displayMenu();
+		}
+	}
+
+	public static void displayGuiMenu(){
+		InventoryMenuGui menuGui = new InventoryMenuGui();
+		menuGui.displayGuiMenu();
+
+		String prompt = menuGui.getMenuSelection();
+
+		if(prompt.contains("a")) {
+			createRecord();
+		}
+
+		if(prompt.contains("b")) {
+			lookUpRecord();
+		}
+
+		if(prompt.contains("c")) {
+			updateRecord();
+		}
+
+		if(prompt.contains("d")) {
+			deleteRecord();
+		}
 	}
 	
 	public static void displayMenu() {
