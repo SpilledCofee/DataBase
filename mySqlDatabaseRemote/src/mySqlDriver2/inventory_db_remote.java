@@ -20,12 +20,22 @@ public class inventory_db_remote {
 
 		if (useGui){
 			// if use gui boolean is true, use gui version of the menu.
+			SetMySqlCredentials();
 			displayGuiMenu();
 		}
 		else{
 			// if use gui boolean is false, use console version of the menu.
 			displayMenu();
 		}
+	}
+
+	public static void SetMySqlCredentials(){
+		CredentialsGui credentialsGui = new CredentialsGui();
+		credentialsGui.displayCredentialsGui();
+
+		url = credentialsGui.getUrl();
+		username = credentialsGui.getUsername();
+		password = credentialsGui.getPassword();
 	}
 
 	public static void displayGuiMenu(){
