@@ -29,32 +29,97 @@ Sale Price: 14.50
 Supplier ID: ETHIORST */
  
 @SuppressWarnings("serial")
-public class InventoryDataBase extends JFrame {   // JFrame instead of Frame
-
-    //private String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main_dev";
-	//private String username = "fbacon_team_3250";
-	//private String password = "splldadmn123$";
+public class InventoryDataBase extends JFrame {
 
     //This is credentials required to connect to MySQL
     private String url, username, password;
+
 
 
     //These are unchaing integers that will assist with choosing options
     private boolean PID_SELCTION = false;
     private boolean TITLE_SELECTION =  false;
     private boolean SID_SELECTION = false;
+
+    String menuSelection;//Used in displayMenue()
  
     // Constructor to setup the GUI components and event handlers
     public InventoryDataBase() {
+        getLogin();
+        //displayMenue();
         //searchRecords();
         //createRecord();
-        getLogin();
+        //getLogin();
 
    }
 
    public void displayMenue(){
+    
+    Container cp = getContentPane();
+    cp.setLayout(new FlowLayout());
+
+    // Create JComboBox for getting the prompt to run
+    cp.add(new JLabel("Select a prompt:"));
+
+    final String[] prompts = {"Create a new record", "Look up a record", "Update a record", "Delete an existing record"};
+    menuSelection = prompts[0]; // Setting initial selection to first item
+
+    final JComboBox<String> selections = new JComboBox<String>(prompts);
+    selections.setPreferredSize(new Dimension(300, 80));
+    cp.add(selections);
+
+    // Update menu selection when something is selected in drop down
+    selections.addItemListener(new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                menuSelection = (String)selections.getSelectedItem();
+            }
+        }
+    });
+
+        //Jbutton  
+    JButton submitButton = new JButton("Submit");
+    submitButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(menuSelection);
+            if(menuSelection.equals("Create a new record")){
+                cp.removeAll();
+                createRecord();
+                
+
+            }
+            else if( menuSelection.equals("Look up a record")){
+                cp.removeAll();
+                searchRecords();
+            }
+            else if(menuSelection.equals("Update a record")){
+                cp.removeAll();
+                updateRecord();
+            }
+            else if(menuSelection.equals("Delete an existing record")){
+                cp.removeAll();
+                deleteRecord();
+
+            }
+        }
+
+     });
+      cp.add(submitButton);
+
+    // Allocate an anonymous instance of an anonymous inner class that
+    // implements ActionListener as ActionEvent listener
+
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Exit program if close-window button clicked
+    setTitle("Menu:"); // "super" JFrame sets title
+    setSize(350, 225);         // "super" JFrame sets initial size
+    setVisible(true);          // "super" JFrame shows
 
    }
+   
+   private void deleteRecord() {
+    }
    public void updateRecord(){
 
    }
@@ -115,12 +180,13 @@ public class InventoryDataBase extends JFrame {   // JFrame instead of Frame
                 url = urlText.getText();
                 username = usernameText.getText();
                 password = passwordText.getText();
-                System.out.println(url + "\n" + username + "\n" + password);
+                //System.out.println(url + "\n" + username + "\n" + password);
                 }
-
                 // When submit button is clicked, close the menu
-                setVisible(false);
-                dispose(); // Close the menu after selection
+                //setVisible(false);
+                //dispose(); // Close the menu after selection
+                cp.removeAll();
+                displayMenue();
             }
         });
 
@@ -235,7 +301,10 @@ public class InventoryDataBase extends JFrame {   // JFrame instead of Frame
                printResults(5, record);
             }
 
-            System.out.println(record + " " + PID_SELCTION + TITLE_SELECTION + SID_SELECTION);
+            cp.removeAll();
+            displayMenue();
+
+            //System.out.println(record + " " + PID_SELCTION + TITLE_SELECTION + SID_SELECTION);
         }
      });
       cp.add(submitButton);
@@ -304,169 +373,170 @@ public class InventoryDataBase extends JFrame {   // JFrame instead of Frame
 					System.out.println("Sale Price: " + myRs.getString("sale_price"));
 					System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
 					System.out.println();
-					
-				
-					}}
+				}
+            }
 			else {
 				System.out.println("No record found");
 				System.out.println();
 			}
-
 			
-			} catch (SQLException e) {
+        } catch (SQLException e) {
 			System.out.println("oops, error!");
 			e.printStackTrace();
 		}
-
 	}//END PRINT RESULTS
-
-
 
     public void createRecord() {
         // Private variables of the GUI components
-  JTextField titleText, discriptionText, quantityText, wholesale_priceText, sales_priceText, sidText;
-  JLabel label = new JLabel();
+    JTextField titleText, discriptionText, quantityText, wholesale_priceText, sales_priceText, sidText;
+    JLabel label = new JLabel();
 
-  //These also have getter methods that we can extrate the values from the GUI
+    //These also have getter methods that we can extrate the values from the GUI
 
+        
+        JPanel tfPanel = new JPanel(new GridLayout(6, 2, 10, 2));//6 rows and 2 columns
+        tfPanel.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
+
+        JButton button = new JButton("Add Record");
+
+        //(Row 1)
+        tfPanel.add(new JLabel("Product Title"));
+        titleText = new JTextField(20);
+        tfPanel.add(titleText);
+
+        //(Row 2)
+        tfPanel.add(new JLabel("Product Discription"));
+        discriptionText = new JTextField(30);
+        tfPanel.add(discriptionText);
+
+        //(Row 3)
+        tfPanel.add(new JLabel("Quantity"));
+        quantityText = new JTextField(8);
+        tfPanel.add(quantityText);
+
+        //(Row 4)
+        tfPanel.add(new JLabel("Wholesale Price"));
+        wholesale_priceText = new JTextField(8);
+        tfPanel.add(wholesale_priceText);
+
+        //(Row 5)
+        tfPanel.add(new JLabel("Sales Price"));
+        sales_priceText = new JTextField(8);
+        tfPanel.add(sales_priceText);
+
+        //(Row 6)
+        tfPanel.add(new JLabel("Supplier's ID"));
+        sidText = new JTextField(8);
+        tfPanel.add(sidText);
+
+        //This is another pannel just for the button that gets out of the grid layout
+        JPanel btnPanel = new JPanel();
+        btnPanel.setLocation(100, 200);
+        btnPanel.add(button);
+        label.setFont(new Font("Serif", Font.BOLD, 13));
+        label.setForeground(Color.red);
+        label.setOpaque(true);
+        btnPanel.add(label);
+
+        Container cp = this.getContentPane();
+        cp.setLayout(new BorderLayout(5, 5));
+
+
+        button.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //This will reset the label every time that the button is pressed
+            label.setForeground(Color.red);
+            label.setText("");
+
+
+            //This will check if the quantity ID is a number
+            if(titleText.getText().isEmpty()){   
+                label.setText("Enter a Product Title!!!");
+            }
+            else if(discriptionText.getText().isEmpty()){   
+                label.setText("Enter a Product Discription!!!");
+            }
+            else if(!checkQuantity(quantityText.getText())){
+                label.setText("Invalid Quantity!");
+            }
+            else if(quantityText.getText().length() > 8){
+                label.setText("Quantity is too Big");
+            }
+            else if(quantityText.getText() == null){
+                label.setText("Enter a Quantity");
+            }
+            else if(wholesale_priceText.getText() == null){
+                label.setText("Enter Wholesales Price");
+            }
+            else if(checkDouble(wholesale_priceText.getText()) == false){
+                label.setText("Invalid Wholesale Price");
+            }
+            else if(sales_priceText.getText() == null || sales_priceText.getText().length() < 2){
+                label.setText("Enter a Sales Price");
+            }
+            else if(!checkDouble(sales_priceText.getText())){
+                label.setText("Invalid Sales Price"); 
+            }
+            //These will make sure that the string Text Fields are not blank
+            else if(sidText.getText() == null){   
+                label.setText("Invalid Supplier ID!!!");
+            }
+            else{
+            String title = titleText.getText();
+            String discription = discriptionText.getText();
+            int quantity = Integer.parseInt(quantityText.getText());
+            double wholesale_price = Double.parseDouble(wholesale_priceText.getText());
+            double sales_price = Double.parseDouble(sales_priceText.getText());
+            String sid = sidText.getText();
+            label.setForeground(Color.green);
+            label.setText("Success!");
+
+            Connection connection = null;
+
+            try {
+                connection = DriverManager.getConnection(url, username, password);
+                String query = " INSERT INTO new_inventory (product_title, product_description, quantity, sale_price, wholesale_price, supplier_id)" +
+                        " VALUES (?, ?, ?, ?, ?, ?)";
     
-    JPanel tfPanel = new JPanel(new GridLayout(6, 2, 10, 2));//6 rows and 2 columns
-    tfPanel.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
+                PreparedStatement prepStmt = connection.prepareStatement(query);
+                prepStmt.setString (1, title);
+                prepStmt.setString (2, discription);
+                prepStmt.setInt (3, quantity);
+                prepStmt.setDouble (4, sales_price);
+                prepStmt.setDouble (5, wholesale_price);
+                prepStmt.setString (6, sid);
+    
+                //Test
 
-    JButton button = new JButton("Add Record");
-
-    //(Row 1)
-    tfPanel.add(new JLabel("Product Title"));
-    titleText = new JTextField(20);
-    tfPanel.add(titleText);
-
-    //(Row 2)
-    tfPanel.add(new JLabel("Product Discription"));
-    discriptionText = new JTextField(30);
-    tfPanel.add(discriptionText);
-
-    //(Row 3)
-    tfPanel.add(new JLabel("Quantity"));
-    quantityText = new JTextField(8);
-    tfPanel.add(quantityText);
-
-    //(Row 4)
-    tfPanel.add(new JLabel("Wholesale Price"));
-    wholesale_priceText = new JTextField(8);
-    tfPanel.add(wholesale_priceText);
-
-    //(Row 5)
-    tfPanel.add(new JLabel("Sales Price"));
-    sales_priceText = new JTextField(8);
-    tfPanel.add(sales_priceText);
-
-    //(Row 6)
-    tfPanel.add(new JLabel("Supplier's ID"));
-    sidText = new JTextField(8);
-    tfPanel.add(sidText);
-
-    //This is another pannel just for the button that gets out of the grid layout
-    JPanel btnPanel = new JPanel();
-    btnPanel.setLocation(100, 200);
-    btnPanel.add(button);
-    label.setFont(new Font("Serif", Font.BOLD, 13));
-    label.setForeground(Color.red);
-    label.setOpaque(true);
-    btnPanel.add(label);
-
-
-    button.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-          //This will reset the label every time that the button is pressed
-          label.setForeground(Color.red);
-          label.setText("");
-
-
-          //This will check if the quantity ID is a number
-          if(titleText.getText().isEmpty()){   
-              label.setText("Enter a Product Title!!!");
-          }
-          else if(discriptionText.getText().isEmpty()){   
-              label.setText("Enter a Product Discription!!!");
-          }
-          else if(!checkQuantity(quantityText.getText())){
-              label.setText("Invalid Quantity!");
-          }
-          else if(quantityText.getText().length() > 8){
-              label.setText("Quantity is too Big");
-          }
-          else if(quantityText.getText() == null){
-              label.setText("Enter a Quantity");
-          }
-          else if(wholesale_priceText.getText() == null){
-              label.setText("Enter Wholesales Price");
-          }
-          else if(checkDouble(wholesale_priceText.getText()) == false){
-              label.setText("Invalid Wholesale Price");
-          }
-          else if(sales_priceText.getText() == null){
-              label.setText("Enter a Sales Price");
-          }
-          else if(!checkDouble(sales_priceText.getText())){
-              label.setText("Invalid Sales Price"); 
-          }
-          //These will make sure that the string Text Fields are not blank
-          else if(sidText.getText() == null){   
-              label.setText("Invalid Supplier ID!!!");
-          }
-          else{
-          String title = titleText.getText();
-          String discription = discriptionText.getText();
-          int quantity = Integer.parseInt(quantityText.getText());
-          double wholesale_price = Double.parseDouble(wholesale_priceText.getText());
-          double sales_price = Double.parseDouble(sales_priceText.getText());
-          String sid = sidText.getText();
-          label.setForeground(Color.green);
-          label.setText("Success!");
-
-          Connection connection = null;
-
-          try {
-              connection = DriverManager.getConnection(url, username, password);
-              String query = " INSERT INTO new_inventory (product_title, product_description, quantity, sale_price, wholesale_price, supplier_id)" +
-                      " VALUES (?, ?, ?, ?, ?, ?)";
-  
-              PreparedStatement prepStmt = connection.prepareStatement(query);
-              prepStmt.setString (1, title);
-              prepStmt.setString (2, discription);
-              prepStmt.setInt (3, quantity);
-              prepStmt.setDouble (4, sales_price);
-              prepStmt.setDouble (5, wholesale_price);
-              prepStmt.setString (6, sid);
-  
-              //Test
-              System.out.println(title);
-              System.out.println(discription);
-              System.out.println(quantity);
-              System.out.println(sales_price);
-              System.out.println(wholesale_price);
-              System.out.println(sid);
-              prepStmt.execute();
-  
-          } catch (SQLException se) {
-  
-              // TODO Auto-generated catch block
-              System.out.println("oops, error!");
-              se.printStackTrace();
-          } catch (InputMismatchException ex) {
-              System.out.print(ex.getMessage()); //try to find out specific reason.
-          }
-  
-  
-          try {
-              if(connection!=null)
-                  connection.close();
-          }catch(SQLException se) {
-              se.printStackTrace();
-          }
-          dispose();
-          }
+                System.out.println(title);
+                System.out.println(discription);
+                System.out.println(quantity);
+                System.out.println(sales_price);
+                System.out.println(wholesale_price);
+                System.out.println(sid);
+                prepStmt.execute();
+                //*/
+    
+            } catch (SQLException se) {
+    
+                // TODO Auto-generated catch block
+                System.out.println("oops, error!");
+                se.printStackTrace();
+            } catch (InputMismatchException ex) {
+                System.out.print(ex.getMessage()); //try to find out specific reason.
+            }
+    
+    
+            try {
+                if(connection!=null)
+                    connection.close();
+            }catch(SQLException se) {
+                se.printStackTrace();
+            }
+            cp.removeAll();
+            displayMenue();
+        }
 
           /* For TESTING: this is the data that the GUI is getting
           
@@ -477,24 +547,22 @@ public class InventoryDataBase extends JFrame {   // JFrame instead of Frame
           System.out.println(sales_price);
           System.out.println(sid);
           */
-      }
+        }
    });
    
 
-    // Setup the content-pane of JFrame in BorderLayout
-    Container cp = this.getContentPane();
-    cp.setLayout(new BorderLayout(5, 5));
-    cp.add(tfPanel, BorderLayout.NORTH);
-    cp.add(btnPanel, BorderLayout.PAGE_END);
-    //cp.add(tAreaScrollPane, BorderLayout.CENTER);
+        // Setup the content-pane of JFrame in BorderLayout
+        cp.add(tfPanel, BorderLayout.NORTH);
+        cp.add(btnPanel, BorderLayout.PAGE_END);
+        //cp.add(tAreaScrollPane, BorderLayout.CENTER);
 
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setTitle("Create Record");
-    setSize(350, 275);
-    setVisible(true);
-    //setForeground(new ColorUIResource(1, 2, 3));
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Create Record");
+        setSize(350, 275);
+        setVisible(true);
+        //setForeground(new ColorUIResource(1, 2, 3));
 
- }//END CREATE RECORD
+    }//END CREATE RECORD
 
 
 
