@@ -119,7 +119,165 @@ public class InventoryDataBase extends JFrame {
    }
    
    private void deleteRecord() {
-    }
+	           // Retrieve the content-pane of the top-level container JFrame
+      // All operations done on the content-pane
+
+      JTextField searchPid;  // Use Swing's JTextField instead of AWT's TextField
+      JButton submitButton;    // Using Swing's JButton instead of AWT's Button
+      
+      Container cp = getContentPane();
+      cp.setLayout(new FlowLayout());
+      //This panel will make so it will make a new row for the textFields
+      JPanel panelOne = new JPanel();
+      panelOne.setLayout(new FlowLayout());
+      panelOne.setVisible(true);
+
+      JLabel text = new JLabel("Enter the Product ID of the item to be deleted.");
+      panelOne.add(text);
+
+      JPanel panelTwo = new JPanel();
+      searchPid = new JTextField(10);
+      panelTwo.add(searchPid);
+
+      //Once the record is found the data will be displayed in this area
+      //This panel wont be visible until the search for the product id is made
+      JPanel panelThree = new JPanel();
+      panelThree.setVisible(false);
+      //This is what the data will be displayed on 
+      JTextPane textPane = new JTextPane();
+      textPane.setEditable(false);
+      panelThree.add(textPane);
+      //This is the confirmation that they want to delete a record, action is brought up later
+      JButton yes = new JButton("Yes");
+      yes.setForeground(Color.RED);
+      //Will take th user back to the main menu if they do not want to delete a record after all
+      JButton noButton = new JButton("No!");
+      noButton.setForeground(Color.green);
+      noButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           System.out.println("The record was NOT deleted");
+           cp.removeAll();
+           displayMenue();
+        }
+     });
+    
+      panelThree.add(noButton);
+      
+     //This button is used to make a query to MySQL if user enters a valid product id
+      submitButton = new JButton("Submit");
+      submitButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int fieldselection = 0;
+            //Wont go make a search until there is a valid product id
+            if(checkInteger(searchPid.getText())){
+                fieldselection = 1;
+            }
+           if(fieldselection == 1 && searchPid.getText() != null){
+               String record = searchPid.getText();
+               //clearing first two panels in order to give attention the the third/last one
+               panelOne.setVisible(false);
+               panelTwo.setVisible(false);
+               panelThree.setVisible(true);
+
+                try {
+                
+                    Connection connection = DriverManager.getConnection(url, username, password);
+                    //Changed the size here because the discription was cut off on a smaller window
+                    setSize(450, 300);
+
+                    PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + record + "'");
+            
+                    ResultSet myRs = myStmt2.executeQuery();
+                    //If there isn't a recprd with the product id entered they have the option 
+                     // 1: go to main menu, code already in noButton so no need to rewrite
+                    // 2: try again, a new button is called instead of yes button to redo delete method
+                    if (myRs.getFetchSize() == 0) {
+                        yes.setVisible(false);
+                        noButton.setText("Return to Menu");
+                        textPane.setText("Record was not found\n");
+                        JButton retryButton = new JButton("Try again");
+                        panelThree.add(retryButton);
+                        retryButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                               cp.removeAll();
+                               deleteRecord();
+                            }
+                         });
+                    }
+                    //this how the data is displayed on the panel
+                    while (myRs.next()) {
+                        textPane.setText("Product ID: " + myRs.getString("product_id") + "\n"
+                            + "Product Title: " + myRs.getString("product_title") + "\n"
+                            + "Product Description: " + myRs.getString("product_description") + "\n"
+                            + "Quantity: " + myRs.getInt("quantity") + "\n"
+                            + "Wholesale: " + myRs.getString("wholesale_price") + "\n"
+                            + "Sale Price: " + myRs.getString("sale_price") + "\n"
+                            + "Supplier ID: " + myRs.getString("supplier_id") + "\n"  
+                            );
+
+                    }
+                    //This action needs to be here so you can use the local varibles in the try/catch 
+                    yes.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            //another try/catch cuz the code got mad
+                            try{
+                            Connection deleteConnection = DriverManager.getConnection(url, username, password);
+                            String query = "DELETE FROM new_inventory WHERE product_id = '" + record + "'";
+                            PreparedStatement delStmt = deleteConnection.prepareStatement(query);
+                            delStmt.execute();
+
+                           System.out.println("The record was Sucessfully deleted");
+                            }catch (SQLException se) {
+                    
+                                System.out.println("oops, error!");
+                                se.printStackTrace();
+                            } catch (InputMismatchException exception) {
+                                System.out.print(exception.getMessage()); //try to find out specific reason.
+                            }
+                           cp.removeAll();
+                           displayMenue();
+                        }
+                     });   
+                } catch (SQLException se) {
+                    
+                    // TODO Auto-generated catch block
+                    System.out.println("oops, error!");
+                    se.printStackTrace();
+                } catch (InputMismatchException exception) {
+                    System.out.print(exception.getMessage()); //try to find out specific reason.
+                }
+               
+
+
+               //printResults(fieldselection, record);
+           }
+           
+        }
+     });
+     panelTwo.add(submitButton);
+     cp.add(panelOne);
+     cp.add(panelTwo);
+     cp.add(panelThree);
+ 
+      // Allocate an anonymous instance of an anonymous inner class that
+      //  implements ActionListener as ActionEvent listener
+      submitButton.addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent evt) {
+
+         }
+      });
+ 
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Exit program if close-window button clicked
+      setTitle("Label"); // "super" JFrame sets title
+      setSize(400, 200);         // "super" JFrame sets initial size
+      setVisible(true);          // "super" JFrame shows
+    }//End deltetRecord
+	
    public void updateRecord(){
 
    }
