@@ -1,16 +1,17 @@
 package net.spilledcoffee.bot.commands;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.spilledcoffee.bot.CoffeeBot;
 import org.jetbrains.annotations.NotNull;
 
 public class PastOrders extends ListenerAdapter {
     @Override
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
         String[] args = event.getMessage().getContentRaw().split("\\s+");
 
-        // If user enters -cool, bot outputs silly message
+        // If user enters -pastorders, bot should output user's pastorders
         if (args[0].equalsIgnoreCase(CoffeeBot.prefix + "pastorders")){
             event.getChannel().sendTyping().queue();
             // Delay bot Response

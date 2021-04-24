@@ -1,12 +1,13 @@
 package net.spilledcoffee.bot.commands;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.spilledcoffee.bot.CoffeeBot;
 import org.jetbrains.annotations.NotNull;
 
 public class Cool extends ListenerAdapter {
-    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
         // Separates commands into a list
         String[] args = event.getMessage().getContentRaw().split("\\s+");
 
@@ -23,3 +24,4 @@ public class Cool extends ListenerAdapter {
         }
     }
 }
+
