@@ -542,7 +542,7 @@ public class InventoryDataBase extends JFrame {
 					System.out.println("Product ID: " + myRs.getString("product_id"));
 					System.out.println("Product Title: " + myRs.getString("product_title"));
 					System.out.println("Product Description: " + myRs.getString("product_description"));
-					System.out.println("Integer: " + myRs.getInt("quantity"));
+					System.out.println("Quantity: " + myRs.getInt("quantity"));
 					System.out.println("Wholesale: " + myRs.getString("wholesale_price"));
 					System.out.println("Sale Price: " + myRs.getString("sale_price"));
 					System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
