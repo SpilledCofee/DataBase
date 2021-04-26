@@ -4,7 +4,10 @@
 -It also has a 'success' message for when all the input is valid
 */
 //MySQL imports
+
 package mySqlDriver2;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,21 +20,29 @@ import java.util.Scanner;
 //GUI imports
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.ColorUIResource;
-import javax.swing.plaf.basic.BasicBorders;
 
-import com.mysql.cj.x.protobuf.MysqlxNotice.FrameOrBuilder;
 
-import jdk.internal.net.http.frame.WindowUpdateFrame;
 
+/**Product ID: 5
+Product Title: African Roots
+Product Description: 16 oz, whole bean, Medium roast, Bright and complex with notes of fruit.
+Integer: 1000
+Wholesale: 10.31
+Sale Price: 14.50
+Supplier ID: ETHIORST */
  
 @SuppressWarnings("serial")
 public class InventoryDataBase extends JFrame {
 
     //This is credentials required to connect to MySQL
-   private String url, username, password;
+   //private String url, username, password;
+   private static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main_dev";
+   private static String username = "fbacon_team_3250";
+   private static String password = "splldadmn123$";
+   private static String FILE_NAME = "test.csv";
+
 
     //These are unchaing integers that will assist with choosing options
     private boolean PID_SELCTION = false;
@@ -42,12 +53,22 @@ public class InventoryDataBase extends JFrame {
  
     // Constructor to setup the GUI components and event handlers
     public InventoryDataBase() {
-        getLogin();
+        //getLogin();
         //displayMenue();
         //searchRecords();
         //createRecord();
         //getLogin();
         //deleteRecord();
+        
+        try {
+            loadFile();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+            
 
    }
 
@@ -498,7 +519,7 @@ public class InventoryDataBase extends JFrame {
       setVisible(true);          // "super" JFrame shows
 
     }//END SEARCH RECORDS
-
+    //This method is used to print the results from the MySQL result set. IT allows to search method to be flexible
     public void printResults(int fieldtype, String itemLookup){
 
 		String query = "product_id";//default
@@ -659,7 +680,7 @@ public class InventoryDataBase extends JFrame {
             else{
             String title = titleText.getText();
             String discription = discriptionText.getText();
-            int Integer = Integer.parseInt(IntegerText.getText());
+            int quantity = Integer.parseInt(IntegerText.getText());
             double wholesale_price = Double.parseDouble(wholesale_priceText.getText());
             double sales_price = Double.parseDouble(sales_priceText.getText());
             String sid = sidText.getText();
@@ -676,7 +697,7 @@ public class InventoryDataBase extends JFrame {
                 PreparedStatement prepStmt = connection.prepareStatement(query);
                 prepStmt.setString (1, title);
                 prepStmt.setString (2, discription);
-                prepStmt.setInt (3, Integer);
+                prepStmt.setInt (3, quantity);
                 prepStmt.setDouble (4, sales_price);
                 prepStmt.setDouble (5, wholesale_price);
                 prepStmt.setString (6, sid);
@@ -685,7 +706,7 @@ public class InventoryDataBase extends JFrame {
 
                 System.out.println(title);
                 System.out.println(discription);
-                System.out.println(Integer);
+                System.out.println(quantity);
                 System.out.println(sales_price);
                 System.out.println(wholesale_price);
                 System.out.println(sid);
@@ -801,9 +822,124 @@ public boolean checkDouble(String string){
 }
 
 
+public void loadFile() throws FileNotFoundException {
+    Container cp = new Container();
+    cp.setLayout(new GridLayout(2,1));
+
+    JPanel panelOne = new JPanel();
+    panelOne.setLayout(new FlowLayout());
+    panelOne.setBorder(BorderFactory.createEmptyBorder(10, 2, 0, 2));
+    JPanel panelTwo = new JPanel();
+    panelTwo.setLayout(new FlowLayout());
+    panelTwo.setBorder(BorderFactory.createEmptyBorder(0, 2, 5, 2));
+    JLabel label = new JLabel("Enter the file's name");
+    panelOne.add(label);
+    //What is on the secound panel
+    JTextField userFile = new JTextField(8);
+    panelTwo.add(userFile);
+    JButton submit = new JButton("Submit");
+    submit.setVisible(true);
+    panelTwo.add(submit);
+
+    cp.add(panelOne);
+    cp.add(panelTwo);
+    add(cp); //adding container to the super frame
+    
+    submit.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+
+            System.out.println(FILE_NAME);
+        try {
+            Scanner in = new Scanner(new FileInputStream(FILE_NAME));
+            //This will get past the first line that is just the titles of the collums and not data
+            String titiles = in.nextLine();
+            System.out.println(titiles);
+            //This loop will extrapulate the data fron each line and create the entryItem with the line's data
+            while(in.hasNextLine()) {
+                String line = in.nextLine();
+                int end = line.indexOf(",", 0);
+                String product_title = line.substring(0, end);
+
+                int start = end + 1;
+                end = line.indexOf(",", start);
+                String product_discription = line.substring(start, end);
+
+                start = end + 1;
+                end = line.indexOf(",", start);
+                String tempQuantity = line.substring(start, end);
+                int quantity = Integer.parseInt(tempQuantity);
+
+                start = end + 1;
+                end = line.indexOf(",", start);
+                String tempWholesale_cost = line.substring(start, end);
+                double wholesale_cost = Double.parseDouble(tempWholesale_cost);
+
+                start = end + 1;
+                end = line.indexOf(",", start);
+                String tempSale_price = line.substring(start, end);
+                double sale_price = Double.parseDouble(tempSale_price);
+
+                String supplier_id = line.substring(end + 1);
+                
+                Connection connect = null;
+                try {
+
+                    connect = DriverManager.getConnection(url, username, password);
+
+                    String query = " INSERT INTO new_inventory (product_title, product_description, quantity, sale_price, wholesale_price, supplier_id)" +
+                            " VALUES (?, ?, ?, ?, ?, ?)";
+        
+                    PreparedStatement prepStmt = connect.prepareStatement(query);
+                    prepStmt.setString (1, product_title);
+                    prepStmt.setString (2, product_discription);
+                    prepStmt.setInt (3, quantity);
+                    prepStmt.setDouble (4, sale_price);
+                    prepStmt.setDouble (5, wholesale_cost);
+                    prepStmt.setString (6, supplier_id);
+        
+                    //Test
+                    System.out.println(product_title);
+                    System.out.println(product_discription);
+                    System.out.println(quantity);
+                    System.out.println(sale_price);
+                    System.out.println(wholesale_cost);
+                    System.out.println(supplier_id);
+        
+                    prepStmt.execute();
+        
+                } catch (SQLException se) {
+        
+                    // TODO Auto-generated catch block
+                    System.out.println("oops, error!");
+                    se.printStackTrace();
+                } catch (InputMismatchException e) {
+                    System.out.print(e.getMessage()); //try to find out specific reason.
+                }
+                try {
+                    if(connect!=null)
+                        connect.close();
+                }catch(SQLException se) {
+                    se.printStackTrace();
+                }
+
+        }
+        in.close();
+        cp.removeAll();
+        displayMenue();
+
+         }catch (FileNotFoundException exception) { }
+    }
+    });
+    
+    setSize(250,130);
+    setVisible(true);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setTitle("Load File");
 
 
 
+}//END loadFile
 
 
 }//FIN!!!
