@@ -189,10 +189,11 @@ public class InventoryDataBase extends JFrame {
 
                        ResultSet myRs = myStmt2.executeQuery();
 
-                       if (myRs == null) {
+                       if (myRs.next() == false)/*This how you test if the result set is empty*/ {
                            System.out.println("Record not found for entered product id");
                            errorLabel.setText("Invalid product id. Record does not exist.");
-                       }
+                       }//This test moves the MySQL pointer down
+			    myRs.beforeFirst();//This will move the pointer back to the first result
                        else{
                            while (myRs.next()) {
                                System.out.println();
