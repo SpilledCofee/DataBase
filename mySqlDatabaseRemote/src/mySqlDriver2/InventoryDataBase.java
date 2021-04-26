@@ -176,7 +176,7 @@ public class InventoryDataBase extends JFrame {
            public void actionPerformed(ActionEvent e) {
                errorLabel.setText("");
 
-               if(productIdText.getText() == null || productIdText.getText().isEmpty()){
+               if(productIdText.getText().equals(null) || productIdText.getText().isEmpty()){
                    errorLabel.setText("Invalid product id.");
                }
                else {
