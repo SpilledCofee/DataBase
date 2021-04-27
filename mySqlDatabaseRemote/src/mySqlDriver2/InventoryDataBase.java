@@ -34,14 +34,13 @@ public class InventoryDataBase extends JFrame {
     //This is credentials required to connect to MySQL
     private String url, username, password;
 
-
-
     //These are unchaing integers that will assist with choosing options
     private boolean PID_SELCTION = false;
     private boolean TITLE_SELECTION =  false;
     private boolean SID_SELECTION = false;
 
     String menuSelection;//Used in displayMenue()
+    String fieldSelection; // Used in updateRecord()
  
     // Constructor to setup the GUI components and event handlers
     public InventoryDataBase() {
@@ -86,22 +85,27 @@ public class InventoryDataBase extends JFrame {
             System.out.println(menuSelection);
             if(menuSelection.equals("Create a new record")){
                 cp.removeAll();
+                cp.revalidate();
+                cp.repaint();
                 createRecord();
-                
-
             }
-            else if( menuSelection.equals("Look up a record")){
+            else if(menuSelection.equals("Look up a record")){
                 cp.removeAll();
+                cp.revalidate();
+                cp.repaint();
                 searchRecords();
             }
             else if(menuSelection.equals("Update a record")){
                 cp.removeAll();
+                cp.revalidate();
+                cp.repaint();
                 updateRecord();
             }
             else if(menuSelection.equals("Delete an existing record")){
                 cp.removeAll();
+                cp.revalidate();
+                cp.repaint();
                 deleteRecord();
-
             }
         }
 
@@ -120,9 +124,196 @@ public class InventoryDataBase extends JFrame {
    
    private void deleteRecord() {
     }
-   public void updateRecord(){
 
+   public void updateRecord(){
+       Container cp = getContentPane();
+       cp.setLayout(new FlowLayout());
+
+       // JPanel to get product id of product to be updated
+       JTextField productIdText = new JTextField(10);
+       JButton submitProductId = new JButton("Submit");
+
+       JPanel productIdPanel = new JPanel(new GridLayout(3, 1));
+       productIdPanel.setBorder(BorderFactory.createEmptyBorder(30, 10, 20, 10));
+       productIdPanel.add(new JLabel("Enter product ID to update: "));
+       productIdPanel.add(productIdText);
+       productIdPanel.add(submitProductId);
+       cp.add(productIdPanel);
+
+       // JPanel to get which field to update
+       String[] prompts = {"Product ID", "Quantity", "Wholesale Price", "Sale Price", "Supplier ID", "Product Title", "Product Description"};
+       fieldSelection = prompts[0]; // Setting initial selection to first item
+       JComboBox<String> fieldSelections = new JComboBox<String>(prompts);
+       fieldSelections.setPreferredSize(new Dimension(10, 10));
+       JButton submitFieldSelection = new JButton("Submit");
+
+       JPanel fieldPanel = new JPanel(new GridLayout(3, 1));
+       fieldPanel.setBorder(BorderFactory.createEmptyBorder(30, 10, 20, 10));
+       fieldPanel.add(new JLabel("Select field to update: "));
+       fieldPanel.add(fieldSelections);
+       fieldPanel.add(submitFieldSelection);
+       fieldPanel.setVisible(false);
+       cp.add(fieldPanel);
+
+       // Label to print error messages
+       JLabel errorLabel = new JLabel();
+       errorLabel.setFont(new Font("Serif", Font.BOLD, 13));
+       errorLabel.setForeground(Color.red);
+       errorLabel.setOpaque(true);
+       cp.add(errorLabel);
+
+       fieldSelections.addItemListener(new ItemListener() {
+           @Override
+           public void itemStateChanged(ItemEvent e) {
+               if (e.getStateChange() == ItemEvent.SELECTED) {
+                   fieldSelection = (String)fieldSelections.getSelectedItem();
+               }
+           }
+       });
+
+       submitProductId.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               errorLabel.setText("");
+
+               if(productIdText.getText().equals(null) || productIdText.getText().isEmpty()){
+                   errorLabel.setText("Invalid product id.");
+               }
+               else {
+                   Connection connection = null;
+
+                   try{
+                       connection = DriverManager.getConnection(url, username, password);
+
+                       PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + productIdText.getText() + "'");
+
+                       ResultSet myRs = myStmt2.executeQuery();
+
+                       if (myRs.next() == false)/*This how you test if the result set is empty*/ {
+                           System.out.println("Record not found for entered product id");
+                           errorLabel.setText("Invalid product id. Record does not exist.");
+                       }//This test moves the MySQL pointer down
+			    myRs.beforeFirst();//This will move the pointer back to the first result
+                       else{
+                           while (myRs.next()) {
+                               System.out.println();
+                               System.out.println("Product ID: " + myRs.getString("product_id"));
+                               System.out.println("Product Title: " + myRs.getString("product_title"));
+                               System.out.println("Product Description: " + myRs.getString("product_description"));
+                               System.out.println("Quantity: " + myRs.getInt("quantity"));
+                               System.out.println("Wholesale: " + myRs.getString("wholesale_price"));
+                               System.out.println("Sale Price: " + myRs.getString("sale_price"));
+                               System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
+                               System.out.println();
+                           }
+
+                           productIdPanel.setVisible(false);
+                           fieldPanel.setVisible(true);
+                       }
+                   } catch (SQLException se) {
+                       // TODO Auto-generated catch block
+                       System.out.println("oops, error!");
+                       se.printStackTrace();
+                   } catch (InputMismatchException exception) {
+                       System.out.print(exception.getMessage()); //try to find out specific reason.
+                   }
+
+                   try {
+                       if(connection!=null)
+                           connection.close();
+                   }catch(SQLException se) {
+                       se.printStackTrace();
+                   }
+               }
+           }
+
+       });
+
+       submitFieldSelection.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               System.out.println(fieldSelection);
+
+               JTextField updatedFieldText = new JTextField(10);
+               JButton submitUpdate = new JButton("Submit");
+
+               JPanel updatePanel = new JPanel(new GridLayout(3, 1));
+               updatePanel.setBorder(BorderFactory.createEmptyBorder(30, 10, 20, 10));
+               updatePanel.add(new JLabel("Enter updated " + fieldSelection + ":"));
+               updatePanel.add(updatedFieldText);
+               updatePanel.add(submitUpdate);
+               cp.add(updatePanel);
+
+               fieldPanel.setVisible(false);
+               updatePanel.setVisible(true);
+
+               submitUpdate.addActionListener(new ActionListener() {
+                   @Override
+                   public void actionPerformed(ActionEvent e) {
+                       Connection connection = null;
+
+                       PreparedStatement updateStmt;
+
+                       try{
+                           connection = DriverManager.getConnection(url, username, password);
+
+                           if(fieldSelection.equals("Product ID")){
+                               updateStmt = connection.prepareStatement("UPDATE new_inventory SET product_id = '" + updatedFieldText.getText() +"' WHERE product_id = '"+ productIdText.getText() +"'");
+                           }
+                           else if(fieldSelection.equals("Quantity")){
+                               updateStmt = connection.prepareStatement("UPDATE new_inventory SET quantity = '" + updatedFieldText.getText() +"' WHERE product_id = '"+ productIdText.getText() +"'");
+                           }
+                           else if(fieldSelection.equals("Wholesale Price")){
+                               updateStmt = connection.prepareStatement("UPDATE new_inventory SET wholesale_price = '" + updatedFieldText.getText() +"' WHERE product_id = '"+ productIdText.getText() +"'");
+                           }
+                           else if(fieldSelection.equals("Sale Price")){
+                               updateStmt = connection.prepareStatement("UPDATE new_inventory SET sale_price = '" + updatedFieldText.getText() +"' WHERE product_id = '"+ productIdText.getText() +"'");
+                           }
+                           else if(fieldSelection.equals("Supplier ID")){
+                               updateStmt = connection.prepareStatement("UPDATE new_inventory SET supplier_id = '" + updatedFieldText.getText() +"' WHERE product_id = '"+ productIdText.getText() +"'");
+                           }
+                           else if(fieldSelection.equals("Product Title")){
+                               updateStmt = connection.prepareStatement("UPDATE new_inventory SET product_title = '" + updatedFieldText.getText() +"' WHERE product_id = '"+ productIdText.getText() +"'");
+                           }
+                           else {
+                               updateStmt = connection.prepareStatement("UPDATE new_inventory SET product_description = '" + updatedFieldText.getText() +"' WHERE product_id = '"+ productIdText.getText() +"'");
+                           }
+
+                           updateStmt.execute();
+
+                           System.out.println("Record has been updated.");
+
+                           cp.removeAll();
+                           cp.revalidate();
+                           cp.repaint();
+                           displayMenue();
+                       } catch (SQLException se) {
+
+                           // TODO Auto-generated catch block
+                           System.out.println("oops, error!");
+                           se.printStackTrace();
+                       } catch (InputMismatchException exception) {
+                           System.out.print(exception.getMessage()); //try to find out specific reason.
+                       }
+
+                       try {
+                           if(connection!=null)
+                               connection.close();
+                       }catch(SQLException se) {
+                           se.printStackTrace();
+                       }
+                   }
+
+               });
+           }
+       });
+
+       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Exit program if close-window button clicked
+       setTitle("Update Record:"); // "super" JFrame sets title
+       setSize(350, 225);         // "super" JFrame sets initial size
+       setVisible(true);          // "super" JFrame shows
    }
+
    public void getLogin(){
        JTextField urlText, usernameText, passwordText;
        JLabel label = new JLabel();
