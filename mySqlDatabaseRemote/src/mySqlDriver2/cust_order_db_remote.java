@@ -12,10 +12,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.Date;
+import java.io.*;
 
 public class cust_order_db_remote {
 	
-	private static String url = "";
+	private static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
 	private static String username = "";
 	private static String password = "";
 
@@ -42,6 +43,7 @@ public class cust_order_db_remote {
 			+ "b. Add a new order\n"
 			+ "c. Update an order\n"
 			+ "d. Delete an order\n"
+			+ "e. Upload CSV\n"
 			+ "f. To quit\n");
 
 		String prompt = input.next();
@@ -66,6 +68,138 @@ public class cust_order_db_remote {
 			displayMenu();
 		}
 	}
+
+	public void loadFile() throws FileNotFoundException {
+
+		Scanner scanner = new Scanner(System.in);
+		Connection connection = null;
+		Statement myStmt = null;
+		
+		String line = in.nextLine();
+
+			int end = line.indexOf(",", 0);
+			String date = line.substring(0, end);
+
+			int start = end + 1;
+			end = line.indexOf(",", start);
+			String user_id = line.substring(start, end);
+
+			start = end + 1;
+			end = line.indexOf(",", start);
+			String shipping_street = line.substring(start, end);
+
+			start = end + 1;
+			end = line.indexOf(",", start);
+			String shipping_city = line.substring(start, end);
+
+			start = end + 1;
+			end = line.indexOf(",", start);
+			String shipping_state = line.substring(start, end);
+
+			start = end + 1;
+			end = line.indexOf(",", start);
+			String shipping_zipcode = line.substring(start, end);
+
+
+			start = end + 1;
+			end = line.indexOf(",", start);
+			String tempQuantity = line.substring(start, end);
+			int order_quantity = Integer.parseInt(tempQuantity);
+			start = end + 1;
+
+			start = end + 1;
+			end = line.indexOf(",", start);
+			String tempProductId = line.substring(start, end);
+			int product_id = Integer.parseInt(tempProductId);
+			start = end + 1;
+
+
+
+
+			try {
+
+				connection = DriverManager.getConnection(url, username, password);
+
+				String query = " INSERT INTO new_customer_orders (ordered_at, user_id, shipping_street, shipping_city, shipping_state, shipping_zipcode)" +
+				" VALUES (?, ?, ?, ?, ?, ?)";
+
+				String iquery = " INSERT INTO new_order_items (order_id, user_id, product_id, quantity, sale_price, item_total) VALUES (?, ?, ?, ?, ?, ?)";
+
+				PreparedStatement myStmt3 = connection.prepareStatement("Select sale_price FROM new_inventory WHERE product_id = '" + product_id + "'");
+
+				ResultSet myRs = myStmt3.executeQuery();
+
+				PreparedStatement prepStmt2 = connection.prepareStatement("SELECT order_id FROM new_customer_orders ORDER BY order_id DESC LIMIT 1");
+
+				ResultSet myRs1 = prepStmt2.executeQuery();
+
+				PreparedStatement prepStmt = connection.prepareStatement(query);
+				prepStmt.setString(1, date);
+				prepStmt.setString(2, user_id);
+				prepStmt.setString(3, shipping_street);
+				prepStmt.setString(4, shipping_city);
+				prepStmt.setString(5, shipping_state);
+				prepStmt.setString(6, shipping_zipcode);
+				prepStmt.setString(6, shipping_zipcode);
+
+				prepStmt.execute();
+				
+				
+				if (myRs1.next()){
+					int oid = myRs1.getInt("order_id");
+
+					if(myRs.next()){
+						double price = myRs.getDouble("sale_price");
+						double total = order_quantity * price; 
+
+					
+
+					PreparedStatement prepStmt1 = connection.prepareStatement(iquery);
+					prepStmt1.setInt(1, oid);
+					prepStmt1.setString (2, user_id);
+					prepStmt1.setInt(3, product_id);
+					prepStmt1.setInt (4, order_quantity);
+					prepStmt1.setDouble(5, price);
+					prepStmt1.setDouble(6, total);
+					
+
+					prepStmt1.execute();
+					
+					PreparedStatement myStmt6 = connection.prepareStatement("SELECT SUM(quantity) total_quantity FROM new_order_items WHERE order_id = '" + oid + "'");
+
+					ResultSet myRs2 = myStmt6.executeQuery();
+					if(myRs2.next()){
+
+						int item_total = myRs2.getInt("total_quantity");
+						PreparedStatement myStmt7 = connection.prepareStatement("SELECT SUM(item_total) total_cost FROM new_order_items WHERE order_id = '" + oid + "'");
+						ResultSet myRs3 = myStmt7.executeQuery();
+						if(myRs3.next()){
+
+							
+							double order_total = myRs3.getDouble("total_cost");
+							PreparedStatement prepStmt3 = connection.prepareStatement("UPDATE new_customer_orders SET order_total = '"+ order_total +"' WHERE order_id = '"+ oid +"'");
+							prepStmt3.execute();
+							PreparedStatement prepStmt4 = connection.prepareStatement("UPDATE new_customer_orders SET order_quantity = '"+ item_total +"' WHERE order_id = '"+ oid +"'");
+							prepStmt4.execute();
+
+					}}}}
+
+			} catch (SQLException se) {
+
+				// TODO Auto-generated catch block
+				System.out.println("oops, error!");
+				se.printStackTrace();
+			} catch (InputMismatchException e) {
+				System.out.print(e.getMessage()); //try to find out specific reason.
+			}
+			try {
+				if(connection!=null)
+					connection.close();
+			}catch(SQLException se) {
+				se.printStackTrace();
+			}
+
+		}
 	public void searchEmail(String email){
 
 		try {
@@ -224,7 +358,7 @@ public class cust_order_db_remote {
 			}
 		
 	}
-	public void searchOrderID(String oid){
+	public void searchOrderID(int oid){
 		try {
 			Connection connection = DriverManager.getConnection(url, username, password);
 			
@@ -306,7 +440,7 @@ public class cust_order_db_remote {
 			if(select.contains("e")) {
 				
 				System.out.println("Enter Order ID: ");
-				String oid = scanner.next();
+				int oid = scanner.nextInt();
 				searchOrderID(oid);
 				
 			}
@@ -345,6 +479,7 @@ public class cust_order_db_remote {
 				if (myRs.next()) {	
 					
 					myRs.beforeFirst();
+					
 					System.out.println();
 					System.out.println("ITEMS ORDERED");
 					System.out.println("----------------");
@@ -357,6 +492,7 @@ public class cust_order_db_remote {
 						System.out.println("Quantity: " + myRs.getInt("quantity"));
 						System.out.println("Sale Price: " + myRs.getDouble("sale_price"));
 						System.out.println("Item Total: " + myRs.getDouble("item_total"));
+						System.out.println("Item ID: " + myRs.getInt("id"));
 						System.out.println();
 					}
 				
@@ -600,7 +736,7 @@ public class cust_order_db_remote {
 		}
 
 		System.out.println("Enter the order ID of the order you would like to update: ");
-		String oid = scanner.next();
+		int oid = scanner.nextInt();
 		searchOrderID(oid);
 
 		System.out.println("Which field would you like to update? ");
@@ -662,23 +798,61 @@ public class cust_order_db_remote {
 					
 							
 		if(ans.contains("c")) {
-						
+			searchProducts(oid);
+			System.out.println();
+			System.out.println("Select the item ID you'd like to update: ");
+			int iid = scanner.nextInt();
 
 			System.out.println();
 			System.out.println("Enter the new Product ID: ");
 			System.out.println();
 			String pid = scanner.next();
 						
-			PreparedStatement upStmt3 = connection.prepareStatement("UPDATE new_customer_orders SET product_id = '" + pid +"' WHERE order_id = '"+ oid +"'");
+			PreparedStatement upStmt3 = connection.prepareStatement("UPDATE new_order_items SET product_id = '" + pid +"' WHERE id = '"+ iid +"'");
 			upStmt3.execute();
 
 			System.out.println();
 			System.out.println("Enter the new quantity: ");
 			System.out.println();
-			String pq = scanner.next();
+			int pq = scanner.nextInt();
 						
-			PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_customer_orders SET order_quantity = '" + pq +"' WHERE order_id = '"+ oid +"'");
-			upStmt2.execute();
+			PreparedStatement upStmt4 = connection.prepareStatement("UPDATE new_order_items SET quantity = '" + pq +"' WHERE id = '"+ iid +"'");
+			upStmt4.execute();
+
+			PreparedStatement upStmt5 = connection.prepareStatement("Select sale_price FROM new_inventory WHERE product_id = '" + pid + "'");
+			ResultSet myRs = upStmt5.executeQuery();
+
+			if(myRs.next()){
+				double price = myRs.getDouble("sale_price");
+				double total = pq * price; 
+
+				PreparedStatement upStmt6 = connection.prepareStatement("UPDATE new_order_items SET sale_price = '" + price + "' WHERE id = '"+ iid +"'");
+				upStmt6.execute();
+
+				PreparedStatement upStmt7 = connection.prepareStatement("UPDATE new_order_items SET item_total = '" + total + "' WHERE id = '"+ iid +"'");
+				upStmt7.execute();
+
+				PreparedStatement myStmt8 = connection.prepareStatement("SELECT SUM(quantity) total_quantity FROM new_order_items WHERE order_id = '" + oid + "'");
+
+				ResultSet myRs2 = myStmt8.executeQuery();
+				if(myRs2.next()){
+
+					int item_total = myRs2.getInt("total_quantity");
+					PreparedStatement myStmt9 = connection.prepareStatement("SELECT SUM(item_total) total_cost FROM new_order_items WHERE order_id = '" + oid + "'");
+					ResultSet myRs3 = myStmt9.executeQuery();
+					if(myRs3.next()){
+						
+						double order_total = myRs3.getDouble("total_cost");
+						PreparedStatement prepStmt3 = connection.prepareStatement("UPDATE new_customer_orders SET order_total = '"+ order_total +"' WHERE order_id = '"+ oid +"'");
+						prepStmt3.execute();
+						PreparedStatement prepStmt4 = connection.prepareStatement("UPDATE new_customer_orders SET order_quantity = '"+ item_total +"' WHERE order_id = '"+ oid +"'");
+						prepStmt4.execute();
+
+				}}
+
+
+
+			
 						
 		}
 		if(ans.contains("d")) {
@@ -691,7 +865,7 @@ public class cust_order_db_remote {
 			PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_customer_orders SET user_id = '" + email2 +"' WHERE order_id = '"+ oid +"'");
 			upStmt2.execute();
 		}				
-		} 
+		} }
 		catch (SQLException se) {
 				
 		// TODO Auto-generated catch block
@@ -714,7 +888,8 @@ public class cust_order_db_remote {
 		else{displayMenu();}
 			
 	}
-		
+	
+	
 	public void deleteOrder() {
 		
 		Scanner scanner = new Scanner(System.in);
@@ -730,19 +905,31 @@ public class cust_order_db_remote {
 			if(answer.contains("Y") || answer.contains("y")){
 						
 				System.out.println("Enter the order ID of the order you would like deleted.");
-				String oid = scanner.next();
+				int oid = scanner.nextInt();
 				searchOrderID(oid);
 						
 				System.out.println("Are you sure you want to delete this order? 'Yes' or 'No'");
-				String ans = scanner.next();
+				String ans1 = scanner.next();
 						
-				if(ans.contains("y") || ans.contains("Y")) {
+				if(ans1.contains("y") || ans1.contains("Y")) {
+			
 					String query = "DELETE FROM new_customer_orders WHERE order_id = '" + oid + "'";
-						
+					String query2 = "DELETE FROM new_order_items WHERE order_id = '" + oid + "'";
 					PreparedStatement delStmt = connection.prepareStatement(query);
+					PreparedStatement delStmt2 = connection.prepareStatement(query2);
 					delStmt.execute();
+					delStmt2.execute();
+					System.out.println();
+					System.out.println("Order " + oid + " has been deleted.");
+					System.out.println();
 				}
-			}
+		
+			
+				else{
+		
+					displayMenu();
+
+				}}
 			else{
 				System.out.println("Enter customer email: ");
 				String email = scanner.next();
@@ -751,20 +938,28 @@ public class cust_order_db_remote {
 							
 				System.out.println("Enter the order ID of the order you would like deleted.");
 				int oid = scanner.nextInt();
-				System.out.println();
-						
-				System.out.println("Are you sure you want to delete this order? 'Yes' or 'No'");
-				String ans = scanner.next();
-						
-				if(ans.contains("y") || ans.contains("Y")) {
-					String query = "DELETE FROM new_customer_orders WHERE order_id = '" + oid + "'";
-						
-					PreparedStatement delStmt = connection.prepareStatement(query);
-					delStmt.execute();
-				}
+				searchOrderID(oid);
 
-			}
-		} catch (SQLException se) {
+
+				System.out.println("Are you sure you want to delete this order? 'Yes' or 'No'");
+				String ans1 = scanner.next();
+						
+				if(ans1.contains("y") || ans1.contains("Y")) {
+			
+					String query = "DELETE FROM new_customer_orders WHERE order_id = '" + oid + "'";
+					String query2 = "DELETE FROM new_order_items WHERE order_id = '" + oid + "'";
+					PreparedStatement delStmt = connection.prepareStatement(query);
+					PreparedStatement delStmt2 = connection.prepareStatement(query2);
+					delStmt.execute();
+					delStmt2.execute();
+					System.out.println();
+					System.out.println("Order " + oid + " has been deleted.");
+					System.out.println();
+				}
+				else{
+					displayMenu();
+				}}}
+		 catch (SQLException se) {
 				
 			// TODO Auto-generated catch block
 			System.out.println("oops, error!");
@@ -783,6 +978,5 @@ public class cust_order_db_remote {
 			deleteOrder();
 		}
 		else{displayMenu();}		
-		
-	}
-}
+
+}}
