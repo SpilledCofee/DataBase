@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 //GUI imports
@@ -38,11 +39,9 @@ Supplier ID: ETHIORST */
 public class CustomerOrderDataBase extends JFrame {
 
     //This is credentials required to connect to MySQL
-   //private String url, username, password;
-   
+   private String url, username, password;
 
-
-   private static String FILE_NAME;
+    private static String FILE_NAME;
 
 
     //These are unchaing integers that will assist with choosing options
@@ -54,7 +53,7 @@ public class CustomerOrderDataBase extends JFrame {
  
     // Constructor to setup the GUI components and event handlers
     public CustomerOrderDataBase() {
-        //getLogin();
+        getLogin();
         //displayMenue();
         //searchRecords();
         //createRecord();
@@ -75,8 +74,71 @@ public class CustomerOrderDataBase extends JFrame {
    }
 
    public void displayMenue(){
+       Container cp = getContentPane();
+       cp.setLayout(new FlowLayout());
 
+       // Create JComboBox for getting the prompt to run
+       cp.add(new JLabel("Select a prompt:"));
 
+       final String[] prompts = {"Create a new record", "Search records", "Update a record", "Delete an existing record"};
+       menuSelection = prompts[0]; // Setting initial selection to first item
+
+       final JComboBox<String> selections = new JComboBox<String>(prompts);
+       selections.setPreferredSize(new Dimension(300, 80));
+       cp.add(selections);
+
+       // Update menu selection when something is selected in drop down
+       selections.addItemListener(new ItemListener() {
+           @Override
+           public void itemStateChanged(ItemEvent e) {
+               if (e.getStateChange() == ItemEvent.SELECTED) {
+                   menuSelection = (String)selections.getSelectedItem();
+               }
+           }
+       });
+
+       //Jbutton
+       JButton submitButton = new JButton("Submit");
+       submitButton.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               System.out.println(menuSelection);
+               if(menuSelection.equals("Create a new record")){
+                   cp.removeAll();
+                   cp.revalidate();
+                   cp.repaint();
+                   createRecord();
+               }
+               else if(menuSelection.equals("Search records")){
+                   cp.removeAll();
+                   cp.revalidate();
+                   cp.repaint();
+                   searchRecords();
+               }
+               else if(menuSelection.equals("Update a record")){
+                   cp.removeAll();
+                   cp.revalidate();
+                   cp.repaint();
+                   updateRecord();
+               }
+               else if(menuSelection.equals("Delete an existing record")){
+                   cp.removeAll();
+                   cp.revalidate();
+                   cp.repaint();
+                   deleteRecord();
+               }
+           }
+
+       });
+       cp.add(submitButton);
+
+       // Allocate an anonymous instance of an anonymous inner class that
+       // implements ActionListener as ActionEvent listener
+
+       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Exit program if close-window button clicked
+       setTitle("Menu:"); // "super" JFrame sets title
+       setSize(350, 225);         // "super" JFrame sets initial size
+       setVisible(true);          // "super" JFrame shows
    }//END DisplayMenu
    
    private void deleteRecord() {
@@ -163,7 +225,7 @@ public class CustomerOrderDataBase extends JFrame {
         // Wait until a selection is made before returning
         // reference https://stackoverflow.com/questions/20069374/java-swing-main-class-wait-until-jframe-is-closed
 
-    }//END GET LOGIN
+    } //END GET LOGIN
 
     public void searchRecords(){
       // Retrieve the content-pane of the top-level container JFrame
@@ -236,10 +298,222 @@ public class CustomerOrderDataBase extends JFrame {
 	}//END PRINT RESULTS
 
     public void createRecord() {
+        // Private variables of the GUI components
+        JTextField userIdText, productIdText, orderQuantityText, shippingStreetText, shippingCityText, shippingStateText, shippingZipcodeText;
+        JLabel label = new JLabel();
 
+        //These also have getter methods that we can extract the values from the GUI
+        JPanel tfPanel = new JPanel(new GridLayout(7, 2, 10, 2));//6 rows and 2 columns
+        tfPanel.setBorder(BorderFactory.createEmptyBorder(15, 10, 10, 10));
+
+        JButton button = new JButton("Add Record");
+
+        //(Row 1)
+        tfPanel.add(new JLabel("Customer email or user id"));
+        userIdText = new JTextField(10);
+        tfPanel.add(userIdText);
+
+        //(Row 2)
+        tfPanel.add(new JLabel("Product id"));
+        productIdText = new JTextField(10);
+        tfPanel.add(productIdText);
+
+        //(Row 3)
+        tfPanel.add(new JLabel("Order quantity"));
+        orderQuantityText = new JTextField(10);
+        tfPanel.add(orderQuantityText);
+
+        //(Row 4)
+        tfPanel.add(new JLabel("Shipping street"));
+        shippingStreetText = new JTextField(10);
+        tfPanel.add(shippingStreetText);
+
+        //(Row 5)
+        tfPanel.add(new JLabel("Shipping city"));
+        shippingCityText = new JTextField(10);
+        tfPanel.add(shippingCityText);
+
+        //(Row 6)
+        tfPanel.add(new JLabel("Shipping state (ex. CO)"));
+        shippingStateText = new JTextField(10);
+        tfPanel.add(shippingStateText);
+
+        //(Row 7)
+        tfPanel.add(new JLabel("Shipping zip code"));
+        shippingZipcodeText = new JTextField(10);
+        tfPanel.add(shippingZipcodeText);
+
+        //This is another pannel just for the button that gets out of the grid layout
+        JPanel btnPanel = new JPanel();
+        btnPanel.setLocation(100, 200);
+        btnPanel.add(button);
+        label.setFont(new Font("Serif", Font.BOLD, 13));
+        label.setForeground(Color.red);
+        label.setOpaque(true);
+        btnPanel.add(label);
+
+        Container cp = this.getContentPane();
+        cp.setLayout(new BorderLayout(5, 5));
+
+
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //This will reset the label every time that the button is pressed
+                label.setForeground(Color.red);
+                label.setText("");
+
+                if(userIdText.getText().isEmpty()){
+                    label.setText("Enter a user id!");
+                }
+                else if(productIdText.getText().isEmpty()){
+                    label.setText("Enter a product id!");
+                }
+                else if(!checkQuantity(orderQuantityText.getText())){
+                    label.setText("Invalid Quantity!");
+                }
+                else if(orderQuantityText.getText().length() > 8){
+                    label.setText("Quantity is too Big");
+                }
+                else if(orderQuantityText.getText().isEmpty()){
+                    label.setText("Enter a Quantity!");
+                }
+                else if(shippingStreetText.getText() == null){
+                    label.setText("Enter shipping street");
+                }
+                else if(shippingCityText.getText().isEmpty()){
+                    label.setText("Enter shipping city");
+                }
+                else if(shippingStateText.getText().isEmpty()){
+                    label.setText("Enter shipping state (ex. CO)");
+                }
+                else if(shippingStateText.getText().length() > 2){
+                    label.setText("Invalid state, enter abbreviation (ex. CO)");
+                }
+                else if(shippingZipcodeText.getText().isEmpty()){
+                    label.setText("Enter shipping zip code!");
+                }
+                else if(shippingZipcodeText.getText().length() > 5){
+                    label.setText("Invalid zip code!");
+                }
+                else{
+                    String userId = userIdText.getText();
+                    int productId = Integer.parseInt(productIdText.getText());
+                    int quantity = Integer.parseInt(orderQuantityText.getText());
+                    String street = shippingStreetText.getText();
+                    String city = shippingCityText.getText();
+                    String state = shippingStateText.getText();
+                    String custZip = shippingZipcodeText.getText();
+
+                    Connection connection = null;
+
+                    try {
+                        connection = DriverManager.getConnection(url, username, password);
+
+                        String query = " INSERT INTO new_customer_orders (ordered_at, user_id, shipping_street, shipping_city, shipping_state, shipping_zipcode)" +
+                                " VALUES (?, ?, ?, ?, ?, ?)";
+
+                        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                        PreparedStatement prepStmt = connection.prepareStatement(query);
+                        prepStmt.setTimestamp(1, timestamp);
+                        prepStmt.setString (2, userId);
+                        prepStmt.setString(3, street);
+                        prepStmt.setString(4, city);
+                        prepStmt.setString(5, state);
+                        prepStmt.setString(6, custZip);
+
+                        prepStmt.execute();
+
+                        PreparedStatement myStmt3 = connection.prepareStatement("Select sale_price FROM new_inventory WHERE product_id = '" + productId + "'");
+                        ResultSet myRs = myStmt3.executeQuery();
+
+                        //Should this be something that is auto calculated with the quantity from the frontend or inventory?
+                        if(myRs.next()){
+                            PreparedStatement prepStmt2 = connection.prepareStatement("SELECT order_id FROM new_customer_orders ORDER BY order_id DESC LIMIT 1");
+
+                            ResultSet myRs1 = prepStmt2.executeQuery();
+
+                            if (myRs1.next()){
+                                int oid = myRs1.getInt("order_id");
+
+                                double price = myRs.getDouble("sale_price");
+                                double total = quantity * price;
+
+                                String iquery = " INSERT INTO new_order_items (order_id, user_id, product_id, quantity, sale_price, item_total) VALUES (?, ?, ?, ?, ?, ?)";
+
+                                PreparedStatement prepStmt1 = connection.prepareStatement(iquery);
+                                prepStmt1.setInt(1, oid);
+                                prepStmt1.setString (2, userId);
+                                prepStmt1.setInt(3, productId);
+                                prepStmt1.setInt (4, quantity);
+                                prepStmt1.setDouble(5, price);
+                                prepStmt1.setDouble(6, total);
+
+                                prepStmt1.execute();
+
+                                PreparedStatement myStmt6 = connection.prepareStatement("SELECT SUM(quantity) total_quantity FROM new_order_items WHERE order_id = '" + oid + "'");
+
+                                ResultSet myRs2 = myStmt6.executeQuery();
+                                if(myRs2.next()){
+
+                                    int item_total = myRs2.getInt("total_quantity");
+                                    PreparedStatement myStmt7 = connection.prepareStatement("SELECT SUM(item_total) total_cost FROM new_order_items WHERE order_id = '" + oid + "'");
+                                    ResultSet myRs3 = myStmt7.executeQuery();
+                                    if(myRs3.next()){
+
+
+                                        double order_total = myRs3.getDouble("total_cost");
+                                        PreparedStatement prepStmt3 = connection.prepareStatement("UPDATE new_customer_orders SET order_total = '"+ order_total +"' WHERE order_id = '"+ oid +"'");
+                                        prepStmt3.execute();
+                                        PreparedStatement prepStmt4 = connection.prepareStatement("UPDATE new_customer_orders SET order_quantity = '"+ item_total +"' WHERE order_id = '"+ oid +"'");
+                                        prepStmt4.execute();
+
+                                    }
+                                }
+                            }
+
+                            cp.removeAll();
+                            displayMenue();
+                        }
+                        else{
+                            label.setText("Product id not found in inventory!");
+
+                            System.out.println();
+                            System.out.println("Product id not found in inventory!");
+                            System.out.println();
+                        }
+
+                    } catch (SQLException se) {
+
+                        // TODO Auto-generated catch block
+                        System.out.println("oops, error!");
+                        se.printStackTrace();
+                    } catch (InputMismatchException ex) {
+                        System.out.print(ex.getMessage()); //try to find out specific reason.
+                    }
+
+
+                    try {
+                        if(connection!=null)
+                            connection.close();
+                    }catch(SQLException se) {
+                        se.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        // Setup the content-pane of JFrame in BorderLayout
+        cp.add(tfPanel, BorderLayout.NORTH);
+        cp.add(btnPanel, BorderLayout.PAGE_END);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Create Record");
+        setSize(400, 350);
+        setVisible(true);
+        //setForeground(new ColorUIResource(1, 2, 3));
     }//END CREATE RECORD
-
-
 
    public static void main(String[] args) {
       // Run the GUI construction in the Event-Dispatching thread for thread-safety
@@ -303,6 +577,18 @@ public boolean checkDouble(String string){
     }
     return valid;
 }
+
+    public boolean checkQuantity(String string){
+        boolean valid = true;
+        for(int i = 0; i<string.length(); i++){
+            char a = string.charAt(i);
+            if(!Character.isDigit(a)){
+                valid = false;
+                break;
+            }
+        }
+        return valid;
+    }
 
 
 }//FIN!!!
