@@ -1,4 +1,4 @@
-package mySqlDriver2;
+package mySqlDatabaseRemote.src.mySqlDriver2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,14 +12,60 @@ import java.util.Scanner;
 
 public class inventory_db_remote {
 
-	public static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main_dev";
-	public static String username = "fbacon_team_3250";
-	public static String password = "splldadmn123$";
+	
+	public static void main(String[] args) {
+		displayMenu();	
+	}//END MAIN
+  
+  
+	public static String url = "";
+	public static String username = "";
+	public static String password = "";
 	
 	public static void main(String[] args) {
 
-		displayMenu();	
-	}//END MAIN
+		if (useGui){
+			// if use gui boolean is true, use gui version of the menu.
+			SetMySqlCredentials();
+			displayGuiMenu();
+		}
+		else{
+			// if use gui boolean is false, use console version of the menu.
+			displayMenu();
+		}
+	}
+
+	public static void SetMySqlCredentials(){
+		CredentialsGui credentialsGui = new CredentialsGui();
+		credentialsGui.displayCredentialsGui();
+
+		url = credentialsGui.getUrl();
+		username = credentialsGui.getUsername();
+		password = credentialsGui.getPassword();
+	}
+
+	public static void displayGuiMenu(){
+		InventoryMenuGui menuGui = new InventoryMenuGui();
+		menuGui.displayGuiMenu();
+
+		String prompt = menuGui.getMenuSelection();
+
+		if(prompt.equals("Create a new record")) {
+			createRecord();
+		}
+
+		if(prompt.equals("Look up a record")) {
+			lookUpRecord();
+		}
+
+		if(prompt.equals("Update a record")) {
+			updateRecord();
+		}
+
+		if(prompt.equals("Delete an existing record")) {
+			deleteRecord();
+		}
+	}
 	
 	public static void displayMenu() {
 		
@@ -160,7 +206,6 @@ public class inventory_db_remote {
 	}
 	public static void createRecord() {
 	
-		
 		
 		Scanner scanner = new Scanner(System.in);
 		Scanner scanner1 = new Scanner(System.in);
