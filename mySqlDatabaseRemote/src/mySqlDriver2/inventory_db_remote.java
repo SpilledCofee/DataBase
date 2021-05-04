@@ -1,4 +1,4 @@
-package mySqlDatabaseRemote.src.mySqlDriver2;
+package mySqlDriver2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,57 +10,28 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class inventory_db_remote {
-
-	public static String url = "";
+	//database login credentials
+	public static String url = "jdbc:mysql://192.254.233.63:3306/fbacon_spilledcoffee_main";
 	public static String username = "";
 	public static String password = "";
-	public static boolean useGui = false;
 	
 	public static void main(String[] args) {
+		
+		//scanner for login
+		Scanner log = new Scanner(System.in);
 
-		if (useGui){
-			// if use gui boolean is true, use gui version of the menu.
-			SetMySqlCredentials();
-			displayGuiMenu();
-		}
-		else{
-			// if use gui boolean is false, use console version of the menu.
-			displayMenu();
-		}
-	}
+		//login for user into database
+		System.out.println("Enter your Username: ");
+		username = log.next();
 
-	public static void SetMySqlCredentials(){
-		CredentialsGui credentialsGui = new CredentialsGui();
-		credentialsGui.displayCredentialsGui();
+		System.out.println("Enter your Password: ");
+		password = log.next();
 
-		url = credentialsGui.getUrl();
-		username = credentialsGui.getUsername();
-		password = credentialsGui.getPassword();
-	}
 
-	public static void displayGuiMenu(){
-		InventoryMenuGui menuGui = new InventoryMenuGui();
-		menuGui.displayGuiMenu();
-
-		String prompt = menuGui.getMenuSelection();
-
-		if(prompt.equals("Create a new record")) {
-			createRecord();
-		}
-
-		if(prompt.equals("Look up a record")) {
-			lookUpRecord();
-		}
-
-		if(prompt.equals("Update a record")) {
-			updateRecord();
-		}
-
-		if(prompt.equals("Delete an existing record")) {
-			deleteRecord();
-		}
+		displayMenu();
 	}
 	
+	//method to display menu
 	public static void displayMenu() {
 		
 		Scanner input = new Scanner(System.in);
@@ -90,15 +61,15 @@ public class inventory_db_remote {
 		}
 		
 	}
-	
+	//method will look up record in inventory
 	public static void lookUpRecord(){
 		
 
-		
+		//scanner for lookup
 		Scanner scanner = new Scanner(System.in);
 		
 		try {
-			
+			//creates connection to sql database
 			Connection connection = DriverManager.getConnection(url, username, password);
 			
 			System.out.println();
@@ -106,7 +77,7 @@ public class inventory_db_remote {
 			System.out.println("Enter Product ID: ");
 			String pid = scanner.next();
 			
-			
+			//queries the product with that specific product id. resultset is made to be able to adjust pointer
 			PreparedStatement myStmt = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'", ResultSet.TYPE_SCROLL_SENSITIVE, 
                     ResultSet.CONCUR_UPDATABLE);
 	
@@ -114,7 +85,7 @@ public class inventory_db_remote {
 			ResultSet myRs = myStmt.executeQuery();
 			
 			if (myRs.next()) {
-				
+				//this sets pointer to beginning of query
 				myRs.beforeFirst();
 			
 			
@@ -163,7 +134,7 @@ public class inventory_db_remote {
 		Statement myStmt = null;
 		
 		try {
-			
+			//connects to database
 			connection = DriverManager.getConnection(url, username, password);
 			
 			
@@ -174,7 +145,7 @@ public class inventory_db_remote {
 			
 			double wholeCost = 0, salePrice = 0;
 			
-
+			//collects all product information for new product
 			System.out.println();
 			System.out.println("Enter the Product Title: ");
 			String product_title = scanner.nextLine();
@@ -205,8 +176,7 @@ public class inventory_db_remote {
 			String sid = scanner.next();
 			System.out.println();
 
-						
-			
+			//reads out values input by user
             System.out.println("You entered the following values:");
             System.out.println();
             System.out.println("Product Title:        " + product_title
@@ -223,7 +193,7 @@ public class inventory_db_remote {
             while (!valid) {
             	if (inp.toLowerCase().contentEquals("yes")) {
             		
-    				
+    				//inserts new product information into database
         			String query = " INSERT INTO new_inventory (product_title, product_description, quantity, sale_price, wholesale_price, supplier_id)" +
         					" VALUES (?, ?, ?, ?, ?, ?)";
         			
@@ -262,7 +232,7 @@ public class inventory_db_remote {
                         valid = true;
                         createRecord();
                     } else if (inp.toLowerCase().equals("no")) {
-                        valid = true;                                      // possibly direct to main menu later
+                        valid = true;                                      
                         displayMenu();
                         
                     } else {
@@ -293,7 +263,7 @@ public class inventory_db_remote {
 		}
 	}
 	
-	
+	//method deletes a product record
 	public static void deleteRecord() {
 		
 		Scanner scanner = new Scanner(System.in);
@@ -315,17 +285,20 @@ public class inventory_db_remote {
 	        String pid = scanner.next();
 
 	
-			
-			PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'");
+			//queries the product with that specific product id. resultset is made to be able to adjust pointer
+			PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'", ResultSet.TYPE_SCROLL_SENSITIVE, 
+			ResultSet.CONCUR_UPDATABLE);
 	
 			ResultSet myRs = myStmt2.executeQuery();
 		
-			if (myRs == null) {
+			if (myRs.next() == false) {
 				System.out.println("");
 				System.out.println("Invalid Product ID. Record does not exist.\n");
 				return;
 			}
-		
+			//sets pointer to beginning of query
+			myRs.beforeFirst();
+			
 			while (myRs.next()) {
 				System.out.println();
 				System.out.println("Product ID: " + myRs.getString("product_id"));
@@ -337,12 +310,12 @@ public class inventory_db_remote {
 				System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
 				System.out.println();
 		}
-            
+            //checks with user if they want to delete product
 			System.out.println("\nAre you sure you want to delete this record?: 'yes' or 'no'");
 	        String attribute = scanner.next();
 	        
 	        if (attribute.equalsIgnoreCase("yes")) {
-	        	
+	        	//deletes product from database
 				String query = "DELETE FROM new_inventory WHERE product_id = '" + pid + "'";
 				
 				PreparedStatement delStmt = connection.prepareStatement(query);
@@ -379,7 +352,7 @@ public class inventory_db_remote {
 			se.printStackTrace();
 		}
 	}
-	
+	//this method updates a product already in database
 	public static void updateRecord() {
 		
 		Scanner scanner = new Scanner(System.in);
@@ -387,7 +360,7 @@ public class inventory_db_remote {
 		Statement myStmt = null;
 		
 		try {
-			
+			//connects to database
 			connection = DriverManager.getConnection(url, username, password);
 			
 			
@@ -399,12 +372,12 @@ public class inventory_db_remote {
 	        System.out.println("Enter Product ID of the record you would like to update: ");
 	        System.out.println("");
 	        String pid = scanner.next();
-			
+			//queries the product with that specific product id.
 			PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_inventory WHERE product_id = '" + pid + "'");
 	
 			ResultSet myRs = myStmt2.executeQuery();
 		
-			if (myRs == null) {
+			if (myRs.next() == false) {
 				System.out.println("");
 				System.out.println("Invalid Product ID. Record does not exist.\n");
 				return;
@@ -424,7 +397,7 @@ public class inventory_db_remote {
             
 			System.out.println("\nAre you sure you want to update this record?: 'yes' or 'no'");
 	        String attribute = scanner.next();
-	        
+	        //this will select an individual field to update.
 	        if (attribute.equalsIgnoreCase("yes")) {
 	        	
 	        	System.out.println();
@@ -453,7 +426,7 @@ public class inventory_db_remote {
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
-			        	
+			        	//updates selected field with new user input
 			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET product_id = '" + pid2 +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
@@ -488,7 +461,7 @@ public class inventory_db_remote {
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
-			        	
+			        	//updates selected field with new user input
 			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET quantity = '" + quantity +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
@@ -523,7 +496,7 @@ public class inventory_db_remote {
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
-			        	
+			        	//updates selected field with new user input
 			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET wholesale_price = '" + wholeCost +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
@@ -559,7 +532,7 @@ public class inventory_db_remote {
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
-			        	
+			        	//updates selected field with new user input
 						PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET sale_price = '" + salePrice +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
@@ -592,7 +565,7 @@ public class inventory_db_remote {
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
-			        	
+			        	//updates selected field with new user input
 			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET supplier_id = '" + sid +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
@@ -621,7 +594,7 @@ public class inventory_db_remote {
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
-			        	
+			        	//updates selected field with new user input
 			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET product_title = '" + product_title +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
@@ -651,7 +624,7 @@ public class inventory_db_remote {
 			        attribute = scanner.next();
 			        
 			        if (attribute.equalsIgnoreCase("yes")) {
-			        	
+			        	//updates selected field with new user input
 			        	PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_inventory SET product_description = '" + prod_des +"' WHERE product_id = '"+ pid +"'");
 						upStmt2.execute();
 						
@@ -693,3 +666,6 @@ public class inventory_db_remote {
 		
 	}
 	}
+
+	
+
