@@ -46,8 +46,10 @@ public class CustomerOrderDataBase extends JFrame {
 
     //These are unchaing integers that will assist with choosing options
     private boolean PID_SELCTION = false;
-    private boolean TITLE_SELECTION =  false;
-    private boolean SID_SELECTION = false;
+    private boolean OID_SELECTION =  false;
+    private boolean EMAIL_SELECTION = false;
+    private boolean ADDRESS_SELECTION = false;
+    private boolean DATE_SELECTION = false;
 
     String menuSelection;//Used in displayMenue()
  
@@ -228,74 +230,279 @@ public class CustomerOrderDataBase extends JFrame {
     } //END GET LOGIN
 
     public void searchRecords(){
-      // Retrieve the content-pane of the top-level container JFrame
+        // Retrieve the content-pane of the top-level container JFrame
+        // All operations done on the content-pane
+        JRadioButton pid, oid, email, address, date;
+        JTextField searchPid, searchOid, searchEmail, searchAddress, searchDate;  // Use Swing's JTextField instead of AWT's TextField
+        JButton submitButton;    // Using Swing's JButton instead of AWT's Button
 
+        Container cp = getContentPane();
+        cp.setLayout(new FlowLayout());
+        //This panel will make so it will make a new row for the textFields
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(5,2));
+        panel.setVisible(true);
 
+        searchPid = new JTextField(10);
+        searchPid.setEditable(false);
+        searchOid = new JTextField(10);
+        searchOid.setEditable(false);
+        searchEmail = new JTextField(10);
+        searchEmail.setEditable(false);
+        searchAddress = new JTextField(10);
+        searchAddress.setEditable(false);
+        searchDate = new JTextField(10);
+        searchDate.setEditable(false);
+
+        pid = new JRadioButton("Product ID");
+        pid.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PID_SELCTION = true;
+                OID_SELECTION =  false;
+                EMAIL_SELECTION = false;
+                ADDRESS_SELECTION =  false;
+                DATE_SELECTION = false;
+                searchPid.setEditable(true);
+                searchEmail.setEditable(false);
+                searchOid.setEditable(false);
+                searchAddress.setEditable(false);
+                searchDate.setEditable(false);
+            }
+        });
+        panel.add(pid);
+        panel.add(searchPid);
+
+        oid = new JRadioButton("Order ID");
+        oid.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PID_SELCTION = false;
+                OID_SELECTION =  true;
+                EMAIL_SELECTION = false;
+                ADDRESS_SELECTION =  false;
+                DATE_SELECTION = false;
+                searchPid.setEditable(false);
+                searchEmail.setEditable(false);
+                searchOid.setEditable(true);
+                searchAddress.setEditable(false);
+                searchDate.setEditable(false);
+            }
+        });
+        panel.add(oid);
+        panel.add(searchOid);
+
+        email = new JRadioButton("Email Address");
+        email.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PID_SELCTION = false;
+                OID_SELECTION =  false;
+                EMAIL_SELECTION = true;
+                ADDRESS_SELECTION =  false;
+                DATE_SELECTION = false;
+                searchPid.setEditable(false);
+                searchEmail.setEditable(true);
+                searchOid.setEditable(false);
+                searchAddress.setEditable(false);
+                searchDate.setEditable(false);
+            }
+        });
+        panel.add(email);
+        panel.add(searchEmail);
+
+        address = new JRadioButton("Customer Zipcode");
+        address.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PID_SELCTION = false;
+                OID_SELECTION =  false;
+                EMAIL_SELECTION = false;
+                ADDRESS_SELECTION =  true;
+                DATE_SELECTION = false;
+                searchPid.setEditable(false);
+                searchEmail.setEditable(false);
+                searchOid.setEditable(false);
+                searchAddress.setEditable(true);
+                searchDate.setEditable(false);
+            }
+        });
+        panel.add(address);
+        panel.add(searchAddress);
+
+        date = new JRadioButton("Date(ex: 2021-01-01)");
+        date.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PID_SELCTION = false;
+                OID_SELECTION =  false;
+                EMAIL_SELECTION = false;
+                ADDRESS_SELECTION =  false;
+                DATE_SELECTION = true;
+                searchPid.setEditable(false);
+                searchEmail.setEditable(false);
+                searchOid.setEditable(false);
+                searchAddress.setEditable(false);
+                searchDate.setEditable(true);
+            }
+        });
+        panel.add(date);
+        panel.add(searchDate);
+
+        cp.add(panel);
+        //This makes it so only one radio button can be slected at a time
+        ButtonGroup btnGp = new ButtonGroup();
+        btnGp.add(pid);
+        btnGp.add(oid);
+        btnGp.add(email);
+        btnGp.add(address);
+        btnGp.add(date);
+
+        //Jbutton
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String record = null;
+                if(PID_SELCTION && searchPid.getText() != null){
+                    record = searchPid.getText();
+                    printOrderItemResults(record);
+
+                }
+                else if(OID_SELECTION && searchOid.getText() != null){
+                    record = searchOid.getText();
+                    printCustomerOrderResults(1, record);
+                }
+                else if(EMAIL_SELECTION && searchEmail.getText() != null){
+                    record = searchEmail.getText();
+                    printCustomerOrderResults(2, record);
+                }
+                else if(ADDRESS_SELECTION && searchAddress.getText() != null){
+                    record = searchAddress.getText();
+                    printCustomerOrderResults(3, record);
+                }
+                else if(DATE_SELECTION && searchDate.getText() != null){
+                    record = searchEmail.getText();
+                    printCustomerOrderResults(4, record);
+                }
+
+                cp.removeAll();
+                displayMenue();
+            }
+        });
+        cp.add(submitButton);
+
+        // Allocate an anonymous instance of an anonymous inner class that
+        //  implements ActionListener as ActionEvent listener
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+            }
+        });
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Exit program if close-window button clicked
+        setTitle("Search Records"); // "super" JFrame sets title
+        setSize(400, 200);         // "super" JFrame sets initial size
+        setVisible(true);          // "super" JFrame shows
     }//END SEARCH RECORDS
 
-
-    //This method is used to print the results from the MySQL result set. IT allows to search method to be flexible
-    public void printResults(int fieldtype, String itemLookup){
-
-		String query = "product_id";//default
-
-		switch(fieldtype){
-			case 1: query = "product_id";
-					break;
-			case 2: query = "product_title";
-					break;
-			case 3: query = "product_description";
-					break;
-			case 4: query = "quantity";
-					break;
-			case 5: query = "supplier_id";
-					break;
-			case 6: query = "wholesale_price";
-					break;
-			case 7: query = "sale_price";
-					break;
-			default: query = "product_id";
-					break;
-
-		}
-		try {
-			System.out.println("sreaching for a " + query +" that has " + itemLookup);
-			Connection connection = DriverManager.getConnection(url, username, password);
-			PreparedStatement myStmt = connection.prepareStatement("Select * FROM new_inventory WHERE " + query + "= '" + itemLookup + "'", ResultSet.TYPE_SCROLL_SENSITIVE, 
+    public void printOrderItemResults(String itemLookup){
+        try {
+            System.out.println("searching for a product_id that has " + itemLookup);
+            Connection connection = DriverManager.getConnection(url, username, password);
+            PreparedStatement myStmt = connection.prepareStatement("Select * FROM new_order_items WHERE " + "product_id" + "= '" + itemLookup + "'", ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
-	
-		
-			ResultSet myRs = myStmt.executeQuery();
-			
-			if (myRs.next()) {
-				
-				myRs.beforeFirst();
-			
-			
-				while (myRs.next()) {
-					
-					System.out.println();
-					System.out.println("Product ID: " + myRs.getString("product_id"));
-					System.out.println("Product Title: " + myRs.getString("product_title"));
-					System.out.println("Product Description: " + myRs.getString("product_description"));
-					System.out.println("Quantity: " + myRs.getInt("quantity"));
-					System.out.println("Wholesale: " + myRs.getString("wholesale_price"));
-					System.out.println("Sale Price: " + myRs.getString("sale_price"));
-					System.out.println("Supplier ID: " + myRs.getString("supplier_id"));
-					System.out.println();
-				}
+
+            ResultSet myRs = myStmt.executeQuery();
+
+            if (myRs.next()) {
+
+                myRs.beforeFirst();
+
+                while (myRs.next()) {
+                    System.out.println();
+                    System.out.println("Order ID: " + myRs.getInt("order_id"));
+                    System.out.println("Email: " + myRs.getString("user_id"));
+                    System.out.println("Product ID: " + myRs.getString("product_id"));
+                    System.out.println("Quantity: " + myRs.getInt("quantity"));
+                    System.out.println("Sale Price: " + myRs.getString("sale_price"));
+                    System.out.println("Order Total: " + myRs.getDouble("item_total"));
+                    System.out.println();
+                }
             }
-			else {
-				System.out.println("No record found");
-				System.out.println();
-			}
-			
+            else {
+                System.out.println("No record found");
+                System.out.println();
+            }
+
         } catch (SQLException e) {
-			System.out.println("oops, error!");
-			e.printStackTrace();
-		}
-        
-	}//END PRINT RESULTS
+            System.out.println("oops, error!");
+            e.printStackTrace();
+        }
+    }//END PRINT RESULTS
+
+    public void printCustomerOrderResults(int fieldtype, String itemLookup){
+
+        String query;
+
+        switch(fieldtype){
+            case 1: query = "order_id";
+                break;
+            case 2: query = "user_id";
+                break;
+            case 3: query = "shipping_zipcode";
+                break;
+            case 4: query = "ordered_at";
+                break;
+            default: query = "order_id";
+                break;
+
+        }
+        try {
+            System.out.println("searching for a " + query +" that has " + itemLookup);
+            Connection connection = DriverManager.getConnection(url, username, password);
+
+            PreparedStatement myStmt;
+            if (fieldtype == 4){
+                myStmt = connection.prepareStatement("Select * FROM new_customer_orders WHERE ordered_at Like('%" + itemLookup + "%')", ResultSet.TYPE_SCROLL_SENSITIVE,
+                        ResultSet.CONCUR_UPDATABLE);
+            }
+            else{
+                myStmt = connection.prepareStatement("Select * FROM new_customer_orders WHERE " + query + "= '" + itemLookup + "'", ResultSet.TYPE_SCROLL_SENSITIVE,
+                        ResultSet.CONCUR_UPDATABLE);
+            }
+
+            ResultSet myRs = myStmt.executeQuery();
+            if (myRs.next()) {
+                //sets pointer to beginning of query
+                myRs.beforeFirst();
+                //prints all results of query with same zip
+                while (myRs.next()) {
+                    System.out.println();
+                    System.out.println("Order ID: " + myRs.getInt("order_id"));
+                    System.out.println("Date: " + myRs.getString("ordered_at"));
+                    System.out.println("Status: " + myRs.getString("order_status"));
+                    System.out.println("Email: " + myRs.getString("user_id"));
+                    System.out.println("Quantity: " + myRs.getInt("order_quantity"));
+                    System.out.println("Order total: " + myRs.getDouble("order_total"));
+                    System.out.println("Street: " + myRs.getString("shipping_street"));
+                    System.out.println("City: " + myRs.getString("shipping_city"));
+                    System.out.println("Street: " + myRs.getString("shipping_state"));
+                    System.out.println("Zip Code: " + myRs.getString("shipping_zipcode"));
+                    System.out.println();
+                }
+            }
+            else {
+                System.out.println("No record found");
+                System.out.println();
+            }
+
+        } catch (SQLException e) {
+            System.out.println("oops, error!");
+            e.printStackTrace();
+        }
+    }//END PRINT RESULTS
 
     public void createRecord() {
         // Private variables of the GUI components
