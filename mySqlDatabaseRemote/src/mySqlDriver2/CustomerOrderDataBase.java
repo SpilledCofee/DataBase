@@ -141,13 +141,448 @@ public class CustomerOrderDataBase extends JFrame {
        setVisible(true);          // "super" JFrame shows
    }//END DisplayMenu
    
-   private void deleteRecord() {
-  
+    private void deleteRecord() {
+      // Retrieve the content-pane of the top-level container JFrame
+      // All operations done on the content-pane
+
+      JTextField searchPid;  // Use Swing's JTextField instead of AWT's TextField
+      JButton submitButton;    // Using Swing's JButton instead of AWT's Button
+      
+      Container cp = getContentPane();
+      cp.setLayout(new FlowLayout());
+      //This panel will make so it will make a new row for the textFields
+      JPanel panelOne = new JPanel();
+      panelOne.setLayout(new FlowLayout());
+      panelOne.setVisible(true);
+
+      JLabel text = new JLabel("Enter the Order ID of the item to be deleted.");
+      panelOne.add(text);
+
+      JPanel panelTwo = new JPanel();
+      searchPid = new JTextField(10);
+      panelTwo.add(searchPid);
+
+      //Once the record is found the data will be displayed in this area
+      //This panel wont be visible until the search for the order id is made
+      JPanel panelThree = new JPanel();
+      panelThree.setVisible(false);
+      JPanel panelFour = new JPanel();
+      panelFour.setVisible(false);
+
+      //This is what the data will be displayed on 
+      JTextArea textPane = new JTextArea();
+      textPane.setEditable(false);
+      textPane.setLineWrap(true);
+      textPane.setSize(200,100);
+      panelThree.add(textPane);
+
+      //This is the confirmation that they want to delete a record, action is brought up later
+      JButton yes = new JButton("Yes");
+      yes.setForeground(Color.RED);
+      panelFour.add(yes);
+      //Will take th user back to the main menu if they do not want to delete a record after all
+      JButton noButton = new JButton("No!");
+      noButton.setForeground(Color.green);
+      noButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           System.out.println("The order was NOT deleted");
+           cp.removeAll();
+           displayMenue();
+        }
+     });
+    
+      panelFour.add(noButton);
+      
+     //This button is used to make a query to MySQL if user enters a valid product id
+      submitButton = new JButton("Submit");
+      submitButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int fieldselection = 0;
+            //Wont go make a search until there is a valid product id
+            if(checkInteger(searchPid.getText())){
+                fieldselection = 1;
+            }
+           if(fieldselection == 1 && searchPid.getText() != null){
+               String record = searchPid.getText();
+               //clearing first two panels in order to give attention the the third/last one
+               panelOne.setVisible(false);
+               panelTwo.setVisible(false);
+               panelThree.setVisible(true);
+               panelFour.setVisible(true);
+
+                try {
+                
+                    Connection connection = DriverManager.getConnection(url, username, password);
+                    //Changed the size here because the discription was cut off on a smaller window
+                    setSize(400, 250);
+
+
+
+                    PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_customer_orders WHERE order_id = '" + record + "'", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            
+                    ResultSet myRs = myStmt2.executeQuery();
+                    //If there isn't a recprd with the product id entered they have the option 
+                     // 1: go to main menu, code already in noButton so no need to rewrite
+                    // 2: try again, a new button is called instead of yes button to redo delete method
+
+                    if (myRs.next() == false) {
+                        yes.setVisible(false);
+                        noButton.setText("Return to Menu");
+                        textPane.setText("Record was not found\n");
+                        JButton retryButton = new JButton("Try again");
+                        panelFour.add(retryButton);
+                        retryButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                               cp.removeAll();
+                               deleteRecord();
+                            }
+                         });
+                         return;
+                    }
+                    myRs.beforeFirst();//This will move the pointer back to the first result so it will print results
+                    
+                
+                    //this how the data is displayed on the panel
+                    
+                        while (myRs.next()) {
+
+                        //System.out.print(myRs.);
+                        textPane.setText("Order ID: " + myRs.getInt("order_id") + "\n"
+                            + "Date: " + myRs.getString("ordered_at") + "\n"
+                            + "Status: " + myRs.getString("order_status") + "\n"
+                            + "Email: " + myRs.getString("user_id") + "\n"
+                            + "Quantity: " + myRs.getInt("order_quantity") + "\n"
+                            + "Order Total: " + myRs.getDouble("order_total") + "\n"
+                            + "Street: " + myRs.getString("shipping_street") + "\n"  
+                            + "City: " + myRs.getString("shipping_city") + "\n"
+                            + "Street: " + myRs.getString("shipping_state") + "\n"
+                            + "Zip Code: " + myRs.getString("shipping_zipcode")
+                            );
+                        }
+                    
+                    //This action needs to be here so you can use the local varibles in the try/catch 
+                    yes.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            //another try/catch cuz the code got mad
+                            try{
+                                Connection deleteConnection = DriverManager.getConnection(url, username, password);
+                                String query = "DELETE FROM new_customer_orders WHERE order_id = '" + record + "'";
+                                String query2 = "DELETE FROM new_order_items WHERE order_id = '" + record + "'";
+                                PreparedStatement delStmt = connection.prepareStatement(query);
+                                PreparedStatement delStmt2 = connection.prepareStatement(query2);
+                                delStmt.execute();
+                                delStmt2.execute();
+                                System.out.println("The record was Sucessfully deleted");
+                            }catch (SQLException se) {
+                    
+                                System.out.println("oops, error!");
+                                se.printStackTrace();
+                            } catch (InputMismatchException exception) {
+                                System.out.print(exception.getMessage()); //try to find out specific reason.
+                            }
+                           cp.removeAll();
+                           displayMenue();
+                        }
+                     });   
+                } catch (SQLException se) {
+                    
+                    // TODO Auto-generated catch block
+                    System.out.println("oops, error!");
+                    se.printStackTrace();
+                } catch (InputMismatchException exception) {
+                    System.out.print(exception.getMessage()); //try to find out specific reason.
+                }
+               
+               //printResults(fieldselection, record);
+           }
+           
+        }
+     });
+     panelTwo.add(submitButton);
+     cp.add(panelOne);
+     cp.add(panelTwo);
+     cp.add(panelThree);
+     cp.add(panelFour);
+ 
+      setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Exit program if close-window button clicked
+      setTitle("Delete Record"); // "super" JFrame sets title
+      setSize(400, 200);         // "super" JFrame sets initial size
+      setVisible(true);          // "super" JFrame shows
     }//END Delete Record
 
-   public void updateRecord(){
 
-   }//END Update Record
+
+
+
+
+    public void updateRecord(){    
+        JTextField searchOid;  // Use Swing's JTextField instead of AWT's TextField
+        JButton submitButton;    // Using Swing's JButton instead of AWT's Button
+        
+        Container cp = getContentPane();
+        cp.setLayout(new FlowLayout());
+        //This panel will make so it will make a new row for the textFields
+        JPanel panelOne = new JPanel();
+        panelOne.setLayout(new FlowLayout());
+        panelOne.setVisible(true);
+
+        JLabel text = new JLabel("Enter the Order ID of the record to be updated.");
+        panelOne.add(text);
+
+        JPanel panelTwo = new JPanel();
+        searchOid = new JTextField(10);
+        panelTwo.add(searchOid);
+
+        //Once the record is found the data will be displayed in this area
+        //This panel wont be visible until the search for the product id is made
+        
+        JPanel panelFour = new JPanel();
+        panelFour.setVisible(false);
+
+        //This is what the data will be displayed on panel 3
+        JPanel panelThree = new JPanel(new GridLayout(7, 2, 10, 2));//6 rows and 2 columns
+        panelThree.setVisible(false);
+        JTextField userIdText, productIdText, orderQuantityText, shippingStreetText, shippingCityText, shippingStateText, shippingZipcodeText;
+
+        //(Row 1)
+        panelThree.add(new JLabel("User name/email"));
+        userIdText = new JTextField(20);
+        panelThree.add(userIdText);
+
+        //(Row 2)
+        panelThree.add(new JLabel("Product ID"));
+        productIdText = new JTextField(30);
+        panelThree.add(productIdText);
+
+        //(Row 3)
+        panelThree.add(new JLabel("Quantity"));
+        orderQuantityText = new JTextField(8);
+        panelThree.add(orderQuantityText);
+
+        //(Row 4)
+        panelThree.add(new JLabel("Street Address"));
+        shippingStreetText = new JTextField(10);
+        panelThree.add(shippingStreetText);
+
+        //(Row 5)
+        panelThree.add(new JLabel("City"));
+        shippingCityText = new JTextField(8);
+        panelThree.add(shippingCityText);
+
+        //(Row 6)
+        panelThree.add(new JLabel("State"));
+        shippingStateText = new JTextField(8);
+        panelThree.add(shippingStateText);
+
+        //(Row 7)
+        panelThree.add(new JLabel("Zipe Code"));
+        shippingZipcodeText = new JTextField(8);
+        panelThree.add(shippingZipcodeText);
+
+
+        //This is the confirmation that they want to delete a record, action is brought up later
+        panelFour.add(new JLabel("Change record with new information"));
+        JButton yes = new JButton("Yes");
+        yes.setForeground(Color.RED);
+        panelFour.add(yes);
+        //Will take th user back to the main menu if they do not want to delete a record after all
+        JButton noButton = new JButton("No!");
+        noButton.setForeground(Color.green);
+            noButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                System.out.println("The record was NOT updated");
+                cp.removeAll();
+                displayMenue();
+                }
+            });
+        panelFour.add(noButton);
+        JLabel label = new JLabel();
+        panelFour.add(label);
+        
+        //This button is used to make a query to MySQL if user enters a valid product id
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int fieldselection = 0;
+                //Wont go make a search until there is a valid product id
+                if(checkInteger(searchOid.getText())){
+                    fieldselection = 1;
+                }
+            if(fieldselection == 1 && !searchOid.getText().isEmpty()){
+                String record = searchOid.getText();
+                //clearing first two panels in order to give attention the the third/last one
+                panelOne.setVisible(false);
+                panelTwo.setVisible(false);
+                panelThree.setVisible(true);
+                panelFour.setVisible(true);
+                    try {
+                    
+                        Connection connection = DriverManager.getConnection(url, username, password);
+                        //Changed the size here because the discription was cut off on a smaller window
+                        setSize(575, 300);
+
+                        PreparedStatement myStmt2 = connection.prepareStatement("Select * FROM new_customer_orders WHERE order_id = '" + record + "'", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                
+                        ResultSet myRs = myStmt2.executeQuery();
+                        //If there isn't a recprd with the product id entered they have the option 
+                        // 1: go to main menu, code already in noButton so no need to rewrite
+                        // 2: try again, a new button is called instead of yes button to redo delete method
+
+                        if (myRs.next() == false) {
+                            yes.setVisible(false);
+                            noButton.setText("Return to Menu");
+                            //textPane.setText("Record was not found\n");
+                            JButton retryButton = new JButton("Try again");
+                            panelFour.add(retryButton);
+                            retryButton.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                cp.removeAll();
+                                deleteRecord();
+                                }
+                            });
+                            return;
+                        }
+                        myRs.beforeFirst();//This will move the pointer back to the first result so it will print results
+
+                        //this how the data is displayed
+                        while(myRs.next()){
+                            userIdText.setText( myRs.getString("user_id"));
+                            productIdText.setText(myRs.getString("product_id"));
+                            productIdText.setEditable(false);
+                            orderQuantityText.setText(myRs.getString("order_quantity"));
+                            orderQuantity = Integer.parseInt(myRs.getString("order_quantity"));
+                            shippingStreetText.setText(myRs.getString("shipping_street"));
+                            shippingCityText.setText(myRs.getString("shipping_city"));
+                            shippingStateText.setText(myRs.getString("shipping_state"));
+                            shippingZipcodeText.setText(myRs.getString("shipping_zipcode"));
+
+                        }
+                    }catch (SQLException se) {
+                                
+                        System.out.println("oops, error!");
+                        se.printStackTrace();
+                    } catch (InputMismatchException exception) {
+                        System.out.print(exception.getMessage()); //try to find out specific reason.
+                    }
+
+                        //This action needs to be here so you can use the local varibles in the try/catch 
+                    yes.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                            //This will reset the label every time that the button is pressed
+                            label.setForeground(Color.red);
+                            label.setText("");
+
+                            //This will check if the Integer ID is a number
+                            if(userIdText.getText().isEmpty()){   
+                                label.setText("Enter a user email!!!");
+                            }
+                            else if(!userIdText.getText().contains("@")){   
+                                label.setText("Invalid email!!!");
+                            }
+                            //These will make sure that the string Text Fields are not blank
+                            else if(shippingStreetText.getText().isEmpty()){   
+                                label.setText("Enter a Street address!!!");
+                            }
+                            else if(!checkInteger(orderQuantityText.getText())){
+                                label.setText("Invalid Integer!");
+                            }
+                            else if(orderQuantityText.getText().length() > 8){
+                                label.setText("Integer is too Big");
+                            }
+                            else if(orderQuantityText.getText().isEmpty()){
+                                label.setText("Enter a Quantity");
+                            }
+                            else if(shippingCityText.getText().isEmpty()){
+                                label.setText("Enter a City");
+                            }
+                            else if(shippingStateText.getText().isEmpty()){   
+                                label.setText("Enter a State");
+                            }
+                            else if(shippingStateText.getText().length() != 2){
+                                label.setText("Invalid State. Example enter CO for Colorado");
+                            }
+                            else if(!checkInteger(shippingZipcodeText.getText())){
+                                label.setText("Invalid zipcode, only enter numbers!");
+                            }
+                            else if(shippingZipcodeText.getText().length() != 5){
+                                label.setText("Invalid zipcode, zipcodes are only 5 numbers long");
+                            }
+                            else{
+                                String userID = userIdText.getText();
+                                int quantity = Integer.parseInt(orderQuantityText.getText());
+                                int pid = Integer.parseInt(productIdText.getText());
+                                String street = shippingStreetText.getText();
+                                String city = shippingCityText.getText();
+                                String state = shippingStateText.getText();
+                                String zip = shippingZipcodeText.getText();
+
+                                label.setForeground(Color.green);
+                                label.setText("Success!"); 
+                                //another try/catch cuz the code got mad
+                                try{
+                                    Connection connection = DriverManager.getConnection(url, username, password);
+
+                                    if(quantity != orderQuantity){
+                                        PreparedStatement stmt1 = connection.prepareStatement("UPDATE new_order_items SET quantity = '" + quantity +"' WHERE id = '"+ record +"'");
+                                        stmt1.execute();
+                                        PreparedStatement upStmt5 = connection.prepareStatement("Select sale_price FROM new_inventory WHERE product_id = '" + pid + "'");
+                                        ResultSet myRs = upStmt5.executeQuery();
+
+                                        if(myRs.next()){}
+
+                                    }
+
+                                    PreparedStatement upStmt1 = connection.prepareStatement("UPDATE new_customer_orders SET user_id = '" + userID +"' WHERE order_id = '"+ record +"'");
+                                    upStmt1.execute();
+                                    PreparedStatement upStmt2 = connection.prepareStatement("UPDATE new_customer_orders SET shipping_street = '" + street +"' WHERE order_id = '"+ record +"'");
+                                    upStmt2.execute();
+                                    PreparedStatement upStmt3 = connection.prepareStatement("UPDATE new_customer_orders SET shipping_city = '" + city +"' WHERE order_id = '"+ record +"'");
+                                    upStmt3.execute();
+                                    PreparedStatement upStmt4 = connection.prepareStatement("UPDATE new_customer_orders SET shipping_state = '" + state +"' WHERE order_id = '"+ record +"'");
+                                    upStmt4.execute();
+                                    PreparedStatement upStmt5 = connection.prepareStatement("UPDATE new_customer_orders SET shipping_zipcode = '" + zip +"' WHERE order_id = '"+ record +"'");
+                                    upStmt5.execute();
+                                    
+                                }catch (SQLException se) {
+                            
+                                    System.out.println("oops, error!");
+                                    se.printStackTrace();
+                                } catch (InputMismatchException exception) {
+                                    System.out.print(exception.getMessage()); //try to find out specific reason.
+                                }
+                                //THe record should have no erros at this point and user will go back to menu
+                                System.out.println("Record has been successfully updated!");
+                                cp.removeAll();
+                                displayMenue();
+                            }
+                        
+                        }
+                    });//end of the yes listener
+                }
+            }
+        });
+
+        panelTwo.add(submitButton);
+        cp.add(panelOne);
+        cp.add(panelTwo);
+        cp.add(panelThree);
+        cp.add(panelFour);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // Exit program if close-window button clicked
+        setTitle("Update Record"); // "super" JFrame sets title
+        setSize(300, 175);         // "super" JFrame sets initial size
+        setVisible(true);          // "super" JFrame shows
+
+    }//END Update Record
 
    public void getLogin(){
        JTextField urlText, usernameText, passwordText;
@@ -527,6 +962,178 @@ public class CustomerOrderDataBase extends JFrame {
 
 
    public void loadFile() throws FileNotFoundException {
+        Container cp = new Container();
+        cp.setLayout(new GridLayout(2,1));
+
+        JPanel panelOne = new JPanel();
+        panelOne.setLayout(new FlowLayout());
+        panelOne.setBorder(BorderFactory.createEmptyBorder(10, 2, 0, 2));
+        JPanel panelTwo = new JPanel();
+        panelTwo.setLayout(new FlowLayout());
+        panelTwo.setBorder(BorderFactory.createEmptyBorder(0, 2, 5, 2));
+        JLabel label = new JLabel("Enter the file's name");
+        panelOne.add(label);
+        //What is on the secound panel
+        JTextField userFile = new JTextField(8);
+        panelTwo.add(userFile);
+        JButton submit = new JButton("Submit");
+        submit.setVisible(true);
+        panelTwo.add(submit);
+
+        cp.add(panelOne);
+        cp.add(panelTwo);
+        add(cp); //adding container to the super frame
+        
+        submit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+
+                System.out.println(FILE_NAME);
+            try {
+                Scanner in = new Scanner(new FileInputStream(FILE_NAME));
+                //This will get past the first line that is just the titles of the collums and not data
+                String titiles = in.nextLine();
+                System.out.println(titiles);
+                //This loop will extrapulate the data fron each line and create the entryItem with the line's data
+                while(in.hasNextLine()) {
+					String line = in.nextLine();
+					int end = line.indexOf(",", 0);
+					String date = line.substring(0, end);
+
+					int start = end + 1;
+					end = line.indexOf(",", start);
+					String user_id = line.substring(start, end);
+
+					start = end + 1;
+					end = line.indexOf(",", start);
+					String shipping_street = line.substring(start, end);
+
+					start = end + 1;
+					end = line.indexOf(",", start);
+					String shipping_city = line.substring(start, end);
+
+					start = end + 1;
+					end = line.indexOf(",", start);
+					String shipping_state = line.substring(start, end);
+
+					start = end + 1;
+					end = line.indexOf(",", start);
+					String shipping_zipcode = line.substring(start, end);
+
+
+					start = end + 1;
+					end = line.indexOf(",", start);
+					String tempQuantity = line.substring(start, end);
+					int order_quantity = Integer.parseInt(tempQuantity);
+					
+
+					String tempProductId = line.substring(end + 1);
+					int product_id = Integer.parseInt(tempProductId);
+
+                    String supplier_id = line.substring(end + 1);
+                    
+                    Connection connection = null;
+                    try {
+                        //establishes connection to database
+                        connection = DriverManager.getConnection(url, username, password);
+
+                        //These two queries are made for inserting the new data into the database
+                        String query = " INSERT INTO new_customer_orders (ordered_at, user_id, shipping_street, shipping_city, shipping_state, shipping_zipcode)" +
+                        " VALUES (?, ?, ?, ?, ?, ?)";
+
+                        String iquery = " INSERT INTO new_order_items (order_id, user_id, product_id, quantity, sale_price, item_total) VALUES (?, ?, ?, ?, ?, ?)";
+
+                        //prepared statement that sets new data into the database
+                        PreparedStatement prepStmt = connection.prepareStatement(query);
+                        prepStmt.setString(1, date);
+                        prepStmt.setString(2, user_id);
+                        prepStmt.setString(3, shipping_street);
+                        prepStmt.setString(4, shipping_city);
+                        prepStmt.setString(5, shipping_state);
+                        prepStmt.setString(6, shipping_zipcode);
+
+                        prepStmt.execute();
+
+                        //finds sale price from inventory that matches product id in csv order
+                        PreparedStatement myStmt3 = connection.prepareStatement("Select sale_price FROM new_inventory WHERE product_id = '" + product_id + "'");
+                        ResultSet myRs = myStmt3.executeQuery();
+                        
+                        //finds order id from last order made in the new_customer_orders table
+                        PreparedStatement prepStmt2 = connection.prepareStatement("SELECT order_id FROM new_customer_orders ORDER BY order_id DESC LIMIT 1");
+                        ResultSet myRs1 = prepStmt2.executeQuery();
+                        
+                        if (myRs1.next()){
+                            //sets that order id to oid
+                            int oid = myRs1.getInt("order_id");
+                            //sets the sale price to price
+                            if(myRs.next()){
+                                double price = myRs.getDouble("sale_price");
+                                double total = order_quantity * price; 
+
+                                //sets the information into the new_order_items table
+                                PreparedStatement prepStmt1 = connection.prepareStatement(iquery);
+                                prepStmt1.setInt(1, oid);
+                                prepStmt1.setString (2, user_id);
+                                prepStmt1.setInt(3, product_id);
+                                prepStmt1.setInt (4, order_quantity);
+                                prepStmt1.setDouble(5, price);
+                                prepStmt1.setDouble(6, total);
+                            
+                                prepStmt1.execute();
+                            
+                                //finds item total from the same order we just put into the table
+                                PreparedStatement myStmt6 = connection.prepareStatement("SELECT item_total FROM new_order_items WHERE order_id = '" + oid + "'");
+                                ResultSet myRs2 = myStmt6.executeQuery();
+
+                                if(myRs2.next()){
+                                    //sets item total to variable
+                                    int item_total = myRs2.getInt("item_total");
+
+                                    //finds quantity from same order id
+                                    PreparedStatement myStmt7 = connection.prepareStatement("SELECT quantity FROM new_order_items WHERE order_id = '" + oid + "'");
+                                    ResultSet myRs3 = myStmt7.executeQuery();
+
+                                    if(myRs3.next()){
+                                        //creates new quantity to update into new_customer_order table
+                                        double new_quantity = myRs3.getDouble("quantity");
+
+                                        PreparedStatement prepStmt3 = connection.prepareStatement("UPDATE new_customer_orders SET order_total = '"+ item_total +"' WHERE order_id = '"+ oid +"'");
+                                        prepStmt3.execute();
+
+                                        PreparedStatement prepStmt4 = connection.prepareStatement("UPDATE new_customer_orders SET order_quantity = '"+ new_quantity +"' WHERE order_id = '"+ oid +"'");
+                                        prepStmt4.execute();
+                                    }
+                                }
+                            }
+                        }
+            
+                    } catch (SQLException se) {
+            
+                        // TODO Auto-generated catch block
+                        System.out.println("oops, error!");
+                        se.printStackTrace();
+                    } catch (InputMismatchException e) {
+                        System.out.print(e.getMessage()); //try to find out specific reason.
+                    }
+                    try {
+                        if(connection!=null){connection.close();}
+                    }catch(SQLException se) {
+                        se.printStackTrace();
+                    }
+
+                }
+                in.close();
+                cp.removeAll();
+                displayMenue();
+
+            }catch (FileNotFoundException exception) { }
+        }
+        });
+        
+        setSize(250,130);
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Load File");
 
     }//END loadFile
 
