@@ -1,6 +1,6 @@
 <?php
     // Base controller
-    // Load models/views
+    // Loads models/views by name
 
     class Controller {
 

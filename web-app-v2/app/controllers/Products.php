@@ -1,12 +1,17 @@
 <?php
 
+    // Product controller
+    // Handles product page, individual product page, and add to cart
+
     class Products extends Controller {
 
+        // Constructor
         public function __construct(){
             $this->productModel = $this->model('Product');
             $this->userModel = $this->model('User');
         }
 
+        // Main product page
         public function index(){
             $products = $this->productModel->getAllProducts();
 
@@ -17,6 +22,7 @@
             $this->view('products/index', $data);
         }
 
+        // Show individual product page
         public function show($id){
             $product = $this->productModel->getProductById($id);
             if (empty($product)){
@@ -31,6 +37,7 @@
             }
         }
 
+        // Add product to session cart
         public function addToCart($id){
             if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_NUMBER_INT);

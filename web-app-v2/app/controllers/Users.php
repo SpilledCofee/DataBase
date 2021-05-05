@@ -1,13 +1,18 @@
 <?php
 
+    // User page
+    // Handles register, login, sessions, user cart and guest cart
+
     class Users extends Controller {
 
+        // Constructor
         public function __construct(){
             $this->userModel = $this->model('User');
             $this->productModel = $this->model('Product');
             $this->orderModel = $this->model('Order');
         }
 
+        // Index page, not used
         public function index(){
             $data = [
                 'title' => 'WELCOME',
@@ -17,6 +22,7 @@
 
         }
 
+        // Register page
         public function register(){
             // Check for post
             if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -104,6 +110,7 @@
             }
         }
 
+        // Login page
         public function login(){
             // Check for post
             if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -168,6 +175,7 @@
             }
         }
 
+        // Create user session
         public function createUserSession($user){
             $_SESSION['user_id'] = $user->id;
             $_SESSION['user_email'] = $user->email;
@@ -184,6 +192,7 @@
             redirect('products');
         }
 
+        // Logout, destroy session
         public function logout(){
             unset($_SESSION['user_id']);
             unset($_SESSION['user_email']);
@@ -193,6 +202,7 @@
             redirect('users/login');
         }
 
+        // Cart page
         public function cart(){
             if(empty($_SESSION['cart']) && empty($_SESSION['guest_cart'])){
                 $data = [
@@ -222,11 +232,14 @@
             
         }
 
+        // Function that deletes current cart and creates a new one
+        // Used after checkout for new cart
         public function emptyCart(){
             unset($_SESSION['cart']);
             $_SESSION['cart'] = array();
         }
 
+        // Remove item from cart
         public function removeCartItem($position){
             if (!isset($_SESSION['cart'])){
                 $cart = $_SESSION['guest_cart'];
@@ -247,6 +260,7 @@
             }
         }
 
+        // Checkout page
         public function checkout(){
             if(!isLoggedIn()){
                 redirect('users/login');
@@ -309,7 +323,8 @@
                 $this->view('users/checkout', $data);
             }
         }
-
+        
+        // Sends order confirmation email to logged in user
         public function sendOrderConfirmationEmail($to, $from, $message){
             $subject = "Order Confimation Details";
             $headers[] = "MIME-Version: 1.0";
@@ -319,6 +334,7 @@
             mail($to,$subject,$message,implode("\r\n", $headers));
         }
 
+        // Sends order recommendation email to logged in user
         public function sendRecommendationEmail(){
             $data = [
                 'cart' => $_SESSION['cart'],
@@ -361,6 +377,7 @@
             mail($to,$subject,$message,implode("\r\n", $headers));
         }
 
+        // Page to test email formatting
         public function emailTest() {
             if(!isLoggedIn()){
                 redirect('users/login');

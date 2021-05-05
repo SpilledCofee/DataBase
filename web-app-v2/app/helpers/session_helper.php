@@ -1,6 +1,11 @@
 <?php
+
+    // Setup functions that can be used on any page
+
+    // Start session on every page
     session_start();
 
+    // Sets cart if one does not exist
     if (!isset($_SESSION['cart']) && !isset($_SESSION['guest_cart'])){
         $_SESSION['guest_cart'] = array();
     }
@@ -27,6 +32,7 @@
         }
     }
 
+    // Function to use to restrict pages or functions to a logged in user
     function isLoggedIn(){
         if (isset($_SESSION['user_id'])){
             return true;
@@ -35,6 +41,7 @@
         }
     }
 
+    // Returns number of items in cart
     function cartItemCount(){
         $items = 0;
         if (!isset($_SESSION['cart'])){
