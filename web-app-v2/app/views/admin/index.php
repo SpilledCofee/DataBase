@@ -1,43 +1,33 @@
 <?php require APPROOT . '/views/inc/header_admin.php'; ?>
-<div class="container m-0 p-0">
-    <div class="row">
-        <div class="col-3">
-            <div class="d-flex flex-column p-3 text-white bg-dark" style="height: 100vh; width: 280px;">
+<div class="container-fluid m-0 p-0">
+    <div class="row w-100">
+        <div class="col-3" style="height: 100vh;">
+            <div class="d-flex flex-column p-3 text-white bg-dark h-100" style="position: fixed; width: 280px;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                <span class="fs-4">Sidebar</span>
+                <span class="fs-4">Admin</span>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                <a href="#" class="nav-link active">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-                    Home
-                </a>
-                </li>
-                <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                    Dashboard
-                </a>
-                </li>
-                <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                    Orders
-                </a>
-                </li>
-                <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                    Products
-                </a>
-                </li>
-                <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-                    Customers
-                </a>
+                    <a href="<?php echo URLROOT; ?>/admins" class="nav-link active">
+                        Home
+                    </a>
+                    </li>
+                    <li>
+                    <a href="<?php echo URLROOT; ?>/admins/reports" class="nav-link text-white">
+                        Reports
+                    </a>
+                    </li>
+                    <li>
+                    <a href="<?php echo URLROOT; ?>" class="nav-link text-white">
+                        Exit Dashboard
+                    </a>
+                    </li>
+                    <li>
+                    <a href="<?php echo URLROOT; ?>/users/logout" class="nav-link text-white">
+                        Log Out
+                    </a>
                 </li>
             </ul>
             <hr>
@@ -45,23 +35,11 @@
     </div>
     <div class="col-9 p-5">
         <div class="container-fluid border border-2 bg-white shadow w-100 h-100 rounded-3" style="border-radius: 20px;">
-            <p>Hello hello hello</p>
+            <h1 class="mt-5">Admin</h1>
+            <p class="fs-5 m-0">Account: <?php echo $_SESSION['user_id']; ?></p>
+            <p class="fs-5 m-0">Role: Admin</p>
         </div>
     </div>
-</div>
-  <!-- <div class="dropdown">
-    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-      <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle me-2">
-      <strong>mdo</strong>
-    </a>
-    <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-      <li><a class="dropdown-item" href="#">New project...</a></li>
-      <li><a class="dropdown-item" href="#">Settings</a></li>
-      <li><a class="dropdown-item" href="#">Profile</a></li>
-      <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="#">Sign out</a></li>
-    </ul>
-  </div> -->
 </div>
 
 <?php require APPROOT . '/views/inc/footer_admin.php'; ?>

@@ -1,13 +1,17 @@
 <?php
 
+    // Handles order page queries
+
     class Order {
 
         private $db;
 
+        // Constructor
         public function __construct(){
             $this->db = new Database;
         }
 
+        // Get orders by user id
         public function getOrdersByUserId($user_id){
             $this->db->query('SELECT * FROM new_customer_orders WHERE user_id = :user_id ORDER BY ordered_at DESC;');
             $this->db->bind(':user_id', $user_id);
@@ -20,6 +24,7 @@
             }
         }
 
+        // Get one order by order id
         public function getOrderById($order_id){
             $this->db->query('SELECT * FROM new_customer_orders WHERE order_id = :order_id;');
             $this->db->bind(':order_id', $order_id);
@@ -27,6 +32,7 @@
             return $row;
         }
 
+        // Get all order items of a certain id
         public function getOrderItemsbyId($order_id){
             $this->db->query('SELECT * FROM new_order_items WHERE order_id = :order_id;');
             $this->db->bind(':order_id', $order_id);
@@ -34,12 +40,23 @@
             return $results;
         }
 
+        // Get all order items
         public function getAllOrderItems(){
             $this->db->query('SELECT * FROM new_order_items;');
             $results = $this->db->resultSet();
             return $results;
         }
 
+        // Get orders in a certain date range
+        public function getOrdersByDateRange($start, $end){
+            $this->db->query('SELECT * FROM new_customer_orders WHERE ordered_at >= :start and ordered_at <= :end');
+            $this->db->bind(':start', $start);
+            $this->db->bind(':end', $end);
+            $results = $this->db->resultSet();
+            return $results;
+        }
+
+        // Place an order from the checkout page
         public function place($data){
             $user_id = $data['user_id'];
             $street = $data['street'];
@@ -72,6 +89,7 @@
 
         }
 
+        // Store order items of a certain order
         public function storeOrderItems($data){
             $cart = $data['cart'];
             $order_id = $data['order_id'];
@@ -96,6 +114,7 @@
             return $success;
         }
 
+        // Switch a certain order status to cancelled
         public function statusCancelled($order_id){
             $this->db->query('UPDATE new_customer_orders SET order_status = "CANCELLED" WHERE order_id = :order_id;');
             $this->db->bind('order_id', $order_id);

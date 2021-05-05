@@ -1,12 +1,16 @@
 <?php
 
+    // Handles user queries
+
     class User {
         private $db;
 
+        // Constructor
         public function __construct(){
             $this->db = new Database;
         }
 
+        // Register user
         public function register($data){
             // Set query
             $this->db->query('INSERT INTO new_web_users (id, name, email, password) VALUES (:id, :name, :email, :password)');

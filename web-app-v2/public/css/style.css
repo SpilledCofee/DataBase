@@ -39,6 +39,12 @@ body {
     transform: scale(1.1);
 }
 
+/********** Charts **********/
+
+.chart {
+    width: 100%;
+}
+
 
 /********** Transitions **********/
 

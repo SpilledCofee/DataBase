@@ -1,7 +1,12 @@
 <?php
 
+    // Orders controller
+    // Handles the order page, cancellation, and automatic email
+
+
     class Orders extends Controller {
 
+        // Constructor
         public function __construct(){
             if(!isLoggedIn()){
                 redirect('users/login');
@@ -12,6 +17,7 @@
             $this->orderModel = $this->model('Order');
         }
 
+        // Dafault page
         public function index(){
             $user_id = $_SESSION['user_id'];
             $data = array();
@@ -33,6 +39,7 @@
             $this->view('orders/index', $data);
         }
 
+        // Show an individual order
         public function show($order_id){
             if(!isLoggedIn()){
                 redirect('users/login');
@@ -85,6 +92,7 @@
             
         }
 
+        // Cancel an order from the show page
         public function cancel($order_id){
             if(!isLoggedIn()){
                 redirect('users/login');
@@ -127,6 +135,7 @@
             redirect('orders/index');
         }
 
+        // Order cancellation function, sends email
         public function sendOrderCancellationEmail($to, $from, $message){
             $subject = "Order Cancellation Details";
             $headers[] = "MIME-Version: 1.0";

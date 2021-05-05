@@ -1,7 +1,7 @@
 <?php
     // App Core Class
-    // Creates URL, load core controller
-    // URL = /controller/method/params
+    // Creates URL, loads core controller
+    // URL = root/controller/method/params
 
     class Core {
         protected $currentController = 'Pages';

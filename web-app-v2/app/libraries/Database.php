@@ -1,11 +1,13 @@
 <?php
-    // PDO Database
+    // PDO Database Setup
     // -> Connect
     // -> Create statements
     // -> Bind values
     // -> Return rows/results
 
     class Database {
+        
+        // Get parameters from config
         private $host = DB_HOST;
         private $user = DB_USER;
         private $pass = DB_PASS;
@@ -15,6 +17,7 @@
         private $stmt;
         private $error;
 
+        // Constructor
         public function __construct(){
             // Set DSN
             $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
