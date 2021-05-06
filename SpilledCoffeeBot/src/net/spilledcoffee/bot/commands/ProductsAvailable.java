@@ -1,5 +1,6 @@
 package net.spilledcoffee.bot.commands;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.spilledcoffee.bot.CoffeeBot;
@@ -43,23 +44,42 @@ public class ProductsAvailable extends ListenerAdapter {
                 // execute statement
                 ResultSet myRs = myStmt.executeQuery();
 
-                if (myRs.next()) {
-                    // Return the product Title, description, quantity, and sale price.
-                    event.getChannel().sendMessage("===========================\n").queue();
-                    event.getChannel().sendMessage("Product Title: " + myRs.getString("product_title")).queue();
-                    event.getChannel().sendMessage("Product Description: " + myRs.getString("product_description")).queue();
-                    event.getChannel().sendMessage("Quantity: " + myRs.getString("quantity")).queue();
-                    event.getChannel().sendMessage("Sale Price: " + myRs.getString("sale_price")).queue();
+                //Build an embed
+                EmbedBuilder ProsAvailable = new EmbedBuilder();
 
+                if (myRs.next()) {
+
+                    // Apply product details into embeds
+                    ProsAvailable.setTitle(myRs.getString("product_title")+"\n");
+                    ProsAvailable.setDescription(
+                            "Product Description: " + myRs.getString("product_description")+"\n"+
+                                    "Quantity: " + myRs.getString("quantity")+"\n"+
+                                    "Sale Price: $" + myRs.getString("sale_price")+"\n"+
+                                    "Product ID: " + myRs.getString("product_id")+"\n"
+                    );
+                    ProsAvailable.setColor(0x38d2fc);
+                    ProsAvailable.setFooter("Visit us: Spilledcoffee.net");
+
+                    //Send the embed to the user
+                    event.getChannel().sendMessage(ProsAvailable.build()).queue();
+                    ProsAvailable.clear();
 
                     while (myRs.next()) {
 
-                        event.getChannel().sendMessage("===========================\n").queue();
-                        event.getChannel().sendMessage("Product Title: " + myRs.getString("product_title")).queue();
-                        event.getChannel().sendMessage("Product Description: " + myRs.getString("product_description")).queue();
-                        event.getChannel().sendMessage("Quantity: " + myRs.getString("quantity")).queue();
-                        event.getChannel().sendMessage("Sale Price: " + myRs.getString("sale_price")).queue();
+                        // Apply product details into embeds
+                        ProsAvailable.setTitle(myRs.getString("product_title")+"\n");
+                        ProsAvailable.setDescription(
+                                "Product Description: " + myRs.getString("product_description")+"\n"+
+                                        "Quantity: " + myRs.getString("quantity")+"\n"+
+                                        "Sale Price: $" + myRs.getString("sale_price")+"\n"+
+                                        "Product ID: " + myRs.getString("product_id")+"\n"
+                        );
+                        ProsAvailable.setColor(0x38d2fc);
+                        ProsAvailable.setFooter("Visit us: Spilledcoffee.net");
 
+                        //Send the embed to the user
+                        event.getChannel().sendMessage(ProsAvailable.build()).queue();
+                        ProsAvailable.clear();
                     }
                     // Notify user when done loading products
                     event.getChannel().sendMessage("===========================\n").queue();
